@@ -5,11 +5,12 @@ import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import RandUtils from "../../Wolfie2D/Utils/RandUtils";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 
 /**
  * The particle system used for the player's weapon
  */
-export default class PlayerWeapon extends ParticleSystem {
+export default class Fireball extends ParticleSystem {
 
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
@@ -34,7 +35,8 @@ export default class PlayerWeapon extends ParticleSystem {
      */
     public setParticleAnimation(particle: Particle) {
         // Give the particle a random velocity.
-        particle.vel = RandUtils.randVec(-32, 32, 100, 200);
+        //particle.vel = RandUtils.randVec(-32, 32, 100, 200);
+        particle.vel = new Vec2(0, 100);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
         particle.color = Color.RED;
@@ -67,7 +69,7 @@ export default class PlayerWeapon extends ParticleSystem {
         super.initializePool(scene, layer);
         for (let i = 0; i < this.particlePool.length; i++) {
             // Set particle physics group to the player's weapon
-            this.particlePool[i].setGroup(HW3PhysicsGroups.PLAYER_WEAPON);
+            this.particlePool[i].setGroup(HW3PhysicsGroups.FIREBALL);
         }
     }
 

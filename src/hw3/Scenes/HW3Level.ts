@@ -18,7 +18,8 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import PlayerController, { PlayerTweens } from "../Player/PlayerController";
-import PlayerWeapon from "../Player/PlayerWeapon";
+import Fireball from "../Player/Fireball";
+import FireParticles from "../Player/FireParticles";
 
 import { HW3Events } from "../HW3Events";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
@@ -48,12 +49,18 @@ export default abstract class HW3Level extends Scene {
     public add: HW3FactoryManager;
 
 
-    /** The particle system used for the player's weapon */
-    protected playerWeaponSystem: PlayerWeapon
+    /** The particle system used for the fireball's explosion */
+    protected fireParticleSystem: FireParticles
+
+    /** The fireball itself */
+    protected fireballSystem: Fireball
+
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
+    
     /** The animated sprite that is the player */
     protected player: AnimatedSprite;
+
     /** The player's spawn position */
     protected playerSpawn: Vec2;
 
@@ -97,15 +104,17 @@ export default abstract class HW3Level extends Scene {
             groupNames: [
                 HW3PhysicsGroups.GROUND, 
                 HW3PhysicsGroups.PLAYER, 
-                HW3PhysicsGroups.PLAYER_WEAPON, 
+                HW3PhysicsGroups.FIREBALL, 
+                HW3PhysicsGroups.FIRE_PARTICLE,
                 HW3PhysicsGroups.DESTRUCTABLE
             ],
             collisions:
             [
-                [0, 1, 1, 0],
-                [1, 0, 0, 1],
-                [1, 0, 0, 1],
-                [0, 1, 1, 0],
+                [0, 1, 1, 1, 0],
+                [1, 0, 0, 0, 1],
+                [1, 0, 0, 0, 1],
+                [1, 0, 0, 0, 1],
+                [0, 1, 1, 1, 0],
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
@@ -180,7 +189,8 @@ export default abstract class HW3Level extends Scene {
                 break;
             }
             case HW3Events.PARTICLE_HIT_DESTRUCTIBLE: {
-                this.handleParticleHit(event.data.get("node"));
+                //this.handleParticleHit(event.data.get("node"));
+                this.handleFireballHit();
                 break;
             }
             case HW3Events.HEALTH_CHANGE: {
@@ -205,44 +215,52 @@ export default abstract class HW3Level extends Scene {
      * Handle particle hit events
      * @param particleId the id of the particle
      */
-    protected handleParticleHit(particleId: number): void {
-        let particles = this.playerWeaponSystem.getPool();
+    // protected handleParticleHit(particleId: number): void {
+    //     let particles = this.fireParticleSystem.getPool();
 
-        let particle = particles.find(particle => particle.id === particleId);
-        if (particle !== undefined) {
-            // Get the destructable tilemap
-            let tilemap = this.destructable;
+    //     let particle = particles.find(particle => particle.id === particleId);
+    //     if (particle !== undefined) {
+    //         // Get the destructable tilemap
+    //         let tilemap = this.destructable;
 
-            let min = new Vec2(particle.sweptRect.left, particle.sweptRect.top);
-            let max = new Vec2(particle.sweptRect.right, particle.sweptRect.bottom);
+    //         let min = new Vec2(particle.sweptRect.left, particle.sweptRect.top);
+    //         let max = new Vec2(particle.sweptRect.right, particle.sweptRect.bottom);
 
-            // Convert the min/max x/y to the min and max row/col in the tilemap array
-            let minIndex = tilemap.getColRowAt(min);
-            let maxIndex = tilemap.getColRowAt(max);
+    //         // Convert the min/max x/y to the min and max row/col in the tilemap array
+    //         let minIndex = tilemap.getColRowAt(min);
+    //         let maxIndex = tilemap.getColRowAt(max);
 
-            // Loop over all possible tiles the particle could be colliding with 
-            for(let col = minIndex.x; col <= maxIndex.x; col++){
-                for(let row = minIndex.y; row <= maxIndex.y; row++){
-                    // If the tile is collideable -> check if this particle is colliding with the tile
-                    if(tilemap.isTileCollidable(col, row) && this.particleHitTile(tilemap, particle, col, row)){
-                        // We had a collision - delete the tile in the tilemap
-                        tilemap.setTileAtRowCol(new Vec2(col, row), 0);
-                        // Play a sound when we destroy the tile
-                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.tileDestroyedAudioKey, loop: false, holdReference: false });
-                    }
-                }
-            }
+    //         // Loop over all possible tiles the particle could be colliding with 
+    //         for(let col = minIndex.x; col <= maxIndex.x; col++){
+    //             for(let row = minIndex.y; row <= maxIndex.y; row++){
+    //                 // If the tile is collideable -> check if this particle is colliding with the tile
+    //                 if(tilemap.isTileCollidable(col, row) && this.particleHitTile(tilemap, particle, col, row)){
+    //                     // We had a collision - delete the tile in the tilemap
+    //                     tilemap.setTileAtRowCol(new Vec2(col, row), 0);
+    //                     // Play a sound when we destroy the tile
+    //                     this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.tileDestroyedAudioKey, loop: false, holdReference: false });
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    protected handleFireballHit(): void {
+        let particle = this.fireballSystem.getPool()[0];  // fireball is a single particle
+
+        if (!particle) {
+            console.warn('Fireball particle undefined');
+            return;
         }
-    }
 
-    protected particleHitTile(tilemap: OrthogonalTilemap, particle: Particle, col: number, row: number): boolean {
-        let tileSize = tilemap.getTileSize();
-        // Get the position of this tile
-        let tilePos = new Vec2(col * tileSize.x + tileSize.x/2, row * tileSize.y + tileSize.y/2);
-        // Create a new collider for this tile
-        let collider = new AABB(tilePos, tileSize.scaled(1/2));
-        // Calculate collision area between the node and the tile
-        return particle.sweptRect.overlapArea(collider) > 0;
+        this.fireballSystem.stopSystem();
+
+        if (!this.fireParticleSystem.isSystemRunning()) {
+            this.fireParticleSystem.startSystem(1000, 0, particle.position);
+        }
+
+        // Rocket jump direction
+        let dir = new Vec2(-particle.vel.x, -particle.vel.y);
     }
 
     /**
@@ -305,7 +323,7 @@ export default abstract class HW3Level extends Scene {
         // Add physics to the destructible layer of the tilemap
         this.destructable.addPhysics();
         this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
-        this.destructable.setTrigger(HW3PhysicsGroups.PLAYER_WEAPON, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+        this.destructable.setTrigger(HW3PhysicsGroups.FIREBALL, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
     }
     /**
      * Handles all subscriptions to events
@@ -402,16 +420,19 @@ export default abstract class HW3Level extends Scene {
      * Initializes the particles system used by the player's weapon.
      */
     protected initializeWeaponSystem(): void {
-        this.playerWeaponSystem = new PlayerWeapon(50, Vec2.ZERO, 1000, 3, 0, 50);
-        this.playerWeaponSystem.initializePool(this, HW3Layers.PRIMARY);
+        this.fireParticleSystem = new FireParticles(50, Vec2.ZERO, 2000, 3, 10, 50); // TODO try changing mass to see if it affects gravity?
+        this.fireParticleSystem.initializePool(this, HW3Layers.PRIMARY);
+
+        this.fireballSystem = new Fireball(1, Vec2.ZERO, 1000, 3, 0, 1);
+        this.fireballSystem.initializePool(this, HW3Layers.PRIMARY);
     }
     /**
      * Initializes the player, setting the player's initial position to the given position.
      * @param position the player's spawn position
      */
     protected initializePlayer(key: string): void {
-        if (this.playerWeaponSystem === undefined) {
-            throw new Error("Player weapon system must be initialized before initializing the player!");
+        if (this.fireParticleSystem === undefined) {
+            throw new Error("Fire particle system must be initialized before initializing the player!");
         }
         if (this.playerSpawn === undefined) {
             throw new Error("Player spawn must be set before initializing the player!");
@@ -461,8 +482,10 @@ export default abstract class HW3Level extends Scene {
         });
 
         // Give the player it's AI
+        // This is just the option object, can pass in whatever "weapons" we want here
         this.player.addAI(PlayerController, { 
-            weaponSystem: this.playerWeaponSystem, 
+            fireParticleSystem: this.fireParticleSystem, // TODO do we need these in HW3Level?
+            fireballSystem: this.fireballSystem,
             tilemap: "Destructable" 
         });
     }

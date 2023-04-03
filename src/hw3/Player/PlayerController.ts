@@ -7,7 +7,7 @@ import Idle from "./PlayerStates/Idle";
 import Jump from "./PlayerStates/Jump";
 import Run from "./PlayerStates/Run";
 
-import PlayerWeapon from "./PlayerWeapon";
+import Fireball from "./Fireball";
 import Input from "../../Wolfie2D/Input/Input";
 
 import { HW3Controls } from "../HW3Controls";
@@ -63,13 +63,17 @@ export default class PlayerController extends StateMachineAI {
 
     protected tilemap: OrthogonalTilemap;
     // protected cannon: Sprite;
-    protected weapon: PlayerWeapon;
+    //protected weapon: Fireball;
+    protected fireParticles: Fireball;
+    protected fireProjectile: Fireball;
 
     
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
         this.owner = owner;
 
-        this.weapon = options.weaponSystem;
+        //this.weapon = options.weaponSystem;
+        this.fireParticles = options.fireParticleSystem;
+        this.fireProjectile = options.fireballSystem;
 
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
         this.speed = 400;
@@ -107,14 +111,15 @@ export default class PlayerController extends StateMachineAI {
 		super.update(deltaT);
 
         // Update the rotation to apply the particles velocity vector
-        this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+        //this.fireParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+        this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
         // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
-        if (Input.isPressed(HW3Controls.ATTACK) && !this.weapon.isSystemRunning()) {
+        if (Input.isPressed(HW3Controls.ATTACK) && !this.fireProjectile.isSystemRunning()) {
             // Update the rotation to apply the particles velocity vector
-            this.weapon.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+            this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
-            this.weapon.startSystem(500, 0, this.owner.position);
+            this.fireProjectile.startSystem(500, 0, this.owner.position);
         }
 
         /*
