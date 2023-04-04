@@ -178,7 +178,12 @@ export default class CanvasNodeFactory {
 		this.checkIfPropExists("Label", options, "position", Vec2, "Vec2");
 		this.checkIfPropExists("Label", options, "text", "string");
 
-		return new Label(options.position, options.text)
+		let fontSize = 30;
+		if (options.fontSize) {
+			fontSize = options.fontSize;
+		}
+
+		return new Label(options.position, options.text, fontSize);
 	}
 
 	buildSlider(options: Record<string, any>): Slider {
