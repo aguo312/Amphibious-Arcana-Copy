@@ -15,6 +15,8 @@ import HW3AnimatedSprite from "../Nodes/HW3AnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { HW3Events } from "../HW3Events";
 import Dead from "./PlayerStates/Dead";
+import Receiver from '../../Wolfie2D/Events/Receiver';
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
 
 /**
  * Animation keys for the player spritesheet
@@ -67,6 +69,7 @@ export default class PlayerController extends StateMachineAI {
     protected fireParticles: Fireball;
     protected fireProjectile: Fireball;
 
+    protected receiver: Receiver;
     
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
         this.owner = owner;
@@ -91,6 +94,36 @@ export default class PlayerController extends StateMachineAI {
         
         // Start the player in the Idle state
         this.initialize(PlayerStates.IDLE);
+
+        this.receiver = new Receiver();
+        this.receiver.subscribe(HW3Events.PLAYER_FIRE_JUMP);
+    }
+
+    handleEvent(event: GameEvent): void {
+        switch(event.type) {
+            // Move player on a fireball jump
+            case HW3Events.PLAYER_FIRE_JUMP: {
+                const vel: Vec2 = event.data.get('fireJumpVel');
+                const playerPos: Vec2 = event.data.get('playerPos');
+                const particlePos: Vec2 = event.data.get('particlePos');
+
+                // TODO this calculation is very scuffed
+                //      trying to scale movement vector by difference in position
+                const posDiff = MathUtils.vecAbs(playerPos.clone().sub(particlePos));
+                const posDiffClamped = MathUtils.vecClamp0(posDiff, Math.abs(vel.x), Math.abs(vel.y));
+                this.velocity = vel.clone().sub(posDiffClamped);
+
+                console.log('posDiff', posDiff);
+                console.log('posDiffClamped', posDiffClamped);
+                console.log('vel1', vel);
+                console.log('vel2', this.velocity);
+                break;
+            }
+            default: {
+                throw new Error(`Unhandled event caught in player controller with type ${event.type}`)
+            }
+        }
+
     }
 
     /** 
@@ -109,6 +142,11 @@ export default class PlayerController extends StateMachineAI {
 
     public update(deltaT: number): void {
 		super.update(deltaT);
+
+        // TODO not sure if should be before or after super call
+        while(this.receiver.hasNextEvent()) {
+            this.handleEvent(this.receiver.getNextEvent());
+        }
 
         // Update the rotation to apply the particles velocity vector
         //this.fireParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;

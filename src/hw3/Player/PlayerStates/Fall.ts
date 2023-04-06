@@ -6,7 +6,10 @@ export default class Fall extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
         // If we're falling, the vertical velocity should be >= 0
-        this.parent.velocity.y = 0;
+        // commenting this out bc it was preventing the fireball jumps from working
+        if (this.parent.velocity.y > 0) {
+            this.parent.velocity.y = 0;
+        }
     }
 
     update(deltaT: number): void {

@@ -12,6 +12,8 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
  */
 export default class FireParticles extends ParticleSystem {
 
+    private particleVec: Vec2 = Vec2.ZERO;
+
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
      */
@@ -35,10 +37,14 @@ export default class FireParticles extends ParticleSystem {
      */
     public setParticleAnimation(particle: Particle) {
         // Give the particle a random velocity.
-        particle.vel = RandUtils.randVec(-50, 50, -50, -1);
+        particle.vel = RandUtils.randVec(this.particleVec.x - 50, this.particleVec.x + 50, this.particleVec.y - 50, this.particleVec.y + 50);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
         particle.color = Color.RED;
+
+        if (!particle.tweens) {
+            return;
+        }
 
         // Give the particle tweens
         particle.tweens.add("active", {
@@ -53,6 +59,10 @@ export default class FireParticles extends ParticleSystem {
                 }
             ]
         });
+    }
+
+    public setParticleVector(vec: Vec2): void {
+        this.particleVec = vec.mult(new Vec2(0.2, 0.2));
     }
 
     /**

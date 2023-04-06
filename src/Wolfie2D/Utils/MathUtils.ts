@@ -40,6 +40,16 @@ export default class MathUtils {
         return x;
     }
 
+    static vecClamp0(vec: Vec2, maxX: number, maxY: number): Vec2 {
+        let x = MathUtils.clamp(vec.x, 0, maxX);
+        let y = MathUtils.clamp(vec.y, 0, maxY);
+        return new Vec2(x, y);
+    }
+
+    static vecClamp01(vec: Vec2): Vec2 {
+        return new Vec2(MathUtils.clamp(vec.x, 0, 1), MathUtils.clamp(vec.y, 0, 1));
+    }
+
     /**
      * Clamps the value x to the range between 0 and 1
      * @param x The value to be clamped
@@ -78,6 +88,10 @@ export default class MathUtils {
 
     static changeRange(x: number, min: number, max: number, newMin: number, newMax: number): number {
         return this.lerp(newMin, newMax, this.invLerp(min, max, x));
+    }
+
+    static vecAbs(vec: Vec2): Vec2 {
+        return new Vec2(Math.abs(vec.x), Math.abs(vec.y));
     }
 
     /**

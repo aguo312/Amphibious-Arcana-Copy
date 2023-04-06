@@ -253,14 +253,18 @@ export default abstract class HW3Level extends Scene {
             return;
         }
 
+        // Rocket jump direction
+        // TODO should be less effective when fireball lands farther away
+        let dir = new Vec2(-0.8*particle.vel.x, -0.8*particle.vel.y);
+
         this.fireballSystem.stopSystem();
 
         if (!this.fireParticleSystem.isSystemRunning()) {
+            this.fireParticleSystem.setParticleVector(dir);
             this.fireParticleSystem.startSystem(1000, 0, particle.position);
         }
 
-        // Rocket jump direction
-        let dir = new Vec2(-particle.vel.x, -particle.vel.y);
+        this.emitter.fireEvent(HW3Events.PLAYER_FIRE_JUMP, { fireJumpVel: dir, particlePos: particle.position, playerPos: this.player.position });
     }
 
     /**

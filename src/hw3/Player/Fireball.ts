@@ -36,7 +36,7 @@ export default class Fireball extends ParticleSystem {
     public setParticleAnimation(particle: Particle) {
         // Give the particle a random velocity.
         //particle.vel = RandUtils.randVec(-32, 32, 100, 200);
-        particle.vel = new Vec2(0, 100);
+        particle.vel = new Vec2(0, 300);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
         particle.color = Color.RED;
