@@ -42,6 +42,10 @@ export default class FireParticles extends ParticleSystem {
         particle.vel.rotateCCW(this._rotation);
         particle.color = Color.RED;
 
+        if (!particle.tweens) {
+            return;
+        }
+
         // Give the particle tweens
         particle.tweens.add("active", {
             startDelay: 0,
