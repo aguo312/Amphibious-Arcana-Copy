@@ -107,16 +107,11 @@ export default class PlayerController extends StateMachineAI {
                 const playerPos: Vec2 = event.data.get('playerPos');
                 const particlePos: Vec2 = event.data.get('particlePos');
 
-                // TODO this calculation is very scuffed
-                //      trying to scale movement vector by difference in position
-                const posDiff = MathUtils.vecAbs(playerPos.clone().sub(particlePos));
-                const posDiffClamped = MathUtils.vecClamp0(posDiff, Math.abs(vel.x), Math.abs(vel.y));
-                this.velocity = vel.clone().sub(posDiffClamped);
+                // attempt to scale movement vector by difference in position
+                const posDiff = MathUtils.clamp(playerPos.clone().distanceTo(particlePos), 1, 100);
+                this.velocity = vel.clone().scale((1/posDiff) * 50);
+                console.log(posDiff);
 
-                console.log('posDiff', posDiff);
-                console.log('posDiffClamped', posDiffClamped);
-                console.log('vel1', vel);
-                console.log('vel2', this.velocity);
                 break;
             }
             default: {
@@ -153,7 +148,7 @@ export default class PlayerController extends StateMachineAI {
         this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
         // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
-        if (Input.isPressed(HW3Controls.ATTACK) && !this.fireProjectile.isSystemRunning()) {
+        if (Input.isPressed(HW3Controls.ATTACK) && !this.fireProjectile.isSystemRunning() && !this.fireParticles.isSystemRunning()) {
             // Update the rotation to apply the particles velocity vector
             this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position

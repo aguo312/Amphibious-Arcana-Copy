@@ -54,6 +54,7 @@ export default abstract class HW3Level extends Scene {
 
     /** The fireball itself */
     protected fireballSystem: Fireball
+    protected fireballTimer: Timer;
 
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
@@ -154,6 +155,9 @@ export default abstract class HW3Level extends Scene {
             this.levelTransitionScreen.tweens.play("fadeIn");
         });
 
+        // Init timers
+        this.fireballTimer = new Timer(1000);
+
         // Initially disable player movement
         Input.disableInput();
 
@@ -195,8 +199,10 @@ export default abstract class HW3Level extends Scene {
                 break;
             }
             case HW3Events.PARTICLE_HIT_DESTRUCTIBLE: {
-                //this.handleParticleHit(event.data.get("node"));
-                this.handleFireballHit();
+                if (this.fireballTimer.isStopped()) {
+                    this.fireballTimer.start();
+                    this.handleFireballHit();
+                }
                 break;
             }
             case HW3Events.HEALTH_CHANGE: {
@@ -216,40 +222,6 @@ export default abstract class HW3Level extends Scene {
     }
 
     /* Handlers for the different events the scene is subscribed to */
-
-    /**
-     * Handle particle hit events
-     * @param particleId the id of the particle
-     */
-    // protected handleParticleHit(particleId: number): void {
-    //     let particles = this.fireParticleSystem.getPool();
-
-    //     let particle = particles.find(particle => particle.id === particleId);
-    //     if (particle !== undefined) {
-    //         // Get the destructable tilemap
-    //         let tilemap = this.destructable;
-
-    //         let min = new Vec2(particle.sweptRect.left, particle.sweptRect.top);
-    //         let max = new Vec2(particle.sweptRect.right, particle.sweptRect.bottom);
-
-    //         // Convert the min/max x/y to the min and max row/col in the tilemap array
-    //         let minIndex = tilemap.getColRowAt(min);
-    //         let maxIndex = tilemap.getColRowAt(max);
-
-    //         // Loop over all possible tiles the particle could be colliding with 
-    //         for(let col = minIndex.x; col <= maxIndex.x; col++){
-    //             for(let row = minIndex.y; row <= maxIndex.y; row++){
-    //                 // If the tile is collideable -> check if this particle is colliding with the tile
-    //                 if(tilemap.isTileCollidable(col, row) && this.particleHitTile(tilemap, particle, col, row)){
-    //                     // We had a collision - delete the tile in the tilemap
-    //                     tilemap.setTileAtRowCol(new Vec2(col, row), 0);
-    //                     // Play a sound when we destroy the tile
-    //                     this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.tileDestroyedAudioKey, loop: false, holdReference: false });
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 
     protected handleFireballHit(): void {
         let particle = this.fireballSystem.getPool()[0];  // fireball is a single particle
