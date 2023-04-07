@@ -17,6 +17,7 @@ import { HW3Events } from "../HW3Events";
 import Dead from "./PlayerStates/Dead";
 import Receiver from '../../Wolfie2D/Events/Receiver';
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import {SpellTypes} from "./SpellTypes";
 
 /**
  * Animation keys for the player spritesheet
@@ -69,6 +70,8 @@ export default class PlayerController extends StateMachineAI {
     protected fireParticles: Fireball;
     protected fireProjectile: Fireball;
 
+    protected selectedSpell: string;
+
     protected receiver: Receiver;
     
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
@@ -94,6 +97,8 @@ export default class PlayerController extends StateMachineAI {
         
         // Start the player in the Idle state
         this.initialize(PlayerStates.IDLE);
+
+        this.selectedSpell = SpellTypes.TONGUE;
 
         this.receiver = new Receiver();
         this.receiver.subscribe(HW3Events.PLAYER_FIRE_JUMP);
@@ -147,24 +152,64 @@ export default class PlayerController extends StateMachineAI {
         //this.fireParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
         this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
+
+        // Attack
+        if (Input.isMousePressed()) {
+            //this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(Input.getGlobalMousePosition()),5);
+
+            switch(this.selectedSpell) {
+                case SpellTypes.TONGUE: {
+                    this.tongueAttack();
+                    break;
+                }
+                case SpellTypes.FIREBALL: {
+                    this.fireballAttack();
+                    break;
+                }
+                case SpellTypes.ICE: {
+                    this.iceAttack();
+                    break;
+                }
+                default: {
+                    throw new Error(`Unhandled attack type ${this.selectedSpell} caught in handlePlayerAttack()`);
+                }
+            }
+            this.emitter.fireEvent(HW3Events.PLAYER_ATTACK);
+        }
+
+        // Set the selected spell
+        if (Input.isPressed(HW3Controls.SELECT_TONGUE)) {
+            this.selectedSpell = SpellTypes.TONGUE;
+            this.emitter.fireEvent(HW3Events.SELECT_TONGUE);
+        }
+        if (Input.isPressed(HW3Controls.SELECT_FIREBALL)) {
+            this.selectedSpell = SpellTypes.FIREBALL;
+            this.emitter.fireEvent(HW3Events.SELECT_FIREBALL);
+        }
+        if (Input.isPressed(HW3Controls.SELECT_ICE)) {
+            this.selectedSpell = SpellTypes.ICE;
+            this.emitter.fireEvent(HW3Events.SELECT_ICE);
+        }
+
+	}
+
+    protected tongueAttack(): void {
+
+    }
+
+    protected fireballAttack(): void {
         // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
-        if (Input.isPressed(HW3Controls.ATTACK) && !this.fireProjectile.isSystemRunning() && !this.fireParticles.isSystemRunning()) {
+        if (!this.fireProjectile.isSystemRunning() && !this.fireParticles.isSystemRunning()) {
             // Update the rotation to apply the particles velocity vector
             this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.fireProjectile.startSystem(500, 0, this.owner.position);
         }
+    }
 
-        /*
-            This if-statement will place a tile wherever the user clicks on the screen. I have
-            left this here to make traversing the map a little easier, incase you accidently
-            destroy everything with the player's weapon.
-        */
-        if (Input.isMousePressed()) {
-            this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(Input.getGlobalMousePosition()),5);
-        }
+    protected iceAttack(): void {
 
-	}
+    }
 
     public get velocity(): Vec2 { return this._velocity; }
     public set velocity(velocity: Vec2) { this._velocity = velocity; }

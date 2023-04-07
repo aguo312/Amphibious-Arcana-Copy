@@ -23,6 +23,11 @@ export const HW3Events = {
     // The event sent when the player dies. Gets sent after the player's death animation
     PLAYER_DEAD: "PLAYER_DEAD",
 
-    PLAYER_FIRE_JUMP: "PLAYER_FIRE_JUMP"
-    
+    PLAYER_FIRE_JUMP: "PLAYER_FIRE_JUMP",
+
+    PLAYER_ATTACK: "PLAYER_ATTACK",
+
+    SELECT_TONGUE: "SELECT_TONGUE",
+    SELECT_FIREBALL: "SELECT_FIREBALL",
+    SELECT_ICE: "SELECT_ICE"
 } as const;

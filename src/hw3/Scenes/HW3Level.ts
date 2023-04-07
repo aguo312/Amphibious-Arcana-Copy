@@ -25,7 +25,7 @@ import { HW3Events } from "../HW3Events";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 import HW3FactoryManager from "../Factory/HW3FactoryManager";
 import MainMenu from "./MainMenu";
-import Particle from "../../Wolfie2D/Nodes/Graphics/Particle";
+import { SpellTypes } from "../Player/SpellTypes";
 
 /**
  * A const object for the layer names
@@ -75,6 +75,11 @@ export default abstract class HW3Level extends Scene {
     private fireLabel: Label;
     private iceLabel: Label;
 
+    private tongueSelectPos: Vec2;
+    private fireballSelectPos: Vec2;
+    private iceSelectPos: Vec2;
+
+    private selectedSpell: string;
 
     /** The end of level stuff */
 
@@ -125,6 +130,11 @@ export default abstract class HW3Level extends Scene {
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
+
+        this.tongueSelectPos = new Vec2(24, 25.5);
+        this.fireballSelectPos = new Vec2(24 + 150/12, 25.5);
+        this.iceSelectPos = new Vec2(24 + 150/6, 25.5);
+        this.selectedSpell = SpellTypes.TONGUE;
     }
 
     public startScene(): void {
@@ -214,11 +224,60 @@ export default abstract class HW3Level extends Scene {
                 this.sceneManager.changeToScene(MainMenu);
                 break;
             }
+            // Handle spell switching
+            case HW3Events.SELECT_TONGUE: {
+                this.handleSelectTongue();
+                break;
+            }
+            case HW3Events.SELECT_FIREBALL: {
+                this.handleSelectFireball();
+                break;
+            }
+            case HW3Events.SELECT_ICE: {
+                this.handleSelectIce();
+                break;
+            }
+            // case HW3Events.PLAYER_ATTACK: {
+            //     this.handlePlayerAttack();
+            //     break;
+            // }
             // Default: Throw an error! No unhandled events allowed.
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
             }
         }
+    }
+
+    // protected handlePlayerAttack(): void {
+    //     switch(this.selectedSpell) {
+    //         case SpellTypes.TONGUE: {
+    //             break;
+    //         }
+    //         case SpellTypes.FIREBALL: {
+    //             break;
+    //         }
+    //         case SpellTypes.ICE: {
+    //             break;
+    //         }
+    //         default: {
+    //             throw new Error(`Unhandled attack type ${this.selectedSpell} caught in handlePlayerAttack()`);
+    //         }
+    //     }
+    // }
+
+    protected handleSelectTongue(): void {
+        this.selectedSpell = SpellTypes.TONGUE;
+        this.spellBarSelect.position = this.tongueSelectPos.clone();
+    }
+
+    protected handleSelectFireball(): void {
+        this.selectedSpell = SpellTypes.FIREBALL;
+        this.spellBarSelect.position = this.fireballSelectPos.clone();
+    }
+
+    protected handleSelectIce(): void {
+        this.selectedSpell = SpellTypes.ICE;
+        this.spellBarSelect.position = this.iceSelectPos.clone();
     }
 
     /* Handlers for the different events the scene is subscribed to */
@@ -317,6 +376,9 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(HW3Events.PARTICLE_HIT_DESTRUCTIBLE);
         this.receiver.subscribe(HW3Events.HEALTH_CHANGE);
         this.receiver.subscribe(HW3Events.PLAYER_DEAD);
+        this.receiver.subscribe(HW3Events.SELECT_TONGUE);
+        this.receiver.subscribe(HW3Events.SELECT_FIREBALL);
+        this.receiver.subscribe(HW3Events.SELECT_ICE);
     }
     /**
      * Adds in any necessary UI to the game
@@ -350,15 +412,15 @@ export default abstract class HW3Level extends Scene {
         this.spellBarSelect.borderColor = Color.YELLOW;
 
         // Tongue label
-        this.tongueLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24, 25.5), text: "T"});
+        this.tongueLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.tongueSelectPos, text: "T"});
         this.tongueLabel.size = new Vec2(20, 20);
 
         // Fire label
-        this.fireLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24 + 150/12, 25.5), text: "F"});
+        this.fireLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.fireballSelectPos, text: "F"});
         this.fireLabel.size = new Vec2(20, 20);
 
         // Ice label
-        this.iceLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24 + 150/6, 25.5), text: "I"});
+        this.iceLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.iceSelectPos, text: "I"});
         this.iceLabel.size = new Vec2(20, 20);
 
         // End of level label (start off screen)
