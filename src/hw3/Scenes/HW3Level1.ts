@@ -60,6 +60,8 @@ export default class Level1 extends HW3Level {
      * Load in our resources for level 1
      */
     public loadScene(): void {
+        // Load the tongue shader
+        super.loadScene();
         // Load in the tilemap
         this.load.tilemap(this.tilemapKey, Level1.TILEMAP_PATH);
         // Load in the player's sprite

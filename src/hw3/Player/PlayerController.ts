@@ -194,7 +194,7 @@ export default class PlayerController extends StateMachineAI {
 	}
 
     protected tongueAttack(): void {
-
+        this.emitter.fireEvent(HW3Events.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir });
     }
 
     protected fireballAttack(): void {

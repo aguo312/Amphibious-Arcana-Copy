@@ -25,6 +25,9 @@ import { HW3Events } from "../HW3Events";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 import HW3FactoryManager from "../Factory/HW3FactoryManager";
 import MainMenu from "./MainMenu";
+import TongueBehavior from "../Nodes/TongueBehavior";
+import Graphic from "../../Wolfie2D/Nodes/Graphic";
+import TongueShaderType from "../Shaders/TongueShaderType";
 import { SpellTypes } from "../Player/SpellTypes";
 
 /**
@@ -64,6 +67,8 @@ export default abstract class HW3Level extends Scene {
 
     /** The player's spawn position */
     protected playerSpawn: Vec2;
+
+    private tongue: Graphic;
 
     private healthLabel: Label;
 	private healthBar: Label;
@@ -137,6 +142,13 @@ export default abstract class HW3Level extends Scene {
         this.selectedSpell = SpellTypes.TONGUE;
     }
 
+    public loadScene() {
+        this.load.shader(
+            TongueShaderType.KEY,
+            TongueShaderType.VSHADER,
+            TongueShaderType.FSHADER);
+    }
+
     public startScene(): void {
         // Initialize the layers
         this.initLayers();
@@ -185,6 +197,10 @@ export default abstract class HW3Level extends Scene {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
+
+        if (this.tongue.visible) {
+            this.emitter.fireEvent(HW3Events.PLAYER_POS_UPDATE, {pos: this.player.position.clone()});
+        }
     }
 
     /**
@@ -224,6 +240,12 @@ export default abstract class HW3Level extends Scene {
                 this.sceneManager.changeToScene(MainMenu);
                 break;
             }
+            case HW3Events.SHOOT_TONGUE: {
+                let pos = event.data.get("pos");
+                let dir = event.data.get("dir");
+                this.spawnTongue(pos, dir);
+                break;
+            }
             // Handle spell switching
             case HW3Events.SELECT_TONGUE: {
                 this.handleSelectTongue();
@@ -245,6 +267,14 @@ export default abstract class HW3Level extends Scene {
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
             }
+        }
+    }
+
+    protected spawnTongue(pos: Vec2, dir: Vec2): void {
+        // TODO maybe use GameNode?
+        if (this.tongue) {
+            this.tongue.visible = true;
+            this.tongue.setAIActive(true, {src: pos, dir: dir});
         }
     }
 
@@ -376,6 +406,7 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(HW3Events.PARTICLE_HIT_DESTRUCTIBLE);
         this.receiver.subscribe(HW3Events.HEALTH_CHANGE);
         this.receiver.subscribe(HW3Events.PLAYER_DEAD);
+        this.receiver.subscribe(HW3Events.SHOOT_TONGUE);
         this.receiver.subscribe(HW3Events.SELECT_TONGUE);
         this.receiver.subscribe(HW3Events.SELECT_FIREBALL);
         this.receiver.subscribe(HW3Events.SELECT_ICE);
@@ -491,6 +522,13 @@ export default abstract class HW3Level extends Scene {
 
         this.fireballSystem = new Fireball(1, Vec2.ZERO, 1000, 3, 0, 1);
         this.fireballSystem.initializePool(this, HW3Layers.PRIMARY);
+
+        // init tongue
+        this.tongue = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+        this.tongue.useCustomShader(TongueShaderType.KEY);
+        this.tongue.color = Color.RED;
+        this.tongue.visible = false;
+        this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
     }
     /**
      * Initializes the player, setting the player's initial position to the given position.
