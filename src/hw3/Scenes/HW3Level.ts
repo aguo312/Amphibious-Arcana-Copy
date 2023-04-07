@@ -68,6 +68,12 @@ export default abstract class HW3Level extends Scene {
 	private healthBar: Label;
 	private healthBarBg: Label;
 
+    private spellBar: Label;
+    private spellBarSelect: Label;
+    private tongueLabel: Label;
+    private fireLabel: Label;
+    private iceLabel: Label;
+
 
     /** The end of level stuff */
 
@@ -361,6 +367,28 @@ export default abstract class HW3Level extends Scene {
 		this.healthBarBg.size = new Vec2(300, 25);
 		this.healthBarBg.borderColor = Color.BLACK;
 
+        // Spellbar
+        this.spellBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(55/1.5, 25), text: ""});
+        this.spellBar.size = new Vec2(150, 35);
+        this.spellBar.backgroundColor = new Color(54, 69, 67, 1);
+
+        // Spellbar highlighted spell border thing
+        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24, 25), text: ""});
+        this.spellBarSelect.size = new Vec2(150/3, 35);
+        this.spellBarSelect.borderColor = Color.YELLOW;
+
+        // Tongue label
+        this.tongueLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24, 25.5), text: "T"});
+        this.tongueLabel.size = new Vec2(20, 20);
+
+        // Fire label
+        this.fireLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24 + 150/12, 25.5), text: "F"});
+        this.fireLabel.size = new Vec2(20, 20);
+
+        // Ice label
+        this.iceLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24 + 150/6, 25.5), text: "I"});
+        this.iceLabel.size = new Vec2(20, 20);
+
         // End of level label (start off screen)
         this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, { position: new Vec2(-300, 100), text: "Level Complete" });
         this.levelEndLabel.size.set(1200, 60);
@@ -514,7 +542,7 @@ export default abstract class HW3Level extends Scene {
         
         this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, { position: this.levelEndPosition, size: this.levelEndHalfSize });
         this.levelEndArea.addPhysics(undefined, undefined, false, true);
-        this.levelEndArea.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PLAYER_ENTERED_LEVEL_END, null);
+        // this.levelEndArea.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PLAYER_ENTERED_LEVEL_END, null);
         this.levelEndArea.color = new Color(255, 0, 255, .20);
         
     }
