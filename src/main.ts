@@ -14,7 +14,9 @@ import { HW3Controls } from "./hw3/HW3Controls";
             {name: HW3Controls.MOVE_RIGHT, keys: ["d"]},
             {name: HW3Controls.JUMP, keys: ["w", "space"]},
             {name: HW3Controls.ATTACK, keys: ["x"]},
-            {name: HW3Controls.ATTACK2, keys: ["c"]}  // temporary
+            {name: HW3Controls.SELECT_TONGUE, keys: ["1"]},
+            {name: HW3Controls.SELECT_FIREBALL, keys: ["2"]},
+            {name: HW3Controls.SELECT_ICE, keys: ["3"]}
         ],
         useWebGL: false,                        // Tell the game we want to use webgl
         showDebug: false                       // Whether to show debug messages. You can change this to true if you want

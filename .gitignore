@@ -80,3 +80,6 @@ dist/*
 # Include the hw4 assets
 !dist/hw4_assets/
 
+# IntelliJ random folder
+.idea
+

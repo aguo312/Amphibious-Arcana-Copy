@@ -6,5 +6,7 @@ export const HW3Controls = {
     MOVE_RIGHT: "MOVE_RIGHT",
     JUMP: "JUMP",
     ATTACK: "ATTACK",
-    ATTACK2: "ATTACK2"
+    SELECT_TONGUE: "SELECT_TONGUE",
+    SELECT_FIREBALL: "SELECT_FIREBALL",
+    SELECT_ICE: "SELECT_ICE"
 } as const;

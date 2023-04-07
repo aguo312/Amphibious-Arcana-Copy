@@ -17,6 +17,7 @@ import { HW3Events } from "../HW3Events";
 import Dead from "./PlayerStates/Dead";
 import Receiver from '../../Wolfie2D/Events/Receiver';
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import {SpellTypes} from "./SpellTypes";
 
 /**
  * Animation keys for the player spritesheet
@@ -69,6 +70,8 @@ export default class PlayerController extends StateMachineAI {
     protected fireParticles: Fireball;
     protected fireProjectile: Fireball;
 
+    protected selectedSpell: string;
+
     protected receiver: Receiver;
     
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
@@ -95,6 +98,8 @@ export default class PlayerController extends StateMachineAI {
         // Start the player in the Idle state
         this.initialize(PlayerStates.IDLE);
 
+        this.selectedSpell = SpellTypes.TONGUE;
+
         this.receiver = new Receiver();
         this.receiver.subscribe(HW3Events.PLAYER_FIRE_JUMP);
     }
@@ -107,11 +112,10 @@ export default class PlayerController extends StateMachineAI {
                 const playerPos: Vec2 = event.data.get('playerPos');
                 const particlePos: Vec2 = event.data.get('particlePos');
 
-                // TODO this calculation is very scuffed
-                //      trying to scale movement vector by difference in position
-                const posDiff = MathUtils.vecAbs(playerPos.clone().sub(particlePos));
-                const posDiffClamped = MathUtils.vecClamp0(posDiff, Math.abs(vel.x), Math.abs(vel.y));
-                this.velocity = vel.clone().sub(posDiffClamped);
+                // attempt to scale movement vector by difference in position
+                const posDiff = MathUtils.clamp(playerPos.clone().distanceTo(particlePos), 1, 100);
+                this.velocity = vel.clone().scale((1/posDiff) * 50);
+                console.log(posDiff);
 
                 break;
             }
@@ -148,29 +152,64 @@ export default class PlayerController extends StateMachineAI {
         //this.fireParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
         this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
+
+        // Attack
+        if (Input.isMousePressed()) {
+            //this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(Input.getGlobalMousePosition()),5);
+
+            switch(this.selectedSpell) {
+                case SpellTypes.TONGUE: {
+                    this.tongueAttack();
+                    break;
+                }
+                case SpellTypes.FIREBALL: {
+                    this.fireballAttack();
+                    break;
+                }
+                case SpellTypes.ICE: {
+                    this.iceAttack();
+                    break;
+                }
+                default: {
+                    throw new Error(`Unhandled attack type ${this.selectedSpell} caught in handlePlayerAttack()`);
+                }
+            }
+            this.emitter.fireEvent(HW3Events.PLAYER_ATTACK);
+        }
+
+        // Set the selected spell
+        if (Input.isPressed(HW3Controls.SELECT_TONGUE)) {
+            this.selectedSpell = SpellTypes.TONGUE;
+            this.emitter.fireEvent(HW3Events.SELECT_TONGUE);
+        }
+        if (Input.isPressed(HW3Controls.SELECT_FIREBALL)) {
+            this.selectedSpell = SpellTypes.FIREBALL;
+            this.emitter.fireEvent(HW3Events.SELECT_FIREBALL);
+        }
+        if (Input.isPressed(HW3Controls.SELECT_ICE)) {
+            this.selectedSpell = SpellTypes.ICE;
+            this.emitter.fireEvent(HW3Events.SELECT_ICE);
+        }
+
+	}
+
+    protected tongueAttack(): void {
+        this.emitter.fireEvent(HW3Events.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir });
+    }
+
+    protected fireballAttack(): void {
         // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
-        if (Input.isPressed(HW3Controls.ATTACK) && !this.fireProjectile.isSystemRunning()) {
+        if (!this.fireProjectile.isSystemRunning() && !this.fireParticles.isSystemRunning()) {
             // Update the rotation to apply the particles velocity vector
             this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.fireProjectile.startSystem(500, 0, this.owner.position);
         }
+    }
 
-        // Tongue attack
-        if  (Input.isPressed(HW3Controls.ATTACK2)) {
-            this.emitter.fireEvent(HW3Events.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir });
-        }
+    protected iceAttack(): void {
 
-        /*
-            This if-statement will place a tile wherever the user clicks on the screen. I have
-            left this here to make traversing the map a little easier, incase you accidently
-            destroy everything with the player's weapon.
-        */
-        if (Input.isMousePressed()) {
-            this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(Input.getGlobalMousePosition()),5);
-        }
-
-	}
+    }
 
     public get velocity(): Vec2 { return this._velocity; }
     public set velocity(velocity: Vec2) { this._velocity = velocity; }

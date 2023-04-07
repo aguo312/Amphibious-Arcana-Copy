@@ -25,10 +25,10 @@ import { HW3Events } from "../HW3Events";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 import HW3FactoryManager from "../Factory/HW3FactoryManager";
 import MainMenu from "./MainMenu";
-import Particle from "../../Wolfie2D/Nodes/Graphics/Particle";
 import TongueBehavior from "../Nodes/TongueBehavior";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import TongueShaderType from "../Shaders/TongueShaderType";
+import { SpellTypes } from "../Player/SpellTypes";
 
 /**
  * A const object for the layer names
@@ -57,6 +57,7 @@ export default abstract class HW3Level extends Scene {
 
     /** The fireball itself */
     protected fireballSystem: Fireball
+    protected fireballTimer: Timer;
 
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
@@ -73,6 +74,17 @@ export default abstract class HW3Level extends Scene {
 	private healthBar: Label;
 	private healthBarBg: Label;
 
+    private spellBar: Label;
+    private spellBarSelect: Label;
+    private tongueLabel: Label;
+    private fireLabel: Label;
+    private iceLabel: Label;
+
+    private tongueSelectPos: Vec2;
+    private fireballSelectPos: Vec2;
+    private iceSelectPos: Vec2;
+
+    private selectedSpell: string;
 
     /** The end of level stuff */
 
@@ -123,6 +135,11 @@ export default abstract class HW3Level extends Scene {
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
+
+        this.tongueSelectPos = new Vec2(24, 25.5);
+        this.fireballSelectPos = new Vec2(24 + 150/12, 25.5);
+        this.iceSelectPos = new Vec2(24 + 150/6, 25.5);
+        this.selectedSpell = SpellTypes.TONGUE;
     }
 
     public loadScene() {
@@ -159,6 +176,9 @@ export default abstract class HW3Level extends Scene {
             // After the level end timer ends, fade to black and then go to the next scene
             this.levelTransitionScreen.tweens.play("fadeIn");
         });
+
+        // Init timers
+        this.fireballTimer = new Timer(1000);
 
         // Initially disable player movement
         Input.disableInput();
@@ -205,8 +225,10 @@ export default abstract class HW3Level extends Scene {
                 break;
             }
             case HW3Events.PARTICLE_HIT_DESTRUCTIBLE: {
-                //this.handleParticleHit(event.data.get("node"));
-                this.handleFireballHit();
+                if (this.fireballTimer.isStopped()) {
+                    this.fireballTimer.start();
+                    this.handleFireballHit();
+                }
                 break;
             }
             case HW3Events.HEALTH_CHANGE: {
@@ -224,6 +246,23 @@ export default abstract class HW3Level extends Scene {
                 this.spawnTongue(pos, dir);
                 break;
             }
+            // Handle spell switching
+            case HW3Events.SELECT_TONGUE: {
+                this.handleSelectTongue();
+                break;
+            }
+            case HW3Events.SELECT_FIREBALL: {
+                this.handleSelectFireball();
+                break;
+            }
+            case HW3Events.SELECT_ICE: {
+                this.handleSelectIce();
+                break;
+            }
+            // case HW3Events.PLAYER_ATTACK: {
+            //     this.handlePlayerAttack();
+            //     break;
+            // }
             // Default: Throw an error! No unhandled events allowed.
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
@@ -239,41 +278,39 @@ export default abstract class HW3Level extends Scene {
         }
     }
 
-    /* Handlers for the different events the scene is subscribed to */
-
-    /**
-     * Handle particle hit events
-     * @param particleId the id of the particle
-     */
-    // protected handleParticleHit(particleId: number): void {
-    //     let particles = this.fireParticleSystem.getPool();
-
-    //     let particle = particles.find(particle => particle.id === particleId);
-    //     if (particle !== undefined) {
-    //         // Get the destructable tilemap
-    //         let tilemap = this.destructable;
-
-    //         let min = new Vec2(particle.sweptRect.left, particle.sweptRect.top);
-    //         let max = new Vec2(particle.sweptRect.right, particle.sweptRect.bottom);
-
-    //         // Convert the min/max x/y to the min and max row/col in the tilemap array
-    //         let minIndex = tilemap.getColRowAt(min);
-    //         let maxIndex = tilemap.getColRowAt(max);
-
-    //         // Loop over all possible tiles the particle could be colliding with 
-    //         for(let col = minIndex.x; col <= maxIndex.x; col++){
-    //             for(let row = minIndex.y; row <= maxIndex.y; row++){
-    //                 // If the tile is collideable -> check if this particle is colliding with the tile
-    //                 if(tilemap.isTileCollidable(col, row) && this.particleHitTile(tilemap, particle, col, row)){
-    //                     // We had a collision - delete the tile in the tilemap
-    //                     tilemap.setTileAtRowCol(new Vec2(col, row), 0);
-    //                     // Play a sound when we destroy the tile
-    //                     this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.tileDestroyedAudioKey, loop: false, holdReference: false });
-    //                 }
-    //             }
+    // protected handlePlayerAttack(): void {
+    //     switch(this.selectedSpell) {
+    //         case SpellTypes.TONGUE: {
+    //             break;
+    //         }
+    //         case SpellTypes.FIREBALL: {
+    //             break;
+    //         }
+    //         case SpellTypes.ICE: {
+    //             break;
+    //         }
+    //         default: {
+    //             throw new Error(`Unhandled attack type ${this.selectedSpell} caught in handlePlayerAttack()`);
     //         }
     //     }
     // }
+
+    protected handleSelectTongue(): void {
+        this.selectedSpell = SpellTypes.TONGUE;
+        this.spellBarSelect.position = this.tongueSelectPos.clone();
+    }
+
+    protected handleSelectFireball(): void {
+        this.selectedSpell = SpellTypes.FIREBALL;
+        this.spellBarSelect.position = this.fireballSelectPos.clone();
+    }
+
+    protected handleSelectIce(): void {
+        this.selectedSpell = SpellTypes.ICE;
+        this.spellBarSelect.position = this.iceSelectPos.clone();
+    }
+
+    /* Handlers for the different events the scene is subscribed to */
 
     protected handleFireballHit(): void {
         let particle = this.fireballSystem.getPool()[0];  // fireball is a single particle
@@ -370,6 +407,9 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(HW3Events.HEALTH_CHANGE);
         this.receiver.subscribe(HW3Events.PLAYER_DEAD);
         this.receiver.subscribe(HW3Events.SHOOT_TONGUE);
+        this.receiver.subscribe(HW3Events.SELECT_TONGUE);
+        this.receiver.subscribe(HW3Events.SELECT_FIREBALL);
+        this.receiver.subscribe(HW3Events.SELECT_ICE);
     }
     /**
      * Adds in any necessary UI to the game
@@ -377,20 +417,42 @@ export default abstract class HW3Level extends Scene {
     protected initializeUI(): void {
 
         // HP Label
-		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(205, 20), text: "HP "});
+		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(10, 15), text: "HP "});
 		this.healthLabel.size.set(300, 30);
 		this.healthLabel.fontSize = 24;
 		this.healthLabel.font = "Courier";
 
         // HealthBar
-		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(250, 20), text: ""});
+		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(55, 15), text: ""});
 		this.healthBar.size = new Vec2(300, 25);
 		this.healthBar.backgroundColor = Color.GREEN;
 
         // HealthBar Border
-		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(250, 20), text: ""});
+		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(55, 15), text: ""});
 		this.healthBarBg.size = new Vec2(300, 25);
 		this.healthBarBg.borderColor = Color.BLACK;
+
+        // Spellbar
+        this.spellBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(55/1.5, 25), text: ""});
+        this.spellBar.size = new Vec2(150, 35);
+        this.spellBar.backgroundColor = new Color(54, 69, 67, 1);
+
+        // Spellbar highlighted spell border thing
+        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24, 25), text: ""});
+        this.spellBarSelect.size = new Vec2(150/3, 35);
+        this.spellBarSelect.borderColor = Color.YELLOW;
+
+        // Tongue label
+        this.tongueLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.tongueSelectPos, text: "T"});
+        this.tongueLabel.size = new Vec2(20, 20);
+
+        // Fire label
+        this.fireLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.fireballSelectPos, text: "F"});
+        this.fireLabel.size = new Vec2(20, 20);
+
+        // Ice label
+        this.iceLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.iceSelectPos, text: "I"});
+        this.iceLabel.size = new Vec2(20, 20);
 
         // End of level label (start off screen)
         this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, { position: new Vec2(-300, 100), text: "Level Complete" });
@@ -552,7 +614,7 @@ export default abstract class HW3Level extends Scene {
         
         this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, { position: this.levelEndPosition, size: this.levelEndHalfSize });
         this.levelEndArea.addPhysics(undefined, undefined, false, true);
-        this.levelEndArea.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PLAYER_ENTERED_LEVEL_END, null);
+        // this.levelEndArea.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PLAYER_ENTERED_LEVEL_END, null);
         this.levelEndArea.color = new Color(255, 0, 255, .20);
         
     }
