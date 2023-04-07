@@ -6,6 +6,7 @@ import GameNode from "../../Wolfie2D/Nodes/GameNode";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import { HW3Events } from "../HW3Events";
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
+import Timer from "../../Wolfie2D/Timing/Timer";
 
 export default class TongueBehavior implements AI {
     // The GameNode that owns this behavior
@@ -32,6 +33,10 @@ export default class TongueBehavior implements AI {
     private maxYSpeed: number;
 
     private receiver: Receiver;
+
+    protected tongueTimer: Timer;
+
+    private tongueTipAABB: AABB;
 
     public initializeAI(owner: Graphic, options: Record<string, any>): void {
         this.owner = owner;
@@ -72,9 +77,18 @@ export default class TongueBehavior implements AI {
         this.owner.position = this.src.clone().add(this.owner.size);
         this.owner.rotation = Vec2.RIGHT.angleToCCW(this.dir) - Math.PI/2;
 
+        // Calculate the position of the tongue tip
+        const tongueBase = this.src.clone().add(this.dir.normalized().scale(this.owner.size.y * 0.5));
+        this.owner.position.copy(tongueBase);
+
+        // Calculate the position of the tongue tip
+        const tongueTip = tongueBase.clone().add(this.dir.normalized().scale(this.owner.size.y));
+        this.tongueTipAABB = new AABB(tongueTip, new Vec2(5, 5)); // Set the AABB size as you see fit
+
         // Set the collision shape of the tongue - these values are probably wrong
         // TODO Make AABB just the tip of the tongue so rotation doesn't matter?
-        this.owner.collisionShape = new AABB(new Vec2(5, 5).scale(10), new Vec2(2.5, 2.5));
+
+
     }
 
     public handleEvent(event: GameEvent): void {
@@ -96,14 +110,26 @@ export default class TongueBehavior implements AI {
     protected handleTongueWallCollision(): void {
         // TODO might not need to do anything with ID's since we only have one tongue
         // but just copying hw2 for now to try to get something rendered first
-        this.owner.position.copy(Vec2.ZERO);
-        this.owner.visible = false;
+        // this.owner.position.copy(Vec2.ZERO);
+        // this.owner.visible = false;
     }
 
     protected handlePlayerPosUpdate(pos: Vec2): void {
-        this.owner.position = pos;
+
+        // Calculate the position of the tongue tip
+        const tongueBase = pos.clone().add(this.dir.normalized().scale(this.owner.size.y * 0.5));
+        this.owner.position.copy(tongueBase);
+
+        // Calculate the position of the tongue tip
+        const tongueTipPos = tongueBase.clone().add(this.dir.normalized().scale(this.owner.size.y));
+        this.tongueTipAABB.center.copy(tongueTipPos);
     }
 
+
+    public getTongueTipAABB(): AABB {
+        return this.tongueTipAABB;
+    }
+    
     public update(deltaT: number): void {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
