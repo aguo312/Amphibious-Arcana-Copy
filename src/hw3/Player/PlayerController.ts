@@ -113,10 +113,6 @@ export default class PlayerController extends StateMachineAI {
                 const posDiffClamped = MathUtils.vecClamp0(posDiff, Math.abs(vel.x), Math.abs(vel.y));
                 this.velocity = vel.clone().sub(posDiffClamped);
 
-                console.log('posDiff', posDiff);
-                console.log('posDiffClamped', posDiffClamped);
-                console.log('vel1', vel);
-                console.log('vel2', this.velocity);
                 break;
             }
             default: {
@@ -158,6 +154,11 @@ export default class PlayerController extends StateMachineAI {
             this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.fireProjectile.startSystem(500, 0, this.owner.position);
+        }
+
+        // Tongue attack
+        if  (Input.isPressed(HW3Controls.ATTACK2)) {
+            this.emitter.fireEvent(HW3Events.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir });
         }
 
         /*
