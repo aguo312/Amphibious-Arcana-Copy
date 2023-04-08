@@ -102,12 +102,16 @@ export default abstract class HW3Level extends Scene {
 
     /** The keys to the tilemap and different tilemap layers */
     protected tilemapKey: string;
-    protected destructibleLayerKey: string;
+    //protected destructibleLayerKey: string;
+    protected collidableLayerKey: string;
+    protected tongueCollidableLayerKey: string;
     protected wallsLayerKey: string;
     /** The scale for the tilemap */
     protected tilemapScale: Vec2;
     /** The destrubtable layer of the tilemap */
-    protected destructable: OrthogonalTilemap;
+    protected collidable: OrthogonalTilemap;
+    /** The layer of the tilemap the tongue can collide with */
+    protected tongueCollidable: OrthogonalTilemap;
     /** The wall layer of the tilemap */
     protected walls: OrthogonalTilemap;
 
@@ -383,18 +387,24 @@ export default abstract class HW3Level extends Scene {
         // Add the tilemap to the scene
         this.add.tilemap(this.tilemapKey, this.tilemapScale);
 
-        if (this.destructibleLayerKey === undefined || this.wallsLayerKey === undefined) {
-            throw new Error("Make sure the keys for the destuctible layer and wall layer are both set");
+        if (this.collidableLayerKey === undefined || this.tongueCollidableLayerKey === undefined) {
+            throw new Error("Make sure the keys for the collidable layer and tongue collidable layer are both set");
         }
 
         // Get the wall and destructible layers 
-        this.walls = this.getTilemap(this.wallsLayerKey) as OrthogonalTilemap;
-        this.destructable = this.getTilemap(this.destructibleLayerKey) as OrthogonalTilemap;
+        //this.walls = this.getTilemap(this.wallsLayerKey) as OrthogonalTilemap;
+        this.collidable = this.getTilemap(this.collidableLayerKey) as OrthogonalTilemap;
+        this.tongueCollidable = this.getTilemap(this.tongueCollidableLayerKey) as OrthogonalTilemap;
 
         // Add physics to the destructible layer of the tilemap
-        this.destructable.addPhysics();
-        this.destructable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
-        this.destructable.setTrigger(HW3PhysicsGroups.FIREBALL, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+        if (this.collidable) {
+            this.collidable.addPhysics();
+            this.collidable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
+            this.collidable.setTrigger(HW3PhysicsGroups.FIREBALL, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+        }
+
+        // this.tongueCollidable.addPhysics();
+        // this.tongueCollidable.setGroup(HW3PhysicsGroups.TONGUE_COLLIDABLE);
     }
     /**
      * Handles all subscriptions to events
@@ -471,7 +481,7 @@ export default abstract class HW3Level extends Scene {
                 {
                     property: TweenableProperties.posX,
                     start: -300,
-                    end: 300,
+                    end: 150,
                     ease: EaseFunctionType.OUT_SINE
                 }
             ]
@@ -614,7 +624,7 @@ export default abstract class HW3Level extends Scene {
         
         this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, { position: this.levelEndPosition, size: this.levelEndHalfSize });
         this.levelEndArea.addPhysics(undefined, undefined, false, true);
-        // this.levelEndArea.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PLAYER_ENTERED_LEVEL_END, null);
+        this.levelEndArea.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PLAYER_ENTERED_LEVEL_END, null);
         this.levelEndArea.color = new Color(255, 0, 255, .20);
         
     }

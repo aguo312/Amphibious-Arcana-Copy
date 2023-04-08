@@ -11,14 +11,16 @@ import HW4Level2 from "./HW3Level2";
  */
 export default class Level1 extends HW3Level {
 
-    public static readonly PLAYER_SPAWN = new Vec2(32, 32);
+    public static readonly PLAYER_SPAWN = new Vec2(50, 480);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
 
     public static readonly TILEMAP_KEY = "LEVEL1";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level1.json";
+    //public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level1.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/level1.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
-    public static readonly DESTRUCTIBLE_LAYER_KEY = "Destructable";
+    public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
+    public static readonly TONGUE_COLLIDABLE_LAYER_KEY = "TongueCollidable";
     public static readonly WALLS_LAYER_KEY = "Main";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
@@ -30,7 +32,7 @@ export default class Level1 extends HW3Level {
     public static readonly TILE_DESTROYED_KEY = "TILE_DESTROYED";
     public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
 
-    public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
+    public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
@@ -38,7 +40,8 @@ export default class Level1 extends HW3Level {
         // Set the keys for the different layers of the tilemap
         this.tilemapKey = Level1.TILEMAP_KEY;
         this.tilemapScale = Level1.TILEMAP_SCALE;
-        this.destructibleLayerKey = Level1.DESTRUCTIBLE_LAYER_KEY;
+        this.collidableLayerKey = Level1.COLLIDABLE_LAYER_KEY;
+        this.tongueCollidableLayerKey = Level1.TONGUE_COLLIDABLE_LAYER_KEY;
         this.wallsLayerKey = Level1.WALLS_LAYER_KEY;
 
         // Set the key for the player's sprite
@@ -52,8 +55,11 @@ export default class Level1 extends HW3Level {
         this.tileDestroyedAudioKey = Level1.TILE_DESTROYED_KEY;
 
         // Level end size and position
-        this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
-        this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
+        //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
+        this.levelEndPosition = new Vec2(790, 180).mult(this.tilemapScale);
+
+        // made bigger for testing
+        this.levelEndHalfSize = new Vec2(32, 300).mult(this.tilemapScale);
     }
 
     /**
@@ -96,7 +102,7 @@ export default class Level1 extends HW3Level {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 496, 512);
+        this.viewport.setBounds(16, 16, 1600, 700);
     }
 
 }
