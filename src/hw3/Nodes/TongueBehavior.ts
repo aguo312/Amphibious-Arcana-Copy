@@ -8,6 +8,11 @@ import { HW3Events } from "../HW3Events";
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Timer from "../../Wolfie2D/Timing/Timer";
 
+enum TongueState {
+    EXTENDING,
+    RETRACTING
+}
+
 export default class TongueBehavior implements AI {
     // The GameNode that owns this behavior
     private owner: Graphic;
@@ -38,6 +43,13 @@ export default class TongueBehavior implements AI {
 
     private tongueTipAABB: AABB;
 
+
+    private state: TongueState;
+    private maxDistance: number;
+    private distanceTraveled: number
+
+    private tongueActive: boolean;
+
     public initializeAI(owner: Graphic, options: Record<string, any>): void {
         this.owner = owner;
 
@@ -49,7 +61,7 @@ export default class TongueBehavior implements AI {
         this.minXSpeed = 50;
         this.maxXSpeed = 50;
 
-        this.currentYSpeed = 50;
+        this.currentYSpeed = 250;
         this.ySpeedIncrement = 0;
         this.minYSpeed = 50;
         this.maxYSpeed = 50;
@@ -57,6 +69,13 @@ export default class TongueBehavior implements AI {
         this.receiver = new Receiver();
         this.receiver.subscribe(HW3Events.TONGUE_WALL_COLLISION);
         this.receiver.subscribe(HW3Events.PLAYER_POS_UPDATE);
+        this.receiver.subscribe(HW3Events.SHOOT_TONGUE)
+        
+        this.state = TongueState.EXTENDING;
+        this.maxDistance = 100; // Set the maximum distance the tongue can extend
+        this.distanceTraveled = 0;
+        
+        this.tongueActive = false;
         
         this.activate(options);
     }
@@ -71,7 +90,7 @@ export default class TongueBehavior implements AI {
         this.dir.copy(options.dir);
 
         // Set the size of the tongue
-        this.owner.size = new Vec2(5, 100);
+        this.owner.size = new Vec2(3, 1);
 
         // Set the position of the tongue
         this.owner.position = this.src.clone().add(this.owner.size);
@@ -99,6 +118,11 @@ export default class TongueBehavior implements AI {
             }
             case HW3Events.PLAYER_POS_UPDATE: {
                 this.handlePlayerPosUpdate(event.data.get('pos'));
+                break;
+            }
+            case HW3Events.SHOOT_TONGUE: {
+                console.log("YOOOO GOT SHOOT")
+                this.resetState();
                 break;
             }
             default: {
@@ -130,6 +154,13 @@ export default class TongueBehavior implements AI {
         return this.tongueTipAABB;
     }
     
+
+    private resetState(): void {
+        this.state = TongueState.EXTENDING;
+        this.distanceTraveled = 0;
+        this.tongueActive = true;
+    }
+
     public update(deltaT: number): void {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
@@ -142,6 +173,37 @@ export default class TongueBehavior implements AI {
             
             // TODO need to set up collision somewhere for this
 
+            let movement: Vec2;
+
+            if (this.state === TongueState.EXTENDING) {
+                movement = this.dir.normalized().scale(this.currentYSpeed * deltaT);
+                this.distanceTraveled += movement.mag();
+                
+                // Increase the height of the tongue
+                this.owner.size.y += movement.mag();
+
+                if (this.distanceTraveled >= this.maxDistance) {
+                    this.state = TongueState.RETRACTING;
+                }
+            } else if (this.state === TongueState.RETRACTING) {
+                movement = this.dir.normalized().scale(-this.currentYSpeed * deltaT);
+                this.distanceTraveled -= movement.mag();
+                
+                // Decrease the height of the tongue
+                this.owner.size.y -= movement.mag();
+
+                if (this.distanceTraveled <= 0) {
+                    // Hide the tongue and stop updating when fully retracted
+                    this.owner.visible = false;
+                    this.distanceTraveled = 0;
+                    return;
+                }
+            }
+            this.owner.position.add(movement);
+
+            // Update tongue tip AABB
+            const tongueTipPos = this.owner.position.clone().add(this.dir.normalized().scale(this.owner.size.y));
+            this.tongueTipAABB.center.copy(tongueTipPos);
         }
     }
 }
