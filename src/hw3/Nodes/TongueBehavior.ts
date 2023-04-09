@@ -7,6 +7,7 @@ import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import { HW3Events } from "../HW3Events";
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Timer from "../../Wolfie2D/Timing/Timer";
+import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
 
 enum TongueState {
     EXTENDING,
@@ -76,7 +77,8 @@ export default class TongueBehavior implements AI {
         this.distanceTraveled = 0;
         
         this.tongueActive = false;
-        
+      
+
         this.activate(options);
     }
 
@@ -101,7 +103,7 @@ export default class TongueBehavior implements AI {
         this.owner.position.copy(tongueBase);
 
         // Calculate the position of the tongue tip
-        const tongueTip = tongueBase.clone().add(this.dir.normalized().scale(this.owner.size.y));
+        const tongueTip = tongueBase.clone().add(this.dir.normalized().scale(-this.owner.size.y * 0.5));
         this.tongueTipAABB = new AABB(tongueTip, new Vec2(5, 5)); // Set the AABB size as you see fit
 
         // Set the collision shape of the tongue - these values are probably wrong
@@ -112,6 +114,8 @@ export default class TongueBehavior implements AI {
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case HW3Events.TONGUE_WALL_COLLISION: {
+                console.log("IT COLLIDEDDDDDDDDDDDD")
+
                 this.handleTongueWallCollision();
                 break;
             }
@@ -136,6 +140,8 @@ export default class TongueBehavior implements AI {
         // but just copying hw2 for now to try to get something rendered first
         // this.owner.position.copy(Vec2.ZERO);
         // this.owner.visible = false;
+
+        console.log("IT COLLIDEDDDDDDDDDDDD")
     }
 
     protected handlePlayerPosUpdate(pos: Vec2): void {
@@ -145,7 +151,7 @@ export default class TongueBehavior implements AI {
         this.owner.position.copy(tongueBase);
 
         // Calculate the position of the tongue tip
-        const tongueTipPos = tongueBase.clone().add(this.dir.normalized().scale(this.owner.size.y));
+        const tongueTipPos = tongueBase.clone().add(this.dir.normalized().scale(-this.owner.size.y * .5));
         this.tongueTipAABB.center.copy(tongueTipPos);
     }
 
@@ -203,7 +209,7 @@ export default class TongueBehavior implements AI {
             this.owner.position.add(movement);
 
             // Update tongue tip AABB
-            const tongueTipPos = this.owner.position.clone().add(this.dir.normalized().scale(this.owner.size.y));
+            const tongueTipPos = this.owner.position.clone().add(this.dir.normalized().scale(-this.owner.size.y * 0.5));
             this.tongueTipAABB.center.copy(tongueTipPos);
         }
     }

@@ -132,15 +132,20 @@ export default abstract class HW3Level extends Scene {
                 HW3PhysicsGroups.PLAYER, 
                 HW3PhysicsGroups.FIREBALL, 
                 HW3PhysicsGroups.FIRE_PARTICLE,
-                HW3PhysicsGroups.DESTRUCTABLE
+                HW3PhysicsGroups.DESTRUCTABLE,
+                HW3PhysicsGroups.TONGUE_COLLIDABLE,
+                HW3PhysicsGroups.TONGUE
+
             ],
             collisions:
             [
-                [0, 1, 1, 1, 0],
-                [1, 0, 0, 0, 1],
-                [1, 0, 0, 0, 1],
-                [1, 0, 0, 0, 1],
-                [0, 1, 1, 1, 0],
+                [0, 1, 1, 1, 0, 0, 0],
+                [1, 0, 0, 0, 1, 0, 0],
+                [1, 0, 0, 0, 1, 0, 0],
+                [1, 0, 0, 0, 1, 0, 0],
+                [0, 1, 1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 1, 1, 0]
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
@@ -407,6 +412,8 @@ export default abstract class HW3Level extends Scene {
             this.collidable.addPhysics();
             this.collidable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
             this.collidable.setTrigger(HW3PhysicsGroups.FIREBALL, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+            this.collidable.setTrigger(HW3PhysicsGroups.TONGUE, HW3Events.TONGUE_WALL_COLLISION, null);
+
         }
 
         // this.tongueCollidable.addPhysics();
@@ -545,6 +552,10 @@ export default abstract class HW3Level extends Scene {
         this.tongue.color = Color.RED;
         this.tongue.visible = false;
         this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
+        
+        //Attempt to add physics
+        this.tongue.addPhysics();
+        this.tongue.setGroup(HW3PhysicsGroups.TONGUE)
 
         // initialize Ice Blast
         this.iceParticleSystem = new IceParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
