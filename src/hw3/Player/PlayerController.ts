@@ -18,6 +18,7 @@ import Dead from "./PlayerStates/Dead";
 import Receiver from '../../Wolfie2D/Events/Receiver';
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import {SpellTypes} from "./SpellTypes";
+import IceParticles from "./IceParticles";
 
 /**
  * Animation keys for the player spritesheet
@@ -70,6 +71,8 @@ export default class PlayerController extends StateMachineAI {
     protected fireParticles: Fireball;
     protected fireProjectile: Fireball;
 
+    protected iceParticles: IceParticles;
+
     protected selectedSpell: string;
 
     protected receiver: Receiver;
@@ -80,6 +83,7 @@ export default class PlayerController extends StateMachineAI {
         //this.weapon = options.weaponSystem;
         this.fireParticles = options.fireParticleSystem;
         this.fireProjectile = options.fireballSystem;
+        this.iceParticles = options.iceParticleSystem;
 
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
         this.speed = 400;
@@ -151,7 +155,7 @@ export default class PlayerController extends StateMachineAI {
         // Update the rotation to apply the particles velocity vector
         //this.fireParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
         this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
-
+        this.iceParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
         // Attack
         if (Input.isMousePressed()) {
@@ -208,7 +212,12 @@ export default class PlayerController extends StateMachineAI {
     }
 
     protected iceAttack(): void {
-
+        if (!this.iceParticles.isSystemRunning()) {
+            // Update the rotation to apply the particles velocity vector
+            this.iceParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+            // Start the particle system at the player's current position
+            this.iceParticles.startSystem(500, 0, this.owner.position);
+        }
     }
 
     public get velocity(): Vec2 { return this._velocity; }

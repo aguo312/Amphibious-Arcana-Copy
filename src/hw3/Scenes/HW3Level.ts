@@ -29,6 +29,7 @@ import TongueBehavior from "../Nodes/TongueBehavior";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import TongueShaderType from "../Shaders/TongueShaderType";
 import { SpellTypes } from "../Player/SpellTypes";
+import IceParticles from "../Player/IceParticles";
 
 /**
  * A const object for the layer names
@@ -53,11 +54,14 @@ export default abstract class HW3Level extends Scene {
 
 
     /** The particle system used for the fireball's explosion */
-    protected fireParticleSystem: FireParticles
+    protected fireParticleSystem: FireParticles;
 
     /** The fireball itself */
-    protected fireballSystem: Fireball
+    protected fireballSystem: Fireball;
     protected fireballTimer: Timer;
+
+    /** The particle system used for the ice blast */
+    protected iceParticleSystem: IceParticles;
 
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
@@ -539,6 +543,10 @@ export default abstract class HW3Level extends Scene {
         this.tongue.color = Color.RED;
         this.tongue.visible = false;
         this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
+
+        // initialize Ice Blast
+        this.iceParticleSystem = new IceParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
+        this.iceParticleSystem.initializePool(this, HW3Layers.PRIMARY);
     }
     /**
      * Initializes the player, setting the player's initial position to the given position.
@@ -547,6 +555,9 @@ export default abstract class HW3Level extends Scene {
     protected initializePlayer(key: string): void {
         if (this.fireParticleSystem === undefined) {
             throw new Error("Fire particle system must be initialized before initializing the player!");
+        }
+        if (this.iceParticleSystem === undefined) {
+            throw new Error("Ice particle system must be initialized before initializing the player!");
         }
         if (this.playerSpawn === undefined) {
             throw new Error("Player spawn must be set before initializing the player!");
@@ -600,6 +611,7 @@ export default abstract class HW3Level extends Scene {
         this.player.addAI(PlayerController, { 
             fireParticleSystem: this.fireParticleSystem, // TODO do we need these in HW3Level?
             fireballSystem: this.fireballSystem,
+            iceParticleSystem: this.iceParticleSystem,
             tilemap: "Destructable" 
         });
     }
