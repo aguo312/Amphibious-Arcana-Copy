@@ -71,6 +71,9 @@ export default class Level2 extends HW3Level {
     public startScene(): void {
         super.startScene();
         this.nextLevel = MainMenu;
+        if (this.nextLevelNum < 3) {
+            this.nextLevelNum = 3;
+        }
     }
 
 }
