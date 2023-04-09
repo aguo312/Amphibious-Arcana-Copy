@@ -107,8 +107,6 @@ export default class TongueBehavior implements AI {
         // Set the collision shape of the tongue - these values are probably wrong
         // TODO Make AABB just the tip of the tongue so rotation doesn't matter?
 
-        console.log("ACTIVATING")
-
     }
 
     public handleEvent(event: GameEvent): void {
@@ -122,7 +120,6 @@ export default class TongueBehavior implements AI {
                 break;
             }
             case HW3Events.SHOOT_TONGUE: {
-                console.log("YOOOO GOT SHOOT")
                 if(!this.tongueActive){
                     this.resetState();
                 }
