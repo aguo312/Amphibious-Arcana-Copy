@@ -5,6 +5,8 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
+import Level1 from "./HW3Level1";
+import Level2 from "./HW3Level2";
 import MainMenu from "./MainMenu";
 
 
@@ -46,13 +48,13 @@ export default class LevelSelect extends Scene {
 
         // Create the individual level buttons
         const level1Btn = this.createButton("Level 1", new Vec2(leftColX, size.y));
-        const level2Btn = this.createButton("Level 2", new Vec2(rightColX, size.y));
+        const level2Btn = MainMenu.levelCounter >= 2 ? this.createButton("Level 2", new Vec2(rightColX, size.y)) : this.createButton("Locked", new Vec2(rightColX, size.y));
 
-        const level3Btn = this.createButton("Level 3", new Vec2(leftColX, size.y + yOffset));
-        const level4Btn = this.createButton("Level 4", new Vec2(rightColX, size.y + yOffset));
+        const level3Btn = MainMenu.levelCounter >= 3 ? this.createButton("Level 3", new Vec2(leftColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(leftColX, size.y + yOffset));
+        const level4Btn = MainMenu.levelCounter >= 4 ? this.createButton("Level 4", new Vec2(rightColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(rightColX, size.y + yOffset));
 
-        const level5Btn = this.createButton("Level 5", new Vec2(leftColX, size.y + yOffset*2));
-        const level6Btn = this.createButton("Level 6", new Vec2(rightColX, size.y + yOffset*2));
+        const level5Btn = MainMenu.levelCounter >= 5 ? this.createButton("Level 5", new Vec2(leftColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(leftColX, size.y + yOffset*2));
+        const level6Btn = MainMenu.levelCounter >= 6 ? this.createButton("Level 6", new Vec2(rightColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(rightColX, size.y + yOffset*2));
 
         // When the play button is clicked, go to the next scene
         backBtn.onClick = () => {
@@ -61,26 +63,42 @@ export default class LevelSelect extends Scene {
 
         level1Btn.onClick = () => {
             // TODO
+            this.sceneManager.changeToScene(Level1);
         }
 
         level2Btn.onClick = () => {
             // TODO
+            if (MainMenu.levelCounter >= 2) {
+                
+            }
         }
 
         level3Btn.onClick = () => {
             // TODO
+            if (MainMenu.levelCounter >= 3) {
+                
+            }
         }
 
         level4Btn.onClick = () => {
             // TODO
+            if (MainMenu.levelCounter >= 4) {
+                
+            }
         }
 
         level5Btn.onClick = () => {
             // TODO
+            if (MainMenu.levelCounter >= 5) {
+                
+            }
         }
 
         level6Btn.onClick = () => {
             // TODO
+            if (MainMenu.levelCounter >= 6) {
+                
+            }
         }
 
         // Scene has started, so start playing music

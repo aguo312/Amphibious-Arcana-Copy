@@ -20,6 +20,7 @@ export default class MainMenu extends Scene {
 
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
     public static readonly MUSIC_PATH = "hw4_assets/music/menu.mp3";
+    public static levelCounter = 1;
 
     public loadScene(): void {
         // Load the menu song
@@ -86,6 +87,7 @@ export default class MainMenu extends Scene {
 
     public unloadScene(): void {
         // The scene is being destroyed, so we can stop playing the song
+        this.load.keepAudio(MainMenu.MUSIC_KEY)
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: MainMenu.MUSIC_KEY});
     }
 }

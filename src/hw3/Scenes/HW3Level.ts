@@ -30,6 +30,7 @@ import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import TongueShaderType from "../Shaders/TongueShaderType";
 import { SpellTypes } from "../Player/SpellTypes";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
+import IceParticles from "../Player/IceParticles";
 
 /**
  * A const object for the layer names
@@ -54,18 +55,21 @@ export default abstract class HW3Level extends Scene {
 
 
     /** The particle system used for the fireball's explosion */
-    protected fireParticleSystem: FireParticles
+    protected fireParticleSystem: FireParticles;
 
     /** The fireball itself */
-    protected fireballSystem: Fireball
+    protected fireballSystem: Fireball;
     protected fireballTimer: Timer;
+
+    /** The particle system used for the ice blast */
+    protected iceParticleSystem: IceParticles;
 
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
 
     /** The key for the spells sprite */
     protected spellsSpriteKey: string;
-    
+
     /** The animated sprite that is the player */
     protected player: AnimatedSprite;
 
@@ -97,6 +101,7 @@ export default abstract class HW3Level extends Scene {
 
     protected levelEndArea: Rect;
     protected nextLevel: new (...args: any) => Scene;
+    protected nextLevelNum: number;
     protected levelEndTimer: Timer;
     protected levelEndLabel: Label;
 
@@ -231,6 +236,7 @@ export default abstract class HW3Level extends Scene {
             // When the level ends, change the scene to the next level
             case HW3Events.LEVEL_END: {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+                MainMenu.levelCounter = this.nextLevelNum;
                 this.sceneManager.changeToScene(this.nextLevel);
                 break;
             }
@@ -282,7 +288,7 @@ export default abstract class HW3Level extends Scene {
 
     protected spawnTongue(pos: Vec2, dir: Vec2): void {
         // TODO maybe use GameNode?
-        if (this.tongue) {
+        if (this.tongue && !this.tongue.visible) {
             this.tongue.visible = true;
             this.tongue.setAIActive(true, {src: pos, dir: dir});
         }
@@ -548,6 +554,10 @@ export default abstract class HW3Level extends Scene {
         this.tongue.color = Color.RED;
         this.tongue.visible = false;
         this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
+
+        // initialize Ice Blast
+        this.iceParticleSystem = new IceParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
+        this.iceParticleSystem.initializePool(this, HW3Layers.PRIMARY);
     }
     /**
      * Initializes the player, setting the player's initial position to the given position.
@@ -556,6 +566,9 @@ export default abstract class HW3Level extends Scene {
     protected initializePlayer(key: string): void {
         if (this.fireParticleSystem === undefined) {
             throw new Error("Fire particle system must be initialized before initializing the player!");
+        }
+        if (this.iceParticleSystem === undefined) {
+            throw new Error("Ice particle system must be initialized before initializing the player!");
         }
         if (this.playerSpawn === undefined) {
             throw new Error("Player spawn must be set before initializing the player!");
@@ -609,7 +622,8 @@ export default abstract class HW3Level extends Scene {
         this.player.addAI(PlayerController, { 
             fireParticleSystem: this.fireParticleSystem, // TODO do we need these in HW3Level?
             fireballSystem: this.fireballSystem,
-            tilemap: "Destructable" 
+            iceParticleSystem: this.iceParticleSystem,
+            tilemap: "Destructable"
         });
     }
     /**
