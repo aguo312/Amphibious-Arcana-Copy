@@ -29,6 +29,7 @@ import TongueBehavior from "../Nodes/TongueBehavior";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import TongueShaderType from "../Shaders/TongueShaderType";
 import { SpellTypes } from "../Player/SpellTypes";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import IceParticles from "../Player/IceParticles";
 
 /**
@@ -65,24 +66,27 @@ export default abstract class HW3Level extends Scene {
 
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
-    
+
+    /** The key for the spells sprite */
+    protected spellsSpriteKey: string;
+
     /** The animated sprite that is the player */
     protected player: AnimatedSprite;
+
+    /** The sprite that is the fire icon */
+    protected fireIcon: Sprite;
+    protected tongueIcon: Sprite;
+    protected iceIcon: Sprite;
 
     /** The player's spawn position */
     protected playerSpawn: Vec2;
 
     private tongue: Graphic;
 
-    private healthLabel: Label;
 	private healthBar: Label;
 	private healthBarBg: Label;
 
-    private spellBar: Label;
     private spellBarSelect: Label;
-    private tongueLabel: Label;
-    private fireLabel: Label;
-    private iceLabel: Label;
 
     private tongueSelectPos: Vec2;
     private fireballSelectPos: Vec2;
@@ -125,6 +129,8 @@ export default abstract class HW3Level extends Scene {
     protected jumpAudioKey: string;
     protected tileDestroyedAudioKey: string;
 
+    protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
+
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, {...options, physics: {
             groupNames: [
@@ -150,9 +156,9 @@ export default abstract class HW3Level extends Scene {
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
 
-        this.tongueSelectPos = new Vec2(24, 25.5);
-        this.fireballSelectPos = new Vec2(24 + 150/12, 25.5);
-        this.iceSelectPos = new Vec2(24 + 150/6, 25.5);
+        this.tongueSelectPos = new Vec2(13.3, 25.5);
+        this.fireballSelectPos = new Vec2(24.3, 25.5);
+        this.iceSelectPos = new Vec2(35.3, 25.5);
         this.selectedSpell = SpellTypes.TONGUE;
     }
 
@@ -440,42 +446,45 @@ export default abstract class HW3Level extends Scene {
     protected initializeUI(): void {
 
         // HP Label
-		this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(10, 15), text: "HP "});
-		this.healthLabel.size.set(300, 30);
-		this.healthLabel.fontSize = 24;
-		this.healthLabel.font = "Courier";
+		// this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(10, 15), text: "HP "});
+		// this.healthLabel.size.set(300, 30);
+		// this.healthLabel.fontSize = 24;
+		// this.healthLabel.font = "Courier";
 
         // HealthBar
-		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(55, 15), text: ""});
+		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(45, 15), text: ""});
 		this.healthBar.size = new Vec2(300, 25);
 		this.healthBar.backgroundColor = Color.GREEN;
+        this.healthBar.borderRadius = 0;
 
         // HealthBar Border
-		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(55, 15), text: ""});
+		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(45, 15), text: ""});
 		this.healthBarBg.size = new Vec2(300, 25);
 		this.healthBarBg.borderColor = Color.BLACK;
+        this.healthBarBg.borderRadius = 0;
+        this.healthBarBg.borderWidth = 2;
 
-        // Spellbar
-        this.spellBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(55/1.5, 25), text: ""});
-        this.spellBar.size = new Vec2(150, 35);
-        this.spellBar.backgroundColor = new Color(54, 69, 67, 1);
+        // The tongue icon sprite
+        this.tongueIcon = this.add.sprite('tongueIcon', HW3Layers.UI);
+        this.tongueIcon.scale.set(0.7, 0.7);
+        this.tongueIcon.position.copy(this.tongueSelectPos);
+
+        // The fire icon sprite
+        this.fireIcon = this.add.sprite('fireIcon', HW3Layers.UI);
+        this.fireIcon.scale.set(0.7, 0.7);
+        this.fireIcon.position.copy(this.fireballSelectPos);
+
+        // The ice icon sprite
+        this.iceIcon = this.add.sprite('iceIcon', HW3Layers.UI);
+        this.iceIcon.scale.set(0.7, 0.7);
+        this.iceIcon.position.copy(this.iceSelectPos);
 
         // Spellbar highlighted spell border thing
-        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(24, 25), text: ""});
-        this.spellBarSelect.size = new Vec2(150/3, 35);
+        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.tongueSelectPos, text: ""});
+        this.spellBarSelect.size = new Vec2(45, 45);
         this.spellBarSelect.borderColor = Color.YELLOW;
-
-        // Tongue label
-        this.tongueLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.tongueSelectPos, text: "T"});
-        this.tongueLabel.size = new Vec2(20, 20);
-
-        // Fire label
-        this.fireLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.fireballSelectPos, text: "F"});
-        this.fireLabel.size = new Vec2(20, 20);
-
-        // Ice label
-        this.iceLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.iceSelectPos, text: "I"});
-        this.iceLabel.size = new Vec2(20, 20);
+        this.spellBarSelect.borderRadius = 0;
+        this.spellBarSelect.borderWidth = 2;
 
         // End of level label (start off screen)
         this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, { position: new Vec2(-300, 100), text: "Level Complete" });
@@ -625,7 +634,7 @@ export default abstract class HW3Level extends Scene {
             fireParticleSystem: this.fireParticleSystem, // TODO do we need these in HW3Level?
             fireballSystem: this.fireballSystem,
             iceParticleSystem: this.iceParticleSystem,
-            tilemap: "Destructable" 
+            tilemap: "Destructable"
         });
     }
     /**
