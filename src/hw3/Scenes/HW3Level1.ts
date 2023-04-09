@@ -15,6 +15,9 @@ export default class Level1 extends HW3Level {
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
 
+    public static readonly SPELLS_SPRITE_KEY = "Spells"; // idk why this works
+    public static readonly SPELLS_SPRITE_PATH = "hw4_assets/spritesheets/Spells.json";
+
     public static readonly TILEMAP_KEY = "LEVEL1";
     //public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level1.json";
     public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/level1.json";
@@ -48,6 +51,8 @@ export default class Level1 extends HW3Level {
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
         // Set the player's spawn
         this.playerSpawn = Level1.PLAYER_SPAWN;
+        // Set the key for the spells sprite
+        this.spellsSpriteKey = Level1.SPELLS_SPRITE_KEY;
 
         // Music and sound
         this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
@@ -72,10 +77,16 @@ export default class Level1 extends HW3Level {
         this.load.tilemap(this.tilemapKey, Level1.TILEMAP_PATH);
         // Load in the player's sprite
         this.load.spritesheet(this.playerSpriteKey, Level1.PLAYER_SPRITE_PATH);
+        // Load in the spell sprites
+        //this.load.spritesheet(this.spellsSpriteKey, Level1.SPELLS_SPRITE_PATH);
         // Audio and music
         this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
         this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
         this.load.audio(this.tileDestroyedAudioKey, Level1.TILE_DESTROYED_PATH);
+
+        this.load.image('fireIcon', 'hw4_assets/sprites/fire-icon.png');
+        this.load.image('tongueIcon', 'hw4_assets/sprites/tongue-icon.png');
+        this.load.image('iceIcon', 'hw4_assets/sprites/ice-icon.png');
     }
 
     /**
@@ -83,6 +94,7 @@ export default class Level1 extends HW3Level {
      */
     public unloadScene(): void {
         this.load.keepSpritesheet(this.playerSpriteKey);
+        this.load.keepSpritesheet(this.spellsSpriteKey);
         this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.tileDestroyedAudioKey);
