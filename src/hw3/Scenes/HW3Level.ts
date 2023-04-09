@@ -280,7 +280,7 @@ export default abstract class HW3Level extends Scene {
 
     protected spawnTongue(pos: Vec2, dir: Vec2): void {
         // TODO maybe use GameNode?
-        if (this.tongue) {
+        if (this.tongue && !this.tongue.visible) {
             this.tongue.visible = true;
             this.tongue.setAIActive(true, {src: pos, dir: dir});
         }

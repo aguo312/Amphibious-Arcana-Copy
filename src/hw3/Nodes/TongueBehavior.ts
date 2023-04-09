@@ -107,6 +107,7 @@ export default class TongueBehavior implements AI {
         // Set the collision shape of the tongue - these values are probably wrong
         // TODO Make AABB just the tip of the tongue so rotation doesn't matter?
 
+        console.log("ACTIVATING")
 
     }
 
@@ -122,7 +123,9 @@ export default class TongueBehavior implements AI {
             }
             case HW3Events.SHOOT_TONGUE: {
                 console.log("YOOOO GOT SHOOT")
-                this.resetState();
+                if(!this.tongueActive){
+                    this.resetState();
+                }
                 break;
             }
             default: {
@@ -196,6 +199,7 @@ export default class TongueBehavior implements AI {
                     // Hide the tongue and stop updating when fully retracted
                     this.owner.visible = false;
                     this.distanceTraveled = 0;
+                    this.tongueActive = false; 
                     return;
                 }
             }
