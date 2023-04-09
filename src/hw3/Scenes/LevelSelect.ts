@@ -5,6 +5,8 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
+import Level1 from "./HW3Level1";
+import Level2 from "./HW3Level2";
 import MainMenu from "./MainMenu";
 
 
@@ -61,6 +63,7 @@ export default class LevelSelect extends Scene {
 
         level1Btn.onClick = () => {
             // TODO
+            this.sceneManager.changeToScene(Level1);
         }
 
         level2Btn.onClick = () => {
