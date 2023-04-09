@@ -97,6 +97,7 @@ export default abstract class HW3Level extends Scene {
 
     protected levelEndArea: Rect;
     protected nextLevel: new (...args: any) => Scene;
+    protected nextLevelNum: number;
     protected levelEndTimer: Timer;
     protected levelEndLabel: Label;
 
@@ -229,6 +230,7 @@ export default abstract class HW3Level extends Scene {
             // When the level ends, change the scene to the next level
             case HW3Events.LEVEL_END: {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+                MainMenu.levelCounter = this.nextLevelNum;
                 this.sceneManager.changeToScene(this.nextLevel);
                 break;
             }
