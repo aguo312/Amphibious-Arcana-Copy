@@ -16,6 +16,7 @@ export const HW3PhysicsGroups = {
     FIRE_PARTICLE: "FIRE_PARTICLE",
     ICE_PARTICLE: "ICE_PARTICLE",
     TONGUE: "TONGUE",
+    ENEMY: "ENEMY"
 
     
 } as const;

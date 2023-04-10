@@ -19,7 +19,7 @@ export const MenuLayers = {
 export default class MainMenu extends Scene {
 
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
-    public static readonly MUSIC_PATH = "hw4_assets/music/menu.mp3";
+    public static readonly MUSIC_PATH = "hw4_assets/music/menu_concept.wav";
     public static levelCounter = 1;
 
     public loadScene(): void {
@@ -72,7 +72,7 @@ export default class MainMenu extends Scene {
         }
 
         // Scene has started, so start playing music
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
+        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
     }
 
     private createButton(text: String, pos: Vec2): Button {

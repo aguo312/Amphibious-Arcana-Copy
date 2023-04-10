@@ -140,18 +140,21 @@ export default abstract class HW3Level extends Scene {
                 HW3PhysicsGroups.FIRE_PARTICLE,
                 HW3PhysicsGroups.DESTRUCTABLE,
                 HW3PhysicsGroups.TONGUE_COLLIDABLE,
-                HW3PhysicsGroups.TONGUE
-
+                HW3PhysicsGroups.TONGUE,
+                HW3PhysicsGroups.ICE_PARTICLE,
+                HW3PhysicsGroups.ENEMY
             ],
             collisions:
             [
-                [0, 1, 1, 1, 0, 0, 0],
-                [1, 0, 0, 0, 1, 0, 0],
-                [1, 0, 0, 0, 1, 0, 0],
-                [1, 0, 0, 0, 1, 0, 0],
-                [0, 1, 1, 1, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 1],
-                [1, 1, 1, 1, 1, 1, 0]
+                [0, 1, 1, 1, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1],
+                [0, 1, 1, 1, 0, 0, 0, 0, 1],
+                [0, 0, 0, 0, 0, 0, 1, 0, 1],
+                [1, 1, 1, 1, 1, 1, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 0, 0, 1]
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
@@ -562,7 +565,7 @@ export default abstract class HW3Level extends Scene {
         this.tongue.visible = false;
         this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
         
-        //Attempt to add physics
+        //Attempt to add physics to the tongue
         this.tongue.addPhysics();
         this.tongue.setGroup(HW3PhysicsGroups.TONGUE)
 
