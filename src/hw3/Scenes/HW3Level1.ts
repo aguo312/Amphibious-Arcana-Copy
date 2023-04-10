@@ -1,10 +1,14 @@
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import HW3Level from "./HW3Level";
+import HW3Level, {HW3Layers} from "./HW3Level";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import HW4Level2 from "./HW3Level2";
+import Label from "../../Wolfie2D/Nodes/UIElements/Label";
+import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import Color from "../../Wolfie2D/Utils/Color";
+import Timer from "../../Wolfie2D/Timing/Timer";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -37,6 +41,8 @@ export default class Level1 extends HW3Level {
     public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
 
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
+    protected tutorialText: Label;
+    protected tutorialTextTimer: Timer;
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
@@ -66,6 +72,20 @@ export default class Level1 extends HW3Level {
 
         // made bigger for testing
         this.levelEndHalfSize = new Vec2(32, 300).mult(this.tilemapScale);
+
+    }
+
+    public initializeUI(): void {
+       super.initializeUI();
+
+       let size = this.viewport.getHalfSize();
+
+        // add random tutorial text
+        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(size.x, 180), text: "Try shooting fire at your feet to jump!"});
+        this.tutorialText.size = new Vec2(300, 25);
+        // this.tutorialText.backgroundColor = Color.BLACK;
+        // this.tutorialText.backgroundColor.a = 10;
+        this.tutorialTextTimer = new Timer(10000, () => this.tutorialText.visible = false, false);
     }
 
     /**
@@ -108,6 +128,7 @@ export default class Level1 extends HW3Level {
 
     public startScene(): void {
         super.startScene();
+        this.tutorialTextTimer.start();
         // Set the next level to be Level2
         this.nextLevel = HW4Level2;
         this.nextLevelNum = 2;

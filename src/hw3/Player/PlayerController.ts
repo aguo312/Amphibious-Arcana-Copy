@@ -102,7 +102,8 @@ export default class PlayerController extends StateMachineAI {
         // Start the player in the Idle state
         this.initialize(PlayerStates.IDLE);
 
-        this.selectedSpell = SpellTypes.TONGUE;
+        // this.selectedSpell = SpellTypes.TONGUE;
+        this.selectedSpell = SpellTypes.FIREBALL;
 
         this.receiver = new Receiver();
         this.receiver.subscribe(HW3Events.PLAYER_FIRE_JUMP);
@@ -205,6 +206,7 @@ export default class PlayerController extends StateMachineAI {
         if (Input.isPressed(HW3Controls.PAUSE)) {
             // TODO: Bring up a menu while pausing the game
             // console.log("pressed pause");
+            this.emitter.fireEvent(HW3Events.PAUSE);
         }
 
 	}

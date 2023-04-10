@@ -6,6 +6,7 @@ import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import MainMenu from "./MainMenu";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 
 
 // Layers for the controls scene
@@ -17,6 +18,7 @@ export default class ControlsScene extends Scene {
 
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
     public static readonly MUSIC_PATH = "hw4_assets/music/menu.mp3";
+    protected gameLogo: Sprite;
 
     public loadScene(): void {
         // Load the menu song
@@ -33,11 +35,15 @@ export default class ControlsScene extends Scene {
         this.viewport.setFocus(size);
         this.viewport.setZoomLevel(1);
 
+        // Add logo
+        this.gameLogo = this.add.sprite("Logo", MenuLayers.MAIN);
+        this.gameLogo.position.set(size.x, size.y - 180); // Set the position of the logo
+        this.gameLogo.scale.set(.25,.25)
         // Create title
-        const title = <Label>this.add.uiElement(UIElementType.LABEL, MenuLayers.MAIN, {
-            position: new Vec2(size.x, size.y - 120), 
-            text: "Amphibious Arcana"
-        });
+        // const title = <Label>this.add.uiElement(UIElementType.LABEL, MenuLayers.MAIN, {
+        //     position: new Vec2(size.x, size.y - 120),
+        //     text: "Amphibious Arcana"
+        // });
 
         // Create controls text
         let i = 1;

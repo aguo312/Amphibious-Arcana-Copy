@@ -159,10 +159,15 @@ export default abstract class HW3Level extends Scene {
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
 
-        this.tongueSelectPos = new Vec2(13.3, 25.5);
-        this.fireballSelectPos = new Vec2(24.3, 25.5);
-        this.iceSelectPos = new Vec2(35.3, 25.5);
-        this.selectedSpell = SpellTypes.TONGUE;
+        // this.tongueSelectPos = new Vec2(13.3, 25.5);
+        // this.fireballSelectPos = new Vec2(24.3, 25.5);
+        // this.iceSelectPos = new Vec2(35.3, 25.5);
+        this.tongueSelectPos = new Vec2(35.3, 25.5);
+        this.fireballSelectPos = new Vec2(13.3, 25.5);
+        this.iceSelectPos = new Vec2(24.3, 25.5);
+
+        // this.selectedSpell = SpellTypes.TONGUE;
+        this.selectedSpell = SpellTypes.FIREBALL;
     }
 
     public loadScene() {
@@ -232,6 +237,11 @@ export default abstract class HW3Level extends Scene {
      */
     protected handleEvent(event: GameEvent): void {
         switch (event.type) {
+            case HW3Events.PAUSE: {
+                // TODO temp
+                this.sceneManager.changeToScene(MainMenu);
+                break;
+            }
             case HW3Events.PLAYER_ENTERED_LEVEL_END: {
                 this.handleEnteredLevelEnd();
                 break;
@@ -276,15 +286,21 @@ export default abstract class HW3Level extends Scene {
             }
             // Handle spell switching
             case HW3Events.SELECT_TONGUE: {
+                // TODO temp because tongue is broken
                 this.handleSelectTongue();
+                // this.handleSelectFireball();
                 break;
             }
             case HW3Events.SELECT_FIREBALL: {
+                // TODO temp because tongue is broken
                 this.handleSelectFireball();
+                // this.handleSelectIce();
                 break;
             }
             case HW3Events.SELECT_ICE: {
+                // TODO temp because tongue is broken
                 this.handleSelectIce();
+                // this.handleSelectTongue();
                 break;
             }
             // case HW3Events.PLAYER_ATTACK: {
@@ -446,6 +462,7 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(HW3Events.SELECT_TONGUE);
         this.receiver.subscribe(HW3Events.SELECT_FIREBALL);
         this.receiver.subscribe(HW3Events.SELECT_ICE);
+        this.receiver.subscribe(HW3Events.PAUSE);
     }
     /**
      * Adds in any necessary UI to the game
@@ -487,7 +504,7 @@ export default abstract class HW3Level extends Scene {
         this.iceIcon.position.copy(this.iceSelectPos);
 
         // Spellbar highlighted spell border thing
-        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.tongueSelectPos, text: ""});
+        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.fireballSelectPos, text: ""});
         this.spellBarSelect.size = new Vec2(45, 45);
         this.spellBarSelect.borderColor = Color.YELLOW;
         this.spellBarSelect.borderRadius = 0;

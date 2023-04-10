@@ -74,6 +74,7 @@ export default class SplashSceen extends Scene {
     public unloadScene(): void {
         // The scene is being destroyed, so we can stop playing the song
         this.load.keepAudio(SplashSceen.MUSIC_KEY)
+        this.load.keepImage('Logo');
         //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: SplashSceen.MUSIC_KEY});
     }
 }

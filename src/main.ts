@@ -15,9 +15,9 @@ import SplashScreen from "./hw3/Scenes/SplashScreen";
             {name: HW3Controls.MOVE_RIGHT, keys: ["d"]},
             {name: HW3Controls.JUMP, keys: ["w", "space"]},
             {name: HW3Controls.ATTACK, keys: ["x"]},
-            {name: HW3Controls.SELECT_TONGUE, keys: ["1"]},
-            {name: HW3Controls.SELECT_FIREBALL, keys: ["2"]},
-            {name: HW3Controls.SELECT_ICE, keys: ["3"]},
+            {name: HW3Controls.SELECT_FIREBALL, keys: ["1"]},
+            {name: HW3Controls.SELECT_ICE, keys: ["2"]},
+            {name: HW3Controls.SELECT_TONGUE, keys: ["3"]},
             {name: HW3Controls.PAUSE, keys: ["escape"]}
         ],
         useWebGL: false,                        // Tell the game we want to use webgl

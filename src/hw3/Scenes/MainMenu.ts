@@ -9,6 +9,7 @@ import Level1 from "./HW3Level1";
 import LevelSelect from "./LevelSelect";
 import ControlsScene from "./ControlsScene";
 import HelpScene from "./HelpScene";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 
 
 // Layers for the main menu scene
@@ -22,6 +23,7 @@ export default class MainMenu extends Scene {
     public static readonly MUSIC_PATH = "hw4_assets/music/menu_concept.wav";
     public static LEVEL_COUNTER = 1;
     public static GAME_PLAYING = false;
+    protected gameLogo: Sprite;
 
     public loadScene(): void {
         // Load the menu song
@@ -37,23 +39,24 @@ export default class MainMenu extends Scene {
         this.viewport.setFocus(size);
         this.viewport.setZoomLevel(1);
 
-        // Create title
-        let title = <Label>this.add.uiElement(UIElementType.LABEL, MenuLayers.MAIN, {
-            position: new Vec2(size.x, size.y - 120), 
-            text: "Amphibious Arcana"
-        });
+        let yPos = size.y + 100;
+
+        // Add logo
+        this.gameLogo = this.add.sprite("Logo", MenuLayers.MAIN);
+        this.gameLogo.position.set(size.x, size.y - 100); // Set the position of the logo
+        this.gameLogo.scale.set(.25,.25)
 
         // Create a play button
-        let playBtn = this.createButton("Play Game", new Vec2(size.x, size.y));
+        let playBtn = this.createButton("Play Game", new Vec2(size.x, yPos));
 
         // Create level select button
-        let levelSelectBtn = this.createButton("Level Select", new Vec2(size.x, size.y + yOffset));
+        let levelSelectBtn = this.createButton("Level Select", new Vec2(size.x, yPos + yOffset));
 
         // Create controls button
-        let controlsBtn = this.createButton("Controls", new Vec2(size.x, size.y + yOffset*2));
+        let controlsBtn = this.createButton("Controls", new Vec2(size.x, yPos + yOffset*2));
 
         // Create help button
-        let helpBtn = this.createButton("Help", new Vec2(size.x, size.y + yOffset*3));
+        let helpBtn = this.createButton("Help", new Vec2(size.x, yPos + yOffset*3));
 
         // When the play button is clicked, go to the next scene
         playBtn.onClick = () => {

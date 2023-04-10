@@ -8,6 +8,7 @@ import Color from "../../Wolfie2D/Utils/Color";
 import Level1 from "./HW3Level1";
 import Level2 from "./HW3Level2";
 import MainMenu from "./MainMenu";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 
 
 // Layers for the level select scene
@@ -19,6 +20,7 @@ export default class LevelSelect extends Scene {
 
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
     public static readonly MUSIC_PATH = "hw4_assets/music/menu.mp3";
+    protected gameLogo: Sprite;
 
     public loadScene(): void {
         // Load the menu song
@@ -37,24 +39,25 @@ export default class LevelSelect extends Scene {
         this.viewport.setFocus(size);
         this.viewport.setZoomLevel(1);
 
-        // Create title
-        const title = <Label>this.add.uiElement(UIElementType.LABEL, MenuLayers.MAIN, {
-            position: new Vec2(size.x, size.y - 120), 
-            text: "Amphibious Arcana"
-        });
+        // Add logo
+        this.gameLogo = this.add.sprite("Logo", MenuLayers.MAIN);
+        this.gameLogo.position.set(size.x, size.y - 100); // Set the position of the logo
+        this.gameLogo.scale.set(.25,.25)
 
         // Create a back button
         const backBtn = this.createButton("Back", new Vec2(size.x, 2*size.y - 60));
 
+        let yPos = size.y + 100;
+
         // Create the individual level buttons
-        const level1Btn = this.createButton("Level 1", new Vec2(leftColX, size.y));
-        const level2Btn = MainMenu.LEVEL_COUNTER >= 2 ? this.createButton("Level 2", new Vec2(rightColX, size.y)) : this.createButton("Locked", new Vec2(rightColX, size.y));
+        const level1Btn = this.createButton("Level 1", new Vec2(leftColX, yPos));
+        const level2Btn = MainMenu.LEVEL_COUNTER >= 2 ? this.createButton("Level 2", new Vec2(rightColX, size.y)) : this.createButton("Locked", new Vec2(rightColX, yPos));
 
-        const level3Btn = MainMenu.LEVEL_COUNTER >= 3 ? this.createButton("Level 3", new Vec2(leftColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(leftColX, size.y + yOffset));
-        const level4Btn = MainMenu.LEVEL_COUNTER >= 4 ? this.createButton("Level 4", new Vec2(rightColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(rightColX, size.y + yOffset));
+        const level3Btn = MainMenu.LEVEL_COUNTER >= 3 ? this.createButton("Level 3", new Vec2(leftColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(leftColX, yPos + yOffset));
+        const level4Btn = MainMenu.LEVEL_COUNTER >= 4 ? this.createButton("Level 4", new Vec2(rightColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(rightColX, yPos + yOffset));
 
-        const level5Btn = MainMenu.LEVEL_COUNTER >= 5 ? this.createButton("Level 5", new Vec2(leftColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(leftColX, size.y + yOffset*2));
-        const level6Btn = MainMenu.LEVEL_COUNTER >= 6 ? this.createButton("Level 6", new Vec2(rightColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(rightColX, size.y + yOffset*2));
+        const level5Btn = MainMenu.LEVEL_COUNTER >= 5 ? this.createButton("Level 5", new Vec2(leftColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(leftColX, yPos + yOffset*2));
+        const level6Btn = MainMenu.LEVEL_COUNTER >= 6 ? this.createButton("Level 6", new Vec2(rightColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(rightColX, yPos + yOffset*2));
 
         // When the play button is clicked, go to the next scene
         backBtn.onClick = () => {
