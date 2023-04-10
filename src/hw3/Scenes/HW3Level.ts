@@ -244,7 +244,7 @@ export default abstract class HW3Level extends Scene {
             // When the level ends, change the scene to the next level
             case HW3Events.LEVEL_END: {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
-                MainMenu.levelCounter = this.nextLevelNum;
+                MainMenu.LEVEL_COUNTER = this.nextLevelNum;
                 this.sceneManager.changeToScene(this.nextLevel);
                 break;
             }
@@ -260,7 +260,9 @@ export default abstract class HW3Level extends Scene {
                 break;
             }
             case HW3Events.PLAYER_DEAD: {
+                MainMenu.GAME_PLAYING = false;
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+                this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY});
                 this.sceneManager.changeToScene(MainMenu);
                 break;
             }

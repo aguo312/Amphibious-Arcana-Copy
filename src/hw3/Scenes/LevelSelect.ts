@@ -48,13 +48,13 @@ export default class LevelSelect extends Scene {
 
         // Create the individual level buttons
         const level1Btn = this.createButton("Level 1", new Vec2(leftColX, size.y));
-        const level2Btn = MainMenu.levelCounter >= 2 ? this.createButton("Level 2", new Vec2(rightColX, size.y)) : this.createButton("Locked", new Vec2(rightColX, size.y));
+        const level2Btn = MainMenu.LEVEL_COUNTER >= 2 ? this.createButton("Level 2", new Vec2(rightColX, size.y)) : this.createButton("Locked", new Vec2(rightColX, size.y));
 
-        const level3Btn = MainMenu.levelCounter >= 3 ? this.createButton("Level 3", new Vec2(leftColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(leftColX, size.y + yOffset));
-        const level4Btn = MainMenu.levelCounter >= 4 ? this.createButton("Level 4", new Vec2(rightColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(rightColX, size.y + yOffset));
+        const level3Btn = MainMenu.LEVEL_COUNTER >= 3 ? this.createButton("Level 3", new Vec2(leftColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(leftColX, size.y + yOffset));
+        const level4Btn = MainMenu.LEVEL_COUNTER >= 4 ? this.createButton("Level 4", new Vec2(rightColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(rightColX, size.y + yOffset));
 
-        const level5Btn = MainMenu.levelCounter >= 5 ? this.createButton("Level 5", new Vec2(leftColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(leftColX, size.y + yOffset*2));
-        const level6Btn = MainMenu.levelCounter >= 6 ? this.createButton("Level 6", new Vec2(rightColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(rightColX, size.y + yOffset*2));
+        const level5Btn = MainMenu.LEVEL_COUNTER >= 5 ? this.createButton("Level 5", new Vec2(leftColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(leftColX, size.y + yOffset*2));
+        const level6Btn = MainMenu.LEVEL_COUNTER >= 6 ? this.createButton("Level 6", new Vec2(rightColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(rightColX, size.y + yOffset*2));
 
         // When the play button is clicked, go to the next scene
         backBtn.onClick = () => {
@@ -63,46 +63,48 @@ export default class LevelSelect extends Scene {
 
         level1Btn.onClick = () => {
             // TODO
+            MainMenu.GAME_PLAYING = true;
             this.sceneManager.changeToScene(Level1);
         }
 
         level2Btn.onClick = () => {
             // TODO
-            if (MainMenu.levelCounter >= 2) {
-                
+            if (MainMenu.LEVEL_COUNTER >= 2) {
+                MainMenu.GAME_PLAYING = true;
+
             }
         }
 
         level3Btn.onClick = () => {
             // TODO
-            if (MainMenu.levelCounter >= 3) {
-                
+            if (MainMenu.LEVEL_COUNTER >= 3) {
+                MainMenu.GAME_PLAYING = true;
             }
         }
 
         level4Btn.onClick = () => {
             // TODO
-            if (MainMenu.levelCounter >= 4) {
-                
+            if (MainMenu.LEVEL_COUNTER >= 4) {
+                MainMenu.GAME_PLAYING = true;
             }
         }
 
         level5Btn.onClick = () => {
             // TODO
-            if (MainMenu.levelCounter >= 5) {
-                
+            if (MainMenu.LEVEL_COUNTER >= 5) {
+                MainMenu.GAME_PLAYING = true;
             }
         }
 
         level6Btn.onClick = () => {
             // TODO
-            if (MainMenu.levelCounter >= 6) {
-                
+            if (MainMenu.LEVEL_COUNTER >= 6) {
+                MainMenu.GAME_PLAYING = true;
             }
         }
 
         // Scene has started, so start playing music
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: LevelSelect.MUSIC_KEY, loop: true, holdReference: true});
+        // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: LevelSelect.MUSIC_KEY, loop: true, holdReference: true});
     }
 
     private createButton(text: String, pos: Vec2): Button {
@@ -118,7 +120,9 @@ export default class LevelSelect extends Scene {
     public unloadScene(): void {
         // The scene is being destroyed, so we can stop playing the song
         // TODO probably only destroy this on level select, and not when going back to main menu
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: LevelSelect.MUSIC_KEY});
+        if (MainMenu.GAME_PLAYING) {
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: LevelSelect.MUSIC_KEY});
+        }
     }
 }
 

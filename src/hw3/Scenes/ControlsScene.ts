@@ -62,7 +62,7 @@ export default class ControlsScene extends Scene {
         }
 
         // Scene has started, so start playing music
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: ControlsScene.MUSIC_KEY, loop: true, holdReference: true});
+        // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: ControlsScene.MUSIC_KEY, loop: true, holdReference: true});
     }
 
     private createLabel(text: String, pos: Vec2): void {
@@ -86,7 +86,7 @@ export default class ControlsScene extends Scene {
     public unloadScene(): void {
         // The scene is being destroyed, so we can stop playing the song
         // TODO probably only destroy this on level select, and not when going back to main menu
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: ControlsScene.MUSIC_KEY});
+        // this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: ControlsScene.MUSIC_KEY});
     }
 }
 

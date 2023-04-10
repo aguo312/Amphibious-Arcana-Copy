@@ -20,7 +20,8 @@ export default class MainMenu extends Scene {
 
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
     public static readonly MUSIC_PATH = "hw4_assets/music/menu_concept.wav";
-    public static levelCounter = 1;
+    public static LEVEL_COUNTER = 1;
+    public static GAME_PLAYING = false;
 
     public loadScene(): void {
         // Load the menu song
@@ -56,6 +57,7 @@ export default class MainMenu extends Scene {
 
         // When the play button is clicked, go to the next scene
         playBtn.onClick = () => {
+            MainMenu.GAME_PLAYING = true;
             this.sceneManager.changeToScene(Level1);
         }
 
@@ -87,8 +89,10 @@ export default class MainMenu extends Scene {
 
     public unloadScene(): void {
         // The scene is being destroyed, so we can stop playing the song
-        this.load.keepAudio(MainMenu.MUSIC_KEY)
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: MainMenu.MUSIC_KEY});
+        this.load.keepAudio(MainMenu.MUSIC_KEY);
+        if (MainMenu.GAME_PLAYING) {
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: MainMenu.MUSIC_KEY});
+        }
     }
 }
 
