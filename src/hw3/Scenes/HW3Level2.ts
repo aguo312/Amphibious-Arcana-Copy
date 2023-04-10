@@ -13,9 +13,9 @@ import Level1 from "./HW3Level1";
  */
 export default class Level2 extends HW3Level {
 
-    public static readonly PLAYER_SPAWN = new Vec2(32, 32);
+    public static readonly PLAYER_SPAWN = new Vec2(32, 64);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
-    public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
+    public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
     public static readonly TILEMAP_KEY = "LEVEL2";
     public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level2.json";

@@ -151,7 +151,7 @@ export default abstract class HW3Level extends Scene {
                 [1, 0, 0, 0, 1, 0, 0],
                 [0, 1, 1, 1, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 1, 1, 0]
+                [1, 1, 1, 1, 1, 1, 0]
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
@@ -587,7 +587,7 @@ export default abstract class HW3Level extends Scene {
 
         // Add the player to the scene
         this.player = this.add.animatedSprite(key, HW3Layers.PRIMARY);
-        this.player.scale.set(1, 1);
+        this.player.scale.set(.25, .25);
         this.player.position.copy(this.playerSpawn);
         
         // Give the player physics and setup collision groups and triggers for the player

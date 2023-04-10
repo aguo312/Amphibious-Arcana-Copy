@@ -35,7 +35,10 @@ export default abstract class PlayerState extends State {
 	}
 
 	public update(deltaT: number): void {
-
+        let direction = this.parent.inputDir;
+		if(direction.x !== 0){
+			this.owner.invertX = MathUtils.sign(direction.x) < 0;
+		}
     }
 
     public abstract onExit(): Record<string, any>;

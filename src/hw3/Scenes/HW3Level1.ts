@@ -13,7 +13,7 @@ export default class Level1 extends HW3Level {
 
     public static readonly PLAYER_SPAWN = new Vec2(50, 480);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
-    public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Hero.json";
+    public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
     public static readonly SPELLS_SPRITE_KEY = "Spells"; // idk why this works
     public static readonly SPELLS_SPRITE_PATH = "hw4_assets/spritesheets/Spells.json";
