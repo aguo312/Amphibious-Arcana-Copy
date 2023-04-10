@@ -17,6 +17,9 @@ export default class Level2 extends HW3Level {
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
+    public static readonly SPELLS_SPRITE_KEY = "Spells"; // idk why this works
+    public static readonly SPELLS_SPRITE_PATH = "hw4_assets/spritesheets/Spells.json";
+
     public static readonly TILEMAP_KEY = "LEVEL2";
     public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level2.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
@@ -49,6 +52,8 @@ export default class Level2 extends HW3Level {
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
         // Set the player's spawn
         this.playerSpawn = Level2.PLAYER_SPAWN;
+        // Set the key for the spells sprite
+        this.spellsSpriteKey = Level1.SPELLS_SPRITE_KEY;
 
         // Music and sound
         this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
@@ -58,7 +63,6 @@ export default class Level2 extends HW3Level {
         // Level end size and position
         this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
         this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
-
     }
     /**
      * Load in resources for level 2.

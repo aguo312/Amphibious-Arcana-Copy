@@ -24,7 +24,7 @@ export default class MainMenu extends Scene {
 
     public loadScene(): void {
         // Load the menu song
-        this.load.audio(MainMenu.MUSIC_KEY, MainMenu.MUSIC_PATH);
+        //this.load.audio(MainMenu.MUSIC_KEY, MainMenu.MUSIC_PATH);
     }
 
     public startScene(): void {
