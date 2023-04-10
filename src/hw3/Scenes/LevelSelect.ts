@@ -71,7 +71,7 @@ export default class LevelSelect extends Scene {
             // TODO
             if (MainMenu.LEVEL_COUNTER >= 2) {
                 MainMenu.GAME_PLAYING = true;
-
+                this.sceneManager.changeToScene(Level2);
             }
         }
 
