@@ -110,9 +110,7 @@ export default class Level1 extends HW3Level {
         super.startScene();
         // Set the next level to be Level2
         this.nextLevel = HW4Level2;
-        if (this.nextLevelNum < 2) {
-            this.nextLevelNum = 2;
-        }
+        this.nextLevelNum = 2;
     }
 
     /**
