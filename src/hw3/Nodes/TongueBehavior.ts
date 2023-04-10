@@ -95,17 +95,16 @@ export default class TongueBehavior implements AI {
         this.owner.size = new Vec2(3, 1);
 
         // Set the position of the tongue
-        this.owner.position = this.src.clone().add(this.owner.size);
-        this.owner.rotation = Vec2.RIGHT.angleToCCW(this.dir) - Math.PI/2;
-
-        // Calculate the position of the tongue tip
         const tongueBase = this.src.clone().add(this.dir.normalized().scale(this.owner.size.y * 0.5));
         this.owner.position.copy(tongueBase);
+        this.owner.rotation = Vec2.RIGHT.angleToCCW(this.dir) - Math.PI/2;
 
-        // Calculate the position of the tongue tip
-        const tongueTip = tongueBase.clone().add(this.dir.normalized().scale(-this.owner.size.y * 0.5));
-        this.tongueTipAABB = new AABB(tongueTip, new Vec2(5, 5)); // Set the AABB size as you see fit
+        this.owner.boundary.sweep(new Vec2(5, 5),this.src, this.dir)
 
+        this.owner.addPhysics()
+        this.owner.setGroup(HW3PhysicsGroups.TONGUE)
+
+        //this.tongueTipAABB = new AABB(this.owner.position.clone().add(this.dir.normalized().scale(this.owner.size.y/2)), new Vec2(this.owner.size.x/2, this.owner.size.y/2));
         // Set the collision shape of the tongue - these values are probably wrong
         // TODO Make AABB just the tip of the tongue so rotation doesn't matter?
 
@@ -146,13 +145,10 @@ export default class TongueBehavior implements AI {
 
     protected handlePlayerPosUpdate(pos: Vec2): void {
 
-        // Calculate the position of the tongue tip
+        // Calculate the position of the tongue base
         const tongueBase = pos.clone().add(this.dir.normalized().scale(this.owner.size.y * 0.5));
         this.owner.position.copy(tongueBase);
 
-        // Calculate the position of the tongue tip
-        const tongueTipPos = tongueBase.clone().add(this.dir.normalized().scale(-this.owner.size.y * .5));
-        this.tongueTipAABB.center.copy(tongueTipPos);
     }
 
 
@@ -174,11 +170,7 @@ export default class TongueBehavior implements AI {
 
         // Only update the tongue if it's visible
         if (this.owner.visible) {
-            // Move tongue in target direction
-            //this.owner.position.add(new Vec2(1, 1));
-            
             // TODO need to set up collision somewhere for this
-
             let movement: Vec2;
 
             if (this.state === TongueState.EXTENDING) {
@@ -207,10 +199,6 @@ export default class TongueBehavior implements AI {
                 }
             }
             this.owner.position.add(movement);
-
-            // Update tongue tip AABB
-            const tongueTipPos = this.owner.position.clone().add(this.dir.normalized().scale(-this.owner.size.y * 0.5));
-            this.tongueTipAABB.center.copy(tongueTipPos);
         }
     }
 }
