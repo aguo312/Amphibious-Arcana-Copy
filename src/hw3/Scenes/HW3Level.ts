@@ -239,6 +239,9 @@ export default abstract class HW3Level extends Scene {
         switch (event.type) {
             case HW3Events.PAUSE: {
                 // TODO temp
+                MainMenu.GAME_PLAYING = false;
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+                this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
                 this.sceneManager.changeToScene(MainMenu);
                 break;
             }
