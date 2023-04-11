@@ -51,13 +51,13 @@ export default class LevelSelect extends Scene {
 
         // Create the individual level buttons
         const level1Btn = this.createButton("Level 1", new Vec2(leftColX, yPos));
-        const level2Btn = MainMenu.LEVEL_COUNTER >= 2 ? this.createButton("Level 2", new Vec2(rightColX, size.y)) : this.createButton("Locked", new Vec2(rightColX, yPos));
+        const level2Btn = MainMenu.LEVEL_COUNTER >= 2 ? this.createButton("Level 2", new Vec2(rightColX, yPos)) : this.createButton("Locked", new Vec2(rightColX, yPos));
 
-        const level3Btn = MainMenu.LEVEL_COUNTER >= 3 ? this.createButton("Level 3", new Vec2(leftColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(leftColX, yPos + yOffset));
-        const level4Btn = MainMenu.LEVEL_COUNTER >= 4 ? this.createButton("Level 4", new Vec2(rightColX, size.y + yOffset)) : this.createButton("Locked", new Vec2(rightColX, yPos + yOffset));
+        const level3Btn = MainMenu.LEVEL_COUNTER >= 3 ? this.createButton("Level 3", new Vec2(leftColX, yPos + yOffset)) : this.createButton("Locked", new Vec2(leftColX, yPos + yOffset));
+        const level4Btn = MainMenu.LEVEL_COUNTER >= 4 ? this.createButton("Level 4", new Vec2(rightColX, yPos + yOffset)) : this.createButton("Locked", new Vec2(rightColX, yPos + yOffset));
 
-        const level5Btn = MainMenu.LEVEL_COUNTER >= 5 ? this.createButton("Level 5", new Vec2(leftColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(leftColX, yPos + yOffset*2));
-        const level6Btn = MainMenu.LEVEL_COUNTER >= 6 ? this.createButton("Level 6", new Vec2(rightColX, size.y + yOffset*2)) : this.createButton("Locked", new Vec2(rightColX, yPos + yOffset*2));
+        const level5Btn = MainMenu.LEVEL_COUNTER >= 5 ? this.createButton("Level 5", new Vec2(leftColX, yPos + yOffset*2)) : this.createButton("Locked", new Vec2(leftColX, yPos + yOffset*2));
+        const level6Btn = MainMenu.LEVEL_COUNTER >= 6 ? this.createButton("Level 6", new Vec2(rightColX, yPos + yOffset*2)) : this.createButton("Locked", new Vec2(rightColX, yPos + yOffset*2));
 
         // When the play button is clicked, go to the next scene
         backBtn.onClick = () => {
