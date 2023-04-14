@@ -3,7 +3,7 @@
     "spriteSheetImage": "Frog.png",
     "spriteWidth": 64,
     "spriteHeight": 116,
-    "columns": 3,
+    "columns": 5,
     "rows": 1,
     "durationType": "time",
     "animations": [
@@ -14,7 +14,8 @@
         },
         {
             "name": "WALK",
-            "frames": [ {"index": 2, "duration": 200}]
+            "repeat": true,
+            "frames": [ {"index": 2, "duration": 15}, {"index": 3, "duration": 15}, {"index": 4, "duration": 15}]
         },
         {
             "name": "JUMP",
