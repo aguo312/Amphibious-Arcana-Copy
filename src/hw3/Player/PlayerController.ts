@@ -19,6 +19,7 @@ import Receiver from '../../Wolfie2D/Events/Receiver';
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import {SpellTypes} from "./SpellTypes";
 import IceParticles from "./IceParticles";
+import TongueParticle from "./TongueParticle";
 
 /**
  * Animation keys for the player spritesheet
@@ -71,6 +72,8 @@ export default class PlayerController extends StateMachineAI {
     protected fireParticles: Fireball;
     protected fireProjectile: Fireball;
 
+    protected tongueProjectile: TongueParticle;
+
     protected iceParticles: IceParticles;
 
     protected selectedSpell: string;
@@ -83,6 +86,7 @@ export default class PlayerController extends StateMachineAI {
         //this.weapon = options.weaponSystem;
         this.fireParticles = options.fireParticleSystem;
         this.fireProjectile = options.fireballSystem;
+        this.tongueProjectile = options.tongueParticleSystem;
         this.iceParticles = options.iceParticleSystem;
 
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
@@ -107,6 +111,8 @@ export default class PlayerController extends StateMachineAI {
 
         this.receiver = new Receiver();
         this.receiver.subscribe(HW3Events.PLAYER_FIRE_JUMP);
+        this.receiver.subscribe(HW3Events.PLAYER_SWING);
+
     }
 
     handleEvent(event: GameEvent): void {
@@ -131,6 +137,24 @@ export default class PlayerController extends StateMachineAI {
 
                 break;
             }
+            case HW3Events.PLAYER_SWING:{
+                const vel: Vec2 = event.data.get('swingVel');
+                const playerPos: Vec2 = event.data.get('playerPos');
+                const particlePos: Vec2 = event.data.get('particlePos');
+
+                // Calculate the difference between the player and the grapple point
+                const posDiff = MathUtils.clamp(playerPos.clone().distanceTo(particlePos), 1, 25);
+                
+                // Scale the velocity based on the distance between the player and the grapple point
+                const scaleFactor = MathUtils.clamp(Math.pow(25, 0.8) - 0.7 * Math.pow(posDiff, 0.8), 0, 8);
+
+                // Set the player's velocity to the scaled velocity
+                // You will need to have access to the player object and its velocity vector
+                this.velocity = vel.clone().scale(scaleFactor);
+
+                break;
+            }
+
             default: {
                 throw new Error(`Unhandled event caught in player controller with type ${event.type}`)
             }
@@ -163,6 +187,7 @@ export default class PlayerController extends StateMachineAI {
         // Update the rotation to apply the particles velocity vector
         //this.fireParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
         this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+        this.tongueProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
         this.iceParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
         // Attack
@@ -212,7 +237,15 @@ export default class PlayerController extends StateMachineAI {
 	}
 
     protected tongueAttack(): void {
-        this.emitter.fireEvent(HW3Events.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir });
+
+
+        if (!this.tongueProjectile.isSystemRunning()) {
+            // Update the rotation to apply the particles velocity vector
+            this.tongueProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+            // Start the particle system at the player's current position
+            this.tongueProjectile.startSystem(500, 0, this.owner.position);
+            this.emitter.fireEvent(HW3Events.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir});
+        }
     }
 
     protected fireballAttack(): void {

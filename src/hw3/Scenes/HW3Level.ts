@@ -31,6 +31,7 @@ import TongueShaderType from "../Shaders/TongueShaderType";
 import { SpellTypes } from "../Player/SpellTypes";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import IceParticles from "../Player/IceParticles";
+import TongueParticle from "../Player/TongueParticle";
 
 /**
  * A const object for the layer names
@@ -63,6 +64,9 @@ export default abstract class HW3Level extends Scene {
 
     /** The particle system used for the ice blast */
     protected iceParticleSystem: IceParticles;
+
+    /** The particle system used for the tongue */
+    protected tongueParticleSystem: TongueParticle;
 
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
@@ -306,6 +310,10 @@ export default abstract class HW3Level extends Scene {
                 // this.handleSelectTongue();
                 break;
             }
+            case HW3Events.TONGUE_WALL_COLLISION:{
+                this.handleTongueHit();
+                break;
+            }
             // case HW3Events.PLAYER_ATTACK: {
             //     this.handlePlayerAttack();
             //     break;
@@ -379,6 +387,22 @@ export default abstract class HW3Level extends Scene {
         }
 
         this.emitter.fireEvent(HW3Events.PLAYER_FIRE_JUMP, { fireJumpVel: dir, particlePos: particle.position, playerPos: this.player.position });
+    }
+
+    protected handleTongueHit(): void {
+        let particle = this.tongueParticleSystem.getPool()[0];  // fireball is a single particle
+
+        if (!particle) {
+            console.warn('Tongue particle undefined');
+            return;
+        }
+
+        // gotta change this for the swing
+        let dir = new Vec2(particle.vel.x/2, particle.vel.y/2);
+
+        this.tongueParticleSystem.stopSystem();
+
+        this.emitter.fireEvent(HW3Events.PLAYER_SWING, {swingVel: dir, particlePos: particle.position, playerPos: this.player.position });
     }
 
     /**
@@ -455,6 +479,7 @@ export default abstract class HW3Level extends Scene {
      * Handles all subscriptions to events
      */
     protected subscribeToEvents(): void {
+        this.receiver.subscribe(HW3Events.TONGUE_WALL_COLLISION);
         this.receiver.subscribe(HW3Events.PLAYER_ENTERED_LEVEL_END);
         this.receiver.subscribe(HW3Events.LEVEL_START);
         this.receiver.subscribe(HW3Events.LEVEL_END);
@@ -589,9 +614,12 @@ export default abstract class HW3Level extends Scene {
         this.tongue.visible = false;
         this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
         
-        //Attempt to add physics to the tongue
-        this.tongue.addPhysics();
-        this.tongue.setGroup(HW3PhysicsGroups.TONGUE)
+        this.tongueParticleSystem = new TongueParticle(1, Vec2.ZERO, 500, 3, 0, 1);
+        this.tongueParticleSystem.initializePool(this, HW3Layers.PRIMARY);
+
+        // //Attempt to add physics to the tongue
+        // this.tongue.addPhysics();
+        // this.tongue.setGroup(HW3PhysicsGroups.TONGUE)
 
         // initialize Ice Blast
         this.iceParticleSystem = new IceParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
@@ -661,6 +689,7 @@ export default abstract class HW3Level extends Scene {
             fireParticleSystem: this.fireParticleSystem, // TODO do we need these in HW3Level?
             fireballSystem: this.fireballSystem,
             iceParticleSystem: this.iceParticleSystem,
+            tongueParticleSystem: this.tongueParticleSystem,
             tilemap: "Destructable"
         });
     }

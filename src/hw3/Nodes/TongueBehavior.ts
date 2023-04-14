@@ -50,6 +50,7 @@ export default class TongueBehavior implements AI {
     private distanceTraveled: number
 
     private tongueActive: boolean;
+    private stopExtending: boolean;
 
     public initializeAI(owner: Graphic, options: Record<string, any>): void {
         this.owner = owner;
@@ -73,12 +74,12 @@ export default class TongueBehavior implements AI {
         this.receiver.subscribe(HW3Events.SHOOT_TONGUE)
         
         this.state = TongueState.EXTENDING;
-        this.maxDistance = 100; // Set the maximum distance the tongue can extend
+        this.maxDistance = 123; // Set the maximum distance the tongue can extend
         this.distanceTraveled = 0;
         
         this.tongueActive = false;
       
-
+        this.stopExtending = false;
         this.activate(options);
     }
 
@@ -113,8 +114,6 @@ export default class TongueBehavior implements AI {
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case HW3Events.TONGUE_WALL_COLLISION: {
-                console.log("IT COLLIDEDDDDDDDDDDDD")
-
                 this.handleTongueWallCollision();
                 break;
             }
@@ -140,6 +139,7 @@ export default class TongueBehavior implements AI {
         // this.owner.position.copy(Vec2.ZERO);
         // this.owner.visible = false;
 
+        this.stopExtending = true;
         console.log("IT COLLIDEDDDDDDDDDDDD")
     }
 
@@ -161,17 +161,23 @@ export default class TongueBehavior implements AI {
         this.state = TongueState.EXTENDING;
         this.distanceTraveled = 0;
         this.tongueActive = true;
+        this.stopExtending = false;
     }
 
     public update(deltaT: number): void {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
-
-        // Only update the tongue if it's visible
+    
+        // Only update the tongue if it's visible and the flag is not set to stop extending
         if (this.owner.visible) {
             // TODO need to set up collision somewhere for this
             let movement: Vec2;
+    
+
+            if(this.stopExtending){
+                this.state = TongueState.RETRACTING
+            }
 
             if (this.state === TongueState.EXTENDING) {
                 movement = this.dir.normalized().scale(this.currentYSpeed * deltaT);
@@ -179,8 +185,8 @@ export default class TongueBehavior implements AI {
                 
                 // Increase the height of the tongue
                 this.owner.size.y += movement.mag();
-
-                if (this.distanceTraveled >= this.maxDistance) {
+    
+                if ((this.distanceTraveled >= this.maxDistance)) {
                     this.state = TongueState.RETRACTING;
                 }
             } else if (this.state === TongueState.RETRACTING) {
@@ -189,12 +195,13 @@ export default class TongueBehavior implements AI {
                 
                 // Decrease the height of the tongue
                 this.owner.size.y -= movement.mag();
-
+    
                 if (this.distanceTraveled <= 0) {
                     // Hide the tongue and stop updating when fully retracted
                     this.owner.visible = false;
                     this.distanceTraveled = 0;
-                    this.tongueActive = false; 
+                    this.tongueActive = false;
+                    this.stopExtending = false;
                     return;
                 }
             }
