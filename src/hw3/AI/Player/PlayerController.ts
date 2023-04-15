@@ -54,8 +54,8 @@ export const PlayerStates = {
  * The controller that controls the player.
  */
 export default class PlayerController extends StateMachineAI {
-    public readonly MAX_SPEED: number = 200;
-    public readonly MIN_SPEED: number = 100;
+    public readonly MAX_SPEED: number = 300;
+    public readonly MIN_SPEED: number = 130;
 
     /** Health and max health for the player */
     protected _health: number;
