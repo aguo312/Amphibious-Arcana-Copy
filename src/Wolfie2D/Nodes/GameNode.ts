@@ -18,7 +18,7 @@ import TweenController from "../Rendering/Animations/TweenController";
 import Debug from "../Debug/Debug";
 import Color from "../Utils/Color";
 import Circle from "../DataTypes/Shapes/Circle";
-import GoapAI from "../DataTypes/Interfaces/GoapAI";
+import GoapAI from "../DataTypes/Goap/GoapAI";
 
 /**
  * The representation of an object in the game world.

@@ -1,7 +1,7 @@
 import Actor from "../DataTypes/Interfaces/Actor";
 import Updateable from "../DataTypes/Interfaces/Updateable";
 import AI from "../DataTypes/Interfaces/AI";
-import GoapAI from "../DataTypes/Interfaces/GoapAI"
+import GoapAI from "../DataTypes/Goap/GoapAI"
 import Map from "../DataTypes/Map";
 
 /**

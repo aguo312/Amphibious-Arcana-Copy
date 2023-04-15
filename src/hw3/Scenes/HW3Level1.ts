@@ -9,6 +9,7 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
+import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -98,8 +99,10 @@ export default class Level1 extends HW3Level {
         this.load.tilemap(this.tilemapKey, Level1.TILEMAP_PATH);
         // Load in the player's sprite
         this.load.spritesheet(this.playerSpriteKey, Level1.PLAYER_SPRITE_PATH);
-        // Load in the spell sprites
-        //this.load.spritesheet(this.spellsSpriteKey, Level1.SPELLS_SPRITE_PATH);
+
+        // Load in the enemy sprites
+        this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
+
         // Audio and music
         this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
         this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
@@ -132,6 +135,16 @@ export default class Level1 extends HW3Level {
         // Set the next level to be Level2
         this.nextLevel = HW4Level2;
         this.nextLevelNum = 2;
+
+        this.initializeNPCs();
+    }
+
+    protected initializeNPCs(): void {
+        let scabbers = this.add.animatedSprite("Scabbers", HW3Layers.PRIMARY);
+        scabbers.position.set(Level1.PLAYER_SPAWN.x, Level1.PLAYER_SPAWN.y);
+        scabbers.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
+        scabbers.addAI(IdleBehavior);
+        scabbers.animation.play("IDLE");
     }
 
     /**
