@@ -134,8 +134,11 @@ export default class PlayerController extends StateMachineAI {
                 const particlePos: Vec2 = event.data.get('particlePos');
 
                 // attempt to scale movement vector by difference in position
-                const posDiff = MathUtils.clamp(playerPos.clone().distanceTo(particlePos), 1, 25);
-                const scaleFactor = MathUtils.clamp(Math.pow(25, 0.8) - 0.7 * Math.pow(posDiff, 0.8), 0, 8);
+                const posDiff = MathUtils.clamp(playerPos.clone().distanceTo(particlePos), 0, 50);
+                const scaleFactor = posDiff >= 50 
+                    ? 0
+                    : MathUtils.clamp(Math.pow(25, 0.8) - 0.7 * Math.pow(posDiff, 0.8), 0, 8)
+                     
 
                 console.log('vel before: ' + this.velocity);
                 // this.velocity = vel.clone().scale(scaleFactor);
