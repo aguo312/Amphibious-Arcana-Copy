@@ -686,12 +686,8 @@ export default abstract class HW3Level extends Scene {
     }
 
     protected initializeControls(): void {
-        // Center the viewport
         let size = this.viewport.getHalfSize();
         let yOffset = 10;
-        // this.viewport.setFocus(size);
-        // this.viewport.setZoomLevel(1);
-
         let controlsMenu = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.CONTROLS, { position: new Vec2(size.x, size.y), size: new Vec2(100, 120) });
         let i = 1;
         this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50), text: "W - Jump", fontSize: 24});
