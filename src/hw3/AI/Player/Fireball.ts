@@ -12,6 +12,8 @@ import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
  */
 export default class Fireball extends ParticleSystem {
 
+    protected gravity: number;
+
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
      */
@@ -70,6 +72,21 @@ export default class Fireball extends ParticleSystem {
         for (let i = 0; i < this.particlePool.length; i++) {
             // Set particle physics group to the player's weapon
             this.particlePool[i].setGroup(HW3PhysicsGroups.FIREBALL);
+        }
+
+        // this.gravity = 500;
+        this.gravity = 0;  // just disabling gravity for now
+    }
+
+    public update(deltaT: number) {
+        super.update(deltaT);
+
+        if (this.particlePool.length > 0 && this.isSystemRunning()) {
+            let particle = this.particlePool[0];
+            if (particle) {
+                particle.vel.y += this.gravity*deltaT;
+                particle.move(particle.vel.scaled(deltaT));
+            }
         }
     }
 
