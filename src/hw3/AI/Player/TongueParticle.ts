@@ -6,11 +6,16 @@ import { EaseFunctionType } from "../../../Wolfie2D/Utils/EaseFunctions";
 import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
 import { HW3PhysicsGroups } from "../../HW3PhysicsGroups";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
+import GameEvent from "../../../Wolfie2D/Events/GameEvent";
+import { HW3Events } from "../../HW3Events";
+import Receiver from "../../../Wolfie2D/Events/Receiver";
 
 /**
  * The particle system used for the player's weapon
  */
 export default class TongueParticle extends ParticleSystem {
+
+    protected receiver: Receiver;
 
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
@@ -70,6 +75,41 @@ export default class TongueParticle extends ParticleSystem {
         for (let i = 0; i < this.particlePool.length; i++) {
             // Set particle physics group to the player's weapon
             this.particlePool[i].setGroup(HW3PhysicsGroups.TONGUE);
+        }
+
+        this.receiver = new Receiver();
+        this.receiver.subscribe(HW3Events.PLAYER_POS_UPDATE);
+    }
+
+    public update(deltaT: number) {
+        super.update(deltaT);
+
+        while (this.receiver.hasNextEvent()) {
+            this.handleEvent(this.receiver.getNextEvent());
+        }
+    }
+
+    public handleEvent(event: GameEvent): void {
+        switch (event.type) {
+            case HW3Events.PLAYER_POS_UPDATE: {
+                this.handlePlayerPosUpdate(event.data.get('vel'));
+                break;
+            }
+            default: {
+                throw new Error(`Unhandled event caught in TongueParticle! Event type: ${event.type}`);
+            }
+        }
+    }
+
+    protected handlePlayerPosUpdate(vel: Vec2): void {
+        if (this.particlePool.length > 0 && this.isSystemRunning()) {
+            let particle = this.particlePool[0];
+            if (!particle) { 
+                return; 
+            }
+
+            let newPos = particle.position.clone().add(vel.normalized());
+            particle.position.copy(newPos);
         }
     }
 

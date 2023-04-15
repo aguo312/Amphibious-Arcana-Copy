@@ -240,7 +240,7 @@ export default abstract class HW3Level extends Scene {
         }
 
         if (this.tongue.visible) {
-            this.emitter.fireEvent(HW3Events.PLAYER_POS_UPDATE, {pos: this.player.position.clone()});
+            this.emitter.fireEvent(HW3Events.PLAYER_POS_UPDATE, {pos: this.player.position.clone(), vel: this.player._velocity.clone() });
         }
 
         if(this.selectedSpell ===  SpellTypes.ICE && this.iceParticleSystem.getPool()[0].visible && Input.isMouseJustPressed()){
