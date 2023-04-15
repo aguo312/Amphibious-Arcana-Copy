@@ -237,8 +237,6 @@ export default class PlayerController extends StateMachineAI {
         }
 
         if (Input.isPressed(HW3Controls.PAUSE)) {
-            // TODO: Bring up a menu while pausing the game
-            // console.log("pressed pause");
             this.emitter.fireEvent(HW3Events.PAUSE);
         }
 

@@ -8,6 +8,7 @@ import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
+import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
@@ -41,7 +42,9 @@ export const HW3Layers = {
     // The primary layer
     PRIMARY: "PRIMARY",
     // The UI layer
-    UI: "UI"
+    UI: "UI",
+    // The PAUSE layer
+    PAUSE: "PAUSE"
 } as const;
 
 // The layers as a type
@@ -254,10 +257,11 @@ export default abstract class HW3Level extends Scene {
         switch (event.type) {
             case HW3Events.PAUSE: {
                 // TODO temp
-                MainMenu.GAME_PLAYING = false;
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
-                this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
-                this.sceneManager.changeToScene(MainMenu);
+                // MainMenu.GAME_PLAYING = false;
+                // this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+                // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
+                // this.sceneManager.changeToScene(MainMenu);
+                this.handlePauseGame();
                 break;
             }
             case HW3Events.PLAYER_ENTERED_LEVEL_END: {
@@ -458,6 +462,13 @@ export default abstract class HW3Level extends Scene {
 		this.healthBar.backgroundColor = currentHealth < maxHealth * 1/4 ? Color.RED: currentHealth < maxHealth * 3/4 ? Color.YELLOW : Color.GREEN;
 	}
 
+    protected handlePauseGame(): void {
+        MainMenu.GAME_PLAYING = false;
+        this.player.setAIActive(false, null);
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+        this.initializePause();
+    }
+
     /* Initialization methods for everything in the scene */
 
     /**
@@ -468,6 +479,8 @@ export default abstract class HW3Level extends Scene {
         this.addUILayer(HW3Layers.UI);
         // Add a layer for players and enemies
         this.addLayer(HW3Layers.PRIMARY);
+        // Add a layer for Pause Menu
+        this.addUILayer(HW3Layers.PAUSE);
     }
     /**
      * Initializes the tilemaps
@@ -625,6 +638,25 @@ export default abstract class HW3Level extends Scene {
             onEnd: HW3Events.LEVEL_START
         });
     }
+
+    protected initializePause(): void {
+        let size = this.viewport.getHalfSize();
+        let yPos = size.y + 100;
+        let pauseMenu = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.PAUSE, { position: new Vec2(size.x, yPos - 100), size: new Vec2(60, 80) });
+        let resumeBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 120), text: "Resume"});      
+        let controlsBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 100), text: "Controls"});
+        let quitBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 80), text: "Quit"});
+        resumeBtn.scale = new Vec2(0.25,0.25);
+        controlsBtn.scale = new Vec2(0.25,0.25);
+        quitBtn.scale = new Vec2(0.25,0.25);
+        resumeBtn.onClick = () => { console.log("resuming"); }
+        controlsBtn.onClick = () => { console.log("controls"); }
+        quitBtn.onClick = () => {
+            this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
+            this.sceneManager.changeToScene(MainMenu);
+        }
+    }
+
     /**
      * Initializes the particles system used by the player's weapon.
      */
