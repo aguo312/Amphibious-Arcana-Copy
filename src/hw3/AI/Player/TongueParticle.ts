@@ -108,6 +108,7 @@ export default class TongueParticle extends ParticleSystem {
                 return; 
             }
 
+            
             let newPos = particle.position.clone().add(vel.normalized());
             particle.position.copy(newPos);
         }

@@ -764,6 +764,7 @@ export default abstract class HW3Level extends Scene {
             fireballSystem: this.fireballSystem,
             iceParticleSystem: this.iceParticleSystem,
             tongueParticleSystem: this.tongueParticleSystem,
+            tongueGraphic: this.tongue,
             tilemap: "Destructable"
         });
     }

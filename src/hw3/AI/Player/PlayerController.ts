@@ -20,6 +20,7 @@ import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import {SpellTypes} from "./SpellTypes";
 import IceParticles from "./IceParticles";
 import TongueParticle from "./TongueParticle";
+import Graphic from "../../../Wolfie2D/Nodes/Graphic";
 
 /**
  * Animation keys for the player spritesheet
@@ -79,9 +80,13 @@ export default class PlayerController extends StateMachineAI {
     protected selectedSpell: string;
 
     protected receiver: Receiver;
+
+    protected tongueGraphic: Graphic;
     
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
         this.owner = owner;
+
+        this.tongueGraphic = options.tongueGraphic;
 
         //this.weapon = options.weaponSystem;
         this.fireParticles = options.fireParticleSystem;
@@ -155,13 +160,6 @@ export default class PlayerController extends StateMachineAI {
 
                 break;
             }
-            // case HW3Events.CREATE_PLATFORM:{
-            //     console.log(Input.getGlobalMousePosition())
-            //     console.log(this.tilemap)
-            //     //console.log(this.tilemap.getColRowAt(Input.getGlobalMousePosition()))
-            //     //this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(event.data.get('pos')),5);
-            //     break;
-            // }
 
             default: {
                 throw new Error(`Unhandled event caught in player controller with type ${event.type}`)
@@ -244,8 +242,8 @@ export default class PlayerController extends StateMachineAI {
 
     protected tongueAttack(): void {
 
-
-        if (!this.tongueProjectile.isSystemRunning()) {
+        console.log(this.tongueGraphic)
+        if (!this.tongueProjectile.isSystemRunning() && !this.tongueGraphic.visible) {
             // Update the rotation to apply the particles velocity vector
             this.tongueProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
