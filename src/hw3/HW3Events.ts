@@ -36,5 +36,7 @@ export const HW3Events = {
     SELECT_TONGUE: "SELECT_TONGUE",
     SELECT_FIREBALL: "SELECT_FIREBALL",
     SELECT_ICE: "SELECT_ICE",
-    PAUSE: "PAUSE"
+    PAUSE: "PAUSE",
+    RESUME: "RESUME",
+    CONTROLS: "CONTROLS"
 } as const;

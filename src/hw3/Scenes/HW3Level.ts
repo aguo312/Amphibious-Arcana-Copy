@@ -207,7 +207,8 @@ export default abstract class HW3Level extends Scene {
         this.initializeViewport();
         this.subscribeToEvents();
         this.initializeUI();
-        
+        this.initializePause();
+        this.getLayer(HW3Layers.PAUSE).disable();
 
         // Initialize the ends of the levels - must be initialized after the primary layer has been added
         this.initializeLevelEnds();
@@ -256,12 +257,15 @@ export default abstract class HW3Level extends Scene {
     protected handleEvent(event: GameEvent): void {
         switch (event.type) {
             case HW3Events.PAUSE: {
-                // TODO temp
-                // MainMenu.GAME_PLAYING = false;
-                // this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
-                // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
-                // this.sceneManager.changeToScene(MainMenu);
                 this.handlePauseGame();
+                break;
+            }
+            case HW3Events.RESUME: {
+                this.handleResumeGame();
+                break;
+            }
+            case HW3Events.CONTROLS: {
+                this.handleShowControls();
                 break;
             }
             case HW3Events.PLAYER_ENTERED_LEVEL_END: {
@@ -466,7 +470,24 @@ export default abstract class HW3Level extends Scene {
         MainMenu.GAME_PLAYING = false;
         this.player.setAIActive(false, null);
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
-        this.initializePause();
+        this.getLayer(HW3Layers.PAUSE).enable();
+    }
+
+    protected handleResumeGame(): void {
+        MainMenu.GAME_PLAYING = true;
+        this.player.setAIActive(true, { 
+            fireParticleSystem: this.fireParticleSystem, // TODO do we need these in HW3Level?
+            fireballSystem: this.fireballSystem,
+            iceParticleSystem: this.iceParticleSystem,
+            tongueParticleSystem: this.tongueParticleSystem,
+            tilemap: "Destructable"
+        });
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.levelMusicKey, loop: true, holdReference: true});
+        this.getLayer(HW3Layers.PAUSE).disable();
+    }
+
+    protected handleShowControls(): void {
+
     }
 
     /* Initialization methods for everything in the scene */
@@ -531,6 +552,8 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(HW3Events.SELECT_FIREBALL);
         this.receiver.subscribe(HW3Events.SELECT_ICE);
         this.receiver.subscribe(HW3Events.PAUSE);
+        this.receiver.subscribe(HW3Events.RESUME);
+        this.receiver.subscribe(HW3Events.CONTROLS);
         this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
     }
     /**
@@ -649,7 +672,7 @@ export default abstract class HW3Level extends Scene {
         resumeBtn.scale = new Vec2(0.25,0.25);
         controlsBtn.scale = new Vec2(0.25,0.25);
         quitBtn.scale = new Vec2(0.25,0.25);
-        resumeBtn.onClick = () => { console.log("resuming"); }
+        resumeBtn.onClick = () => { this.emitter.fireEvent(HW3Events.RESUME); }
         controlsBtn.onClick = () => { console.log("controls"); }
         quitBtn.onClick = () => {
             this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
