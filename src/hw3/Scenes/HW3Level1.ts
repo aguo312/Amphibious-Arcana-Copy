@@ -10,7 +10,6 @@ import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
-import PaceBehavior from "../AI/NPC/NPCBehaviors/PaceBehavior";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
