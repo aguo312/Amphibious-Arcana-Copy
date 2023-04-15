@@ -15,7 +15,8 @@ export default class IdleBehavior extends NPCBehavior {
     protected override owner: NPCActor;
 
     public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>): void {
-        this.owner = owner;
+        // this.owner = owner;
+        super.initializeAI(owner, options);
 
         // Add the goal status
         this.addStatus("goal", new GoalReached());
@@ -28,6 +29,9 @@ export default class IdleBehavior extends NPCBehavior {
 
         // Set the goal to idle
         this.goal = "goal";
+
+        // Add gravity
+        
 
         this.initialize();
     }

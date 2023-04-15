@@ -141,8 +141,10 @@ export default class Level1 extends HW3Level {
 
     protected initializeNPCs(): void {
         let scabbers = this.add.animatedSprite("Scabbers", HW3Layers.PRIMARY);
+        scabbers.scale.scale(0.25);
         scabbers.position.set(Level1.PLAYER_SPAWN.x, Level1.PLAYER_SPAWN.y);
-        scabbers.addPhysics(new AABB(Vec2.ZERO, new Vec2(7, 7)), null, false);
+        scabbers.addPhysics();
+        // scabbers.addPhysics(new AABB(Vec2.ZERO, scabbers.size.clone()), null, false);
         scabbers.addAI(IdleBehavior);
         scabbers.animation.play("IDLE");
     }
