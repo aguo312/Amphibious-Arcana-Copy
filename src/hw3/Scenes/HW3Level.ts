@@ -32,6 +32,8 @@ import { SpellTypes } from "../Player/SpellTypes";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import IceParticles from "../Player/IceParticles";
 import TongueParticle from "../Player/TongueParticle";
+import { HW3Controls } from "../HW3Controls";
+import IceBehavior from "../Nodes/IceBehavior";
 
 /**
  * A const object for the layer names
@@ -128,6 +130,8 @@ export default abstract class HW3Level extends Scene {
     /** The wall layer of the tilemap */
     protected walls: OrthogonalTilemap;
 
+    protected icePlatform: Graphic;
+
     /** Sound and music */
     protected levelMusicKey: string;
     protected jumpAudioKey: string;
@@ -146,19 +150,22 @@ export default abstract class HW3Level extends Scene {
                 HW3PhysicsGroups.TONGUE_COLLIDABLE,
                 HW3PhysicsGroups.TONGUE,
                 HW3PhysicsGroups.ICE_PARTICLE,
-                HW3PhysicsGroups.ENEMY
+                HW3PhysicsGroups.ENEMY,
+                HW3PhysicsGroups.ICE_PLATFORM
             ],
             collisions:
             [
-                [0, 1, 1, 1, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1],
-                [0, 1, 1, 1, 0, 0, 0, 0, 1],
-                [0, 0, 0, 0, 0, 0, 1, 0, 1],
-                [1, 1, 1, 1, 1, 1, 0, 0, 1],
-                [1, 1, 1, 1, 1, 1, 0, 0, 1],
-                [1, 1, 1, 1, 1, 1, 0, 0, 1]
+                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1],
+                [0, 0, 0, 0, 0, 0, 1, 0, 1, 1],
+                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
             ]
         }});
         this.add = new HW3FactoryManager(this, this.tilemaps);
@@ -233,6 +240,11 @@ export default abstract class HW3Level extends Scene {
         if (this.tongue.visible) {
             this.emitter.fireEvent(HW3Events.PLAYER_POS_UPDATE, {pos: this.player.position.clone()});
         }
+
+        if(this.selectedSpell ===  SpellTypes.ICE && this.iceParticleSystem.getPool()[0].visible && Input.isMouseJustPressed()){
+            let iceParticle = this.iceParticleSystem.getPool()[0];
+            this.emitter.fireEvent(HW3Events.CREATE_PLATFORM, { pos: iceParticle.position });
+        }
     }
 
     /**
@@ -291,6 +303,14 @@ export default abstract class HW3Level extends Scene {
                 this.spawnTongue(pos, dir);
                 break;
             }
+            case HW3Events.CREATE_PLATFORM:{
+
+                //console.log(this.tilemap.getColRowAt(Input.getGlobalMousePosition()))
+                //this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(event.data.get('pos')),5);
+                this.spawnIceBlock(event.data.get("pos"));
+
+                break;
+            }
             // Handle spell switching
             case HW3Events.SELECT_TONGUE: {
                 // TODO temp because tongue is broken
@@ -332,7 +352,15 @@ export default abstract class HW3Level extends Scene {
             this.tongue.setAIActive(true, {src: pos, dir: dir});
         }
     }
-
+    protected spawnIceBlock(pos: Vec2): void {
+        // TODO maybe use GameNode?
+        if (this.icePlatform) {
+            this.iceParticleSystem.getPool()[0].freeze(); 
+            this.iceParticleSystem.getPool()[0].visible = false;                       
+            this.icePlatform.visible = true;
+            this.icePlatform.setAIActive(true, {src: pos});
+        }
+    }
     // protected handlePlayerAttack(): void {
     //     switch(this.selectedSpell) {
     //         case SpellTypes.TONGUE: {
@@ -374,7 +402,7 @@ export default abstract class HW3Level extends Scene {
             console.warn('Fireball particle undefined');
             return;
         }
-
+        console.log("YEOOOO")
         // Rocket jump direction
         // TODO should be less effective when fireball lands farther away
         let dir = new Vec2(-0.8*particle.vel.x, -0.8*particle.vel.y);
@@ -491,6 +519,7 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(HW3Events.SELECT_FIREBALL);
         this.receiver.subscribe(HW3Events.SELECT_ICE);
         this.receiver.subscribe(HW3Events.PAUSE);
+        this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
     }
     /**
      * Adds in any necessary UI to the game
@@ -613,9 +642,23 @@ export default abstract class HW3Level extends Scene {
         this.tongue.color = Color.RED;
         this.tongue.visible = false;
         this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
-        
+    
         this.tongueParticleSystem = new TongueParticle(1, Vec2.ZERO, 500, 3, 0, 1);
         this.tongueParticleSystem.initializePool(this, HW3Layers.PRIMARY);
+
+
+        //init ice platform
+        this.icePlatform = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+        //this.icePlatform.useCustomShader(TongueShaderType.KEY);
+        this.icePlatform.color = Color.CYAN;
+        this.icePlatform.visible = false;
+        this.icePlatform.addAI(IceBehavior, {src: Vec2.ZERO});
+        this.icePlatform.addPhysics();
+        this.icePlatform.setGroup(HW3PhysicsGroups.ICE_PLATFORM);
+        this.icePlatform.setTrigger(HW3PhysicsGroups.TONGUE, HW3Events.TONGUE_WALL_COLLISION, null);
+        this.icePlatform.setTrigger(HW3PhysicsGroups.FIREBALL, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+
+        //this.icePlatform.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
 
         // //Attempt to add physics to the tongue
         // this.tongue.addPhysics();

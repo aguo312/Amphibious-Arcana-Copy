@@ -1,4 +1,6 @@
+import Input from "../../../Wolfie2D/Input/Input";
 import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
+import { HW3Controls } from "../../HW3Controls";
 import { PlayerStates } from "../PlayerController";
 import PlayerState from "./PlayerState";
 
@@ -26,7 +28,12 @@ export default class Fall extends PlayerState {
             // Update the horizontal velocity of the player
             this.parent.velocity.x += dir.x * this.parent.speed/3.5 - 0.3*this.parent.velocity.x;
             // Update the vertical velocity of the player
-            this.parent.velocity.y += this.gravity*deltaT;
+            
+            if(Input.isPressed(HW3Controls.JUMP) && this.parent.velocity.y >= 0){
+                this.parent.velocity.y += this.gravity*deltaT * 0.20;
+            }else{
+                this.parent.velocity.y += this.gravity*deltaT;
+            }
             // Move the player
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }

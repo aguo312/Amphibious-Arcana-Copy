@@ -21,6 +21,7 @@ export const HW3Events = {
     PARTICLE_HIT_DESTRUCTIBLE: "PARTICLE_HIT_DESTRUCTIBLE",
 
     PLAYER_SWING: "PLAYER_SWING",
+    CREATE_PLATFORM: "CREATE_PLATFORM",
 
     // The event sent when the player dies. Gets sent after the player's death animation
     PLAYER_DEAD: "PLAYER_DEAD",

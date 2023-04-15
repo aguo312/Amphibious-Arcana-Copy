@@ -112,6 +112,7 @@ export default class PlayerController extends StateMachineAI {
         this.receiver = new Receiver();
         this.receiver.subscribe(HW3Events.PLAYER_FIRE_JUMP);
         this.receiver.subscribe(HW3Events.PLAYER_SWING);
+        //this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
 
     }
 
@@ -154,6 +155,13 @@ export default class PlayerController extends StateMachineAI {
 
                 break;
             }
+            // case HW3Events.CREATE_PLATFORM:{
+            //     console.log(Input.getGlobalMousePosition())
+            //     console.log(this.tilemap)
+            //     //console.log(this.tilemap.getColRowAt(Input.getGlobalMousePosition()))
+            //     //this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(event.data.get('pos')),5);
+            //     break;
+            // }
 
             default: {
                 throw new Error(`Unhandled event caught in player controller with type ${event.type}`)
@@ -191,7 +199,7 @@ export default class PlayerController extends StateMachineAI {
         this.iceParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
 
         // Attack
-        if (Input.isMousePressed()) {
+        if (Input.isMouseJustPressed()) {
             //this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(Input.getGlobalMousePosition()),5);
 
             switch(this.selectedSpell) {
@@ -260,6 +268,7 @@ export default class PlayerController extends StateMachineAI {
 
     protected iceAttack(): void {
         if (!this.iceParticles.isSystemRunning()) {
+            this.iceParticles.getPool()[0].unfreeze();
             // Update the rotation to apply the particles velocity vector
             this.iceParticles.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
