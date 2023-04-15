@@ -6,6 +6,7 @@ import PlayerState from "./PlayerState";
 export default class Walk extends PlayerState {
 
 	onEnter(options: Record<string, any>): void {
+        console.log('entering run');
 		this.parent.speed = this.parent.MIN_SPEED;
         this.owner.animation.playIfNotAlready(PlayerAnimations.WALK);
 	}
@@ -33,7 +34,7 @@ export default class Walk extends PlayerState {
         else {
             // Update the vertical velocity of the player
             this.parent.velocity.y += this.gravity*deltaT; 
-            this.parent.velocity.x = dir.x * this.parent.speed
+            this.parent.velocity.x = dir.x * this.parent.speed;
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }
 

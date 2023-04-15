@@ -7,6 +7,7 @@ import PlayerState from "./PlayerState";
 export default class Jump extends PlayerState {
 
 	public onEnter(options: Record<string, any>): void {
+        console.log('entering jump');
         let scene = this.owner.getScene()
         
         // Give the player a burst of upward momentum
