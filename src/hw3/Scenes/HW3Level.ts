@@ -17,9 +17,9 @@ import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
-import PlayerController, { PlayerTweens } from "../Player/PlayerController";
-import Fireball from "../Player/Fireball";
-import FireParticles from "../Player/FireParticles";
+import PlayerController, { PlayerTweens } from "../AI/Player/PlayerController";
+import Fireball from "../AI/Player/Fireball";
+import FireParticles from "../AI/Player/FireParticles";
 
 import { HW3Events } from "../HW3Events";
 import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
@@ -28,11 +28,10 @@ import MainMenu from "./MainMenu";
 import TongueBehavior from "../Nodes/TongueBehavior";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import TongueShaderType from "../Shaders/TongueShaderType";
-import { SpellTypes } from "../Player/SpellTypes";
+import { SpellTypes } from "../AI/Player/SpellTypes";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
-import IceParticles from "../Player/IceParticles";
-import TongueParticle from "../Player/TongueParticle";
-import { HW3Controls } from "../HW3Controls";
+import IceParticles from "../AI/Player/IceParticles";
+import TongueParticle from "../AI/Player/TongueParticle";
 import IceBehavior from "../Nodes/IceBehavior";
 
 /**

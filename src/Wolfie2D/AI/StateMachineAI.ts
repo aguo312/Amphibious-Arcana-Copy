@@ -10,7 +10,7 @@ export default class StateMachineAI extends StateMachine implements AI {
 	protected owner: GameNode;
 
 	// @implemented
-	initializeAI(owner: GameNode, config: Record<string, any>): void {}
+	initializeAI(owner: GameNode, config: Record<string, any>): void { }
 
 	// @implemented
 	destroy(){

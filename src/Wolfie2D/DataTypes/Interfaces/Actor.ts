@@ -1,6 +1,6 @@
 import NavigationPath from "../../Pathfinding/NavigationPath";
 import AI from "./AI";
-import GoapAI from "./GoapAI";
+import GoapAI from "../Goap/GoapAI";
 
 /**
  * A game object that has an AI and can perform its own actions every update cycle
