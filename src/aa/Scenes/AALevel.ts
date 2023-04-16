@@ -671,41 +671,70 @@ export default abstract class HW3Level extends Scene {
         let size = this.viewport.getHalfSize();
         let yPos = size.y + 100;
         let pauseMenu = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.PAUSE, { position: new Vec2(size.x, yPos - 100), size: new Vec2(60, 80) });
+        pauseMenu.color = Color.BLACK;
         let resumeBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 120), text: "Resume"});      
-        let controlsBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 100), text: "Controls"});
-        let quitBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 80), text: "Quit"});
+        resumeBtn.backgroundColor = Color.TRANSPARENT;
+        resumeBtn.borderColor = Color.WHITE;
+        resumeBtn.borderRadius = 0;
+        resumeBtn.setPadding(new Vec2(50, 10));
+        resumeBtn.font = "PixelSimple";
         resumeBtn.scale = new Vec2(0.25,0.25);
+
+        let controlsBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 100), text: "Controls"});
+        controlsBtn.backgroundColor = Color.TRANSPARENT;
+        controlsBtn.borderColor = Color.WHITE;
+        controlsBtn.borderRadius = 0;
+        controlsBtn.setPadding(new Vec2(50, 10));
+        controlsBtn.font = "PixelSimple";
         controlsBtn.scale = new Vec2(0.25,0.25);
+
+        let quitBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 80), text: "Quit"});
+        quitBtn.backgroundColor = Color.TRANSPARENT;
+        quitBtn.borderColor = Color.WHITE;
+        quitBtn.borderRadius = 0;
+        quitBtn.setPadding(new Vec2(50, 10));
+        quitBtn.font = "PixelSimple";
         quitBtn.scale = new Vec2(0.25,0.25);
+
         resumeBtn.onClick = () => { this.emitter.fireEvent(AAEvents.RESUME); }
         controlsBtn.onClick = () => { this.emitter.fireEvent(AAEvents.CONTROLS); }
         quitBtn.onClick = () => {
             this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
             this.sceneManager.changeToScene(MainMenu);
         }
+
     }
 
     protected initializeControls(): void {
         let size = this.viewport.getHalfSize();
         let yOffset = 10;
-        let controlsMenu = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.CONTROLS, { position: new Vec2(size.x, size.y), size: new Vec2(100, 120) });
+        let controlsMenu = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.CONTROLS, { position: new Vec2(size.x, size.y), size: new Vec2(100, 130) });
+        controlsMenu.color = Color.BLACK;
+        
         let i = 1;
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50), text: "W - Jump", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "A - Walk Left", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "D - Walk Right", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "1 - Select Spell 1", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "2 - Select Spell 2", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "3 - Select Spell 3", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "Left Click - Cast Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "Left Click (Hold) - Charge Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "Mouse - Aim Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 50 + yOffset*i++), text: "ESC - Pause Game", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55), text: "W - Jump", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "A - Walk Left", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "D - Walk Right", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "1 - Select Spell 1", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "2 - Select Spell 2", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "3 - Select Spell 3", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click - Cast Spell", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click (Hold) - Charge Spell", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Mouse - Aim Spell", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "ESC - Pause Game", fontSize: 24});
         
         let backBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.CONTROLS, {position: new Vec2(size.x, 2*size.y - 50), text: "Back"});
+        backBtn.backgroundColor = Color.TRANSPARENT;
+        backBtn.borderColor = Color.WHITE;
+        backBtn.borderRadius = 0;
+        backBtn.setPadding(new Vec2(50, 10));
+        backBtn.font = "PixelSimple";
+        backBtn.scale = new Vec2(0.25,0.25);
         backBtn.onClick = () => {
             this.getLayer(HW3Layers.CONTROLS).disable();
             this.getLayer(HW3Layers.PAUSE).enable();
         }
+
     }
 
     /**
