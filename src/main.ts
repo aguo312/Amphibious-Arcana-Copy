@@ -1,7 +1,7 @@
 import Game from "./Wolfie2D/Loop/Game";
-import MainMenu from "./hw3/Scenes/MainMenu";
-import { AAControls } from "./hw3/AAControls";
-import SplashScreen from "./hw3/Scenes/SplashScreen";
+import MainMenu from "./aa/Scenes/MainMenu";
+import { AAControls } from "./aa/AAControls";
+import SplashScreen from "./aa/Scenes/SplashScreen";
 
 // The main function is your entrypoint into Wolfie2D. Specify your first scene and any options here.
 (function main(){
