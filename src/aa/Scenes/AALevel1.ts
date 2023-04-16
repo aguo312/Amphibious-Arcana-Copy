@@ -10,6 +10,7 @@ import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
+import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -20,12 +21,9 @@ export default class Level1 extends HW3Level {
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
-    public static readonly SPELLS_SPRITE_KEY = "Spells"; // idk why this works
-    public static readonly SPELLS_SPRITE_PATH = "hw4_assets/spritesheets/Spells.json";
-
     public static readonly TILEMAP_KEY = "LEVEL1";
     //public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level1.json";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/level1.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/desert_level_1.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
     public static readonly TONGUE_COLLIDABLE_LAYER_KEY = "TongueCollidable";
@@ -60,7 +58,6 @@ export default class Level1 extends HW3Level {
         // Set the player's spawn
         this.playerSpawn = Level1.PLAYER_SPAWN;
         // Set the key for the spells sprite
-        this.spellsSpriteKey = Level1.SPELLS_SPRITE_KEY;
 
         // Music and sound
         this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
@@ -118,7 +115,6 @@ export default class Level1 extends HW3Level {
      */
     public unloadScene(): void {
         this.load.keepSpritesheet(this.playerSpriteKey);
-        this.load.keepSpritesheet(this.spellsSpriteKey);
         this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.tileDestroyedAudioKey);
@@ -145,9 +141,8 @@ export default class Level1 extends HW3Level {
         scabbers.position.set(Level1.PLAYER_SPAWN.x, Level1.PLAYER_SPAWN.y);
         scabbers.addPhysics();
         // scabbers.addPhysics(new AABB(Vec2.ZERO, scabbers.size.clone()), null, false);
-        scabbers.addAI(IdleBehavior);
-        // scabbers.addAI(PaceBehavior);
-        scabbers.animation.play("IDLE");
+        // scabbers.addAI(IdleBehavior);
+        scabbers.addAI(EnemyBehavior);
     }
 
     /**

@@ -76,9 +76,6 @@ export default abstract class HW3Level extends Scene {
     /** The key for the player's animated sprite */
     protected playerSpriteKey: string;
 
-    /** The key for the spells sprite */
-    protected spellsSpriteKey: string;
-
     /** The animated sprite that is the player */
     protected player: AnimatedSprite;
 
