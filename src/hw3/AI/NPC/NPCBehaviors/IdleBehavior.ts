@@ -1,6 +1,6 @@
 import StateMachineAI from "../../../../Wolfie2D/AI/StateMachineAI";
 import NPCActor from "../../../Actors/NPCActor";
-import HW3AnimatedSprite from "../../../Nodes/HW3AnimatedSprite";
+import HW3AnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import GoalReached from '../NPCStatuses/FalseStatus';
 import IdleAction from "../NPCActions/IdleAction";

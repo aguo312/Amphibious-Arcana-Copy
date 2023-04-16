@@ -1,7 +1,7 @@
 /**
  * An enum with all of the physics groups for HW4
  */
-export const HW3PhysicsGroups = {
+export const AAPhysicsGroups = {
     // Physics groups for the player and the player's weapon
     PLAYER: "PLAYER",
     /* 

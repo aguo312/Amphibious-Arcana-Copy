@@ -10,10 +10,10 @@ import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 // import Fireball from "./Fireball";
 import Input from "../../Wolfie2D/Input/Input";
 
-import { HW3Controls } from "../HW3Controls";
-import HW3AnimatedSprite from "../Nodes/HW3AnimatedSprite";
+import { AAControls } from "../AAControls";
+import HW3AnimatedSprite from "../Nodes/AAAnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
-import { HW3Events } from "../HW3Events";
+import { AAEvents } from "../AAEvents";
 // import Dead from "./EnemyStates/Dead";
 import Receiver from '../../Wolfie2D/Events/Receiver';
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
@@ -166,7 +166,7 @@ export default class EnemyController extends StateMachineAI {
     public set health(health: number) { 
         this._health = MathUtils.clamp(health, 0, this.maxHealth);
         // When the health changes, fire an event up to the scene.
-        this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
+        this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
         // If the health hit 0, change the state of the Enemy
         if (this.health === 0) { this.changeState(EnemyStates.DEAD); }
     }

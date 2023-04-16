@@ -2,7 +2,7 @@ import StateMachineAI from "../../../../Wolfie2D/AI/StateMachineAI";
 import State from "../../../../Wolfie2D/DataTypes/State/State";
 import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
 import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
-import HW3AnimatedSprite from "../../../Nodes/HW3AnimatedSprite";
+import HW3AnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import PlayerController from "../PlayerController";
 
 /**

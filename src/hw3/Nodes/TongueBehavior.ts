@@ -4,10 +4,10 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Receiver from "../../Wolfie2D/Events/Receiver";
 import GameNode from "../../Wolfie2D/Nodes/GameNode";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
-import { HW3Events } from "../HW3Events";
+import { AAEvents } from "../AAEvents";
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
+import { AAPhysicsGroups } from "../AAPhysicsGroups";
 
 enum TongueState {
     EXTENDING,
@@ -69,9 +69,9 @@ export default class TongueBehavior implements AI {
         this.maxYSpeed = 50;
 
         this.receiver = new Receiver();
-        this.receiver.subscribe(HW3Events.TONGUE_WALL_COLLISION);
-        this.receiver.subscribe(HW3Events.PLAYER_POS_UPDATE);
-        this.receiver.subscribe(HW3Events.SHOOT_TONGUE)
+        this.receiver.subscribe(AAEvents.TONGUE_WALL_COLLISION);
+        this.receiver.subscribe(AAEvents.PLAYER_POS_UPDATE);
+        this.receiver.subscribe(AAEvents.SHOOT_TONGUE)
         
         this.state = TongueState.EXTENDING;
         this.maxDistance = 123; // Set the maximum distance the tongue can extend
@@ -103,7 +103,7 @@ export default class TongueBehavior implements AI {
         this.owner.boundary.sweep(new Vec2(5, 5),this.src, this.dir)
 
         this.owner.addPhysics()
-        this.owner.setGroup(HW3PhysicsGroups.TONGUE)
+        this.owner.setGroup(AAPhysicsGroups.TONGUE)
 
         //this.tongueTipAABB = new AABB(this.owner.position.clone().add(this.dir.normalized().scale(this.owner.size.y/2)), new Vec2(this.owner.size.x/2, this.owner.size.y/2));
         // Set the collision shape of the tongue - these values are probably wrong
@@ -113,15 +113,15 @@ export default class TongueBehavior implements AI {
 
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
-            case HW3Events.TONGUE_WALL_COLLISION: {
+            case AAEvents.TONGUE_WALL_COLLISION: {
                 this.handleTongueWallCollision();
                 break;
             }
-            case HW3Events.PLAYER_POS_UPDATE: {
+            case AAEvents.PLAYER_POS_UPDATE: {
                 this.handlePlayerPosUpdate(event.data.get('pos'));
                 break;
             }
-            case HW3Events.SHOOT_TONGUE: {
+            case AAEvents.SHOOT_TONGUE: {
                 if(!this.tongueActive){
                     this.resetState();
                 }

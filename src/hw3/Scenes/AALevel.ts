@@ -22,9 +22,9 @@ import PlayerController, { PlayerTweens } from "../AI/Player/PlayerController";
 import Fireball from "../AI/Player/Fireball";
 import FireParticles from "../AI/Player/FireParticles";
 
-import { HW3Events } from "../HW3Events";
-import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
-import HW3FactoryManager from "../Factory/HW3FactoryManager";
+import { AAEvents } from "../AAEvents";
+import { AAPhysicsGroups } from "../AAPhysicsGroups";
+import HW3FactoryManager from "../Factory/AAFactoryManager";
 import MainMenu from "./MainMenu";
 import TongueBehavior from "../Nodes/TongueBehavior";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
@@ -145,16 +145,16 @@ export default abstract class HW3Level extends Scene {
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, {...options, physics: {
             groupNames: [
-                HW3PhysicsGroups.GROUND, 
-                HW3PhysicsGroups.PLAYER, 
-                HW3PhysicsGroups.FIREBALL, 
-                HW3PhysicsGroups.FIRE_PARTICLE,
-                HW3PhysicsGroups.DESTRUCTABLE,
-                HW3PhysicsGroups.TONGUE_COLLIDABLE,
-                HW3PhysicsGroups.TONGUE,
-                HW3PhysicsGroups.ICE_PARTICLE,
-                HW3PhysicsGroups.ENEMY,
-                HW3PhysicsGroups.ICE_PLATFORM
+                AAPhysicsGroups.GROUND, 
+                AAPhysicsGroups.PLAYER, 
+                AAPhysicsGroups.FIREBALL, 
+                AAPhysicsGroups.FIRE_PARTICLE,
+                AAPhysicsGroups.DESTRUCTABLE,
+                AAPhysicsGroups.TONGUE_COLLIDABLE,
+                AAPhysicsGroups.TONGUE,
+                AAPhysicsGroups.ICE_PARTICLE,
+                AAPhysicsGroups.ENEMY,
+                AAPhysicsGroups.ICE_PLATFORM
             ],
             collisions:
             [
@@ -244,12 +244,12 @@ export default abstract class HW3Level extends Scene {
         }
 
         if (this.tongue.visible) {
-            this.emitter.fireEvent(HW3Events.PLAYER_POS_UPDATE, {pos: this.player.position.clone(), vel: this.player._velocity.clone() });
+            this.emitter.fireEvent(AAEvents.PLAYER_POS_UPDATE, {pos: this.player.position.clone(), vel: this.player._velocity.clone() });
         }
 
         if(this.selectedSpell ===  SpellTypes.ICE && this.iceParticleSystem.getPool()[0].visible && Input.isMouseJustPressed()){
             let iceParticle = this.iceParticleSystem.getPool()[0];
-            this.emitter.fireEvent(HW3Events.CREATE_PLATFORM, { pos: iceParticle.position });
+            this.emitter.fireEvent(AAEvents.CREATE_PLATFORM, { pos: iceParticle.position });
         }
     }
 
@@ -259,29 +259,29 @@ export default abstract class HW3Level extends Scene {
      */
     protected handleEvent(event: GameEvent): void {
         switch (event.type) {
-            case HW3Events.PAUSE: {
+            case AAEvents.PAUSE: {
                 this.handlePauseGame();
                 break;
             }
-            case HW3Events.RESUME: {
+            case AAEvents.RESUME: {
                 this.handleResumeGame();
                 break;
             }
-            case HW3Events.CONTROLS: {
+            case AAEvents.CONTROLS: {
                 this.handleShowControls();
                 break;
             }
-            case HW3Events.PLAYER_ENTERED_LEVEL_END: {
+            case AAEvents.PLAYER_ENTERED_LEVEL_END: {
                 this.handleEnteredLevelEnd();
                 break;
             }
             // When the level starts, reenable user input
-            case HW3Events.LEVEL_START: {
+            case AAEvents.LEVEL_START: {
                 Input.enableInput();
                 break;
             }
             // When the level ends, change the scene to the next level
-            case HW3Events.LEVEL_END: {
+            case AAEvents.LEVEL_END: {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
                 if (MainMenu.LEVEL_COUNTER < this.nextLevelNum) {
                     MainMenu.LEVEL_COUNTER = this.nextLevelNum;
@@ -289,31 +289,31 @@ export default abstract class HW3Level extends Scene {
                 this.sceneManager.changeToScene(this.nextLevel);
                 break;
             }
-            case HW3Events.PARTICLE_HIT_DESTRUCTIBLE: {
+            case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
                     this.handleFireballHit();
                 }
                 break;
             }
-            case HW3Events.HEALTH_CHANGE: {
+            case AAEvents.HEALTH_CHANGE: {
                 this.handleHealthChange(event.data.get("curhp"), event.data.get("maxhp"));
                 break;
             }
-            case HW3Events.PLAYER_DEAD: {
+            case AAEvents.PLAYER_DEAD: {
                 MainMenu.GAME_PLAYING = false;
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
                 this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
                 this.sceneManager.changeToScene(MainMenu);
                 break;
             }
-            case HW3Events.SHOOT_TONGUE: {
+            case AAEvents.SHOOT_TONGUE: {
                 let pos = event.data.get("pos");
                 let dir = event.data.get("dir");
                 this.spawnTongue(pos, dir);
                 break;
             }
-            case HW3Events.CREATE_PLATFORM:{
+            case AAEvents.CREATE_PLATFORM:{
 
                 //console.log(this.tilemap.getColRowAt(Input.getGlobalMousePosition()))
                 //this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(event.data.get('pos')),5);
@@ -322,25 +322,25 @@ export default abstract class HW3Level extends Scene {
                 break;
             }
             // Handle spell switching
-            case HW3Events.SELECT_TONGUE: {
+            case AAEvents.SELECT_TONGUE: {
                 // TODO temp because tongue is broken
                 this.handleSelectTongue();
                 // this.handleSelectFireball();
                 break;
             }
-            case HW3Events.SELECT_FIREBALL: {
+            case AAEvents.SELECT_FIREBALL: {
                 // TODO temp because tongue is broken
                 this.handleSelectFireball();
                 // this.handleSelectIce();
                 break;
             }
-            case HW3Events.SELECT_ICE: {
+            case AAEvents.SELECT_ICE: {
                 // TODO temp because tongue is broken
                 this.handleSelectIce();
                 // this.handleSelectTongue();
                 break;
             }
-            case HW3Events.TONGUE_WALL_COLLISION:{
+            case AAEvents.TONGUE_WALL_COLLISION:{
                 this.handleTongueHit();
                 break;
             }
@@ -424,7 +424,7 @@ export default abstract class HW3Level extends Scene {
             this.fireParticleSystem.startSystem(1000, 0, particle.position);
         }
 
-        this.emitter.fireEvent(HW3Events.PLAYER_FIRE_JUMP, { fireJumpVel: dir, particlePos: particle.position, playerPos: this.player.position });
+        this.emitter.fireEvent(AAEvents.PLAYER_FIRE_JUMP, { fireJumpVel: dir, particlePos: particle.position, playerPos: this.player.position });
     }
 
     protected handleTongueHit(): void {
@@ -440,7 +440,7 @@ export default abstract class HW3Level extends Scene {
 
         this.tongueParticleSystem.stopSystem();
 
-        this.emitter.fireEvent(HW3Events.PLAYER_SWING, {swingVel: dir, particlePos: particle.position, playerPos: this.player.position });
+        this.emitter.fireEvent(AAEvents.PLAYER_SWING, {swingVel: dir, particlePos: particle.position, playerPos: this.player.position });
     }
 
     /**
@@ -532,9 +532,9 @@ export default abstract class HW3Level extends Scene {
         // Add physics to the destructible layer of the tilemap
         if (this.collidable) {
             this.collidable.addPhysics();
-            this.collidable.setGroup(HW3PhysicsGroups.DESTRUCTABLE);
-            this.collidable.setTrigger(HW3PhysicsGroups.FIREBALL, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
-            this.collidable.setTrigger(HW3PhysicsGroups.TONGUE, HW3Events.TONGUE_WALL_COLLISION, null);
+            this.collidable.setGroup(AAPhysicsGroups.DESTRUCTABLE);
+            this.collidable.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.PARTICLE_HIT_DESTRUCTIBLE, null);
+            this.collidable.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_WALL_COLLISION, null);
 
         }
 
@@ -545,21 +545,21 @@ export default abstract class HW3Level extends Scene {
      * Handles all subscriptions to events
      */
     protected subscribeToEvents(): void {
-        this.receiver.subscribe(HW3Events.TONGUE_WALL_COLLISION);
-        this.receiver.subscribe(HW3Events.PLAYER_ENTERED_LEVEL_END);
-        this.receiver.subscribe(HW3Events.LEVEL_START);
-        this.receiver.subscribe(HW3Events.LEVEL_END);
-        this.receiver.subscribe(HW3Events.PARTICLE_HIT_DESTRUCTIBLE);
-        this.receiver.subscribe(HW3Events.HEALTH_CHANGE);
-        this.receiver.subscribe(HW3Events.PLAYER_DEAD);
-        this.receiver.subscribe(HW3Events.SHOOT_TONGUE);
-        this.receiver.subscribe(HW3Events.SELECT_TONGUE);
-        this.receiver.subscribe(HW3Events.SELECT_FIREBALL);
-        this.receiver.subscribe(HW3Events.SELECT_ICE);
-        this.receiver.subscribe(HW3Events.PAUSE);
-        this.receiver.subscribe(HW3Events.RESUME);
-        this.receiver.subscribe(HW3Events.CONTROLS);
-        this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
+        this.receiver.subscribe(AAEvents.TONGUE_WALL_COLLISION);
+        this.receiver.subscribe(AAEvents.PLAYER_ENTERED_LEVEL_END);
+        this.receiver.subscribe(AAEvents.LEVEL_START);
+        this.receiver.subscribe(AAEvents.LEVEL_END);
+        this.receiver.subscribe(AAEvents.PARTICLE_HIT_DESTRUCTIBLE);
+        this.receiver.subscribe(AAEvents.HEALTH_CHANGE);
+        this.receiver.subscribe(AAEvents.PLAYER_DEAD);
+        this.receiver.subscribe(AAEvents.SHOOT_TONGUE);
+        this.receiver.subscribe(AAEvents.SELECT_TONGUE);
+        this.receiver.subscribe(AAEvents.SELECT_FIREBALL);
+        this.receiver.subscribe(AAEvents.SELECT_ICE);
+        this.receiver.subscribe(AAEvents.PAUSE);
+        this.receiver.subscribe(AAEvents.RESUME);
+        this.receiver.subscribe(AAEvents.CONTROLS);
+        this.receiver.subscribe(AAEvents.CREATE_PLATFORM);
     }
     /**
      * Adds in any necessary UI to the game
@@ -645,7 +645,7 @@ export default abstract class HW3Level extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: HW3Events.LEVEL_END
+            onEnd: AAEvents.LEVEL_END
         });
 
         /*
@@ -663,7 +663,7 @@ export default abstract class HW3Level extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: HW3Events.LEVEL_START
+            onEnd: AAEvents.LEVEL_START
         });
     }
 
@@ -677,8 +677,8 @@ export default abstract class HW3Level extends Scene {
         resumeBtn.scale = new Vec2(0.25,0.25);
         controlsBtn.scale = new Vec2(0.25,0.25);
         quitBtn.scale = new Vec2(0.25,0.25);
-        resumeBtn.onClick = () => { this.emitter.fireEvent(HW3Events.RESUME); }
-        controlsBtn.onClick = () => { this.emitter.fireEvent(HW3Events.CONTROLS); }
+        resumeBtn.onClick = () => { this.emitter.fireEvent(AAEvents.RESUME); }
+        controlsBtn.onClick = () => { this.emitter.fireEvent(AAEvents.CONTROLS); }
         quitBtn.onClick = () => {
             this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
             this.sceneManager.changeToScene(MainMenu);
@@ -736,9 +736,9 @@ export default abstract class HW3Level extends Scene {
         this.icePlatform.visible = false;
         this.icePlatform.addAI(IceBehavior, {src: Vec2.ZERO});
         this.icePlatform.addPhysics();
-        this.icePlatform.setGroup(HW3PhysicsGroups.ICE_PLATFORM);
-        this.icePlatform.setTrigger(HW3PhysicsGroups.TONGUE, HW3Events.TONGUE_WALL_COLLISION, null);
-        this.icePlatform.setTrigger(HW3PhysicsGroups.FIREBALL, HW3Events.PARTICLE_HIT_DESTRUCTIBLE, null);
+        this.icePlatform.setGroup(AAPhysicsGroups.ICE_PLATFORM);
+        this.icePlatform.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_WALL_COLLISION, null);
+        this.icePlatform.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.PARTICLE_HIT_DESTRUCTIBLE, null);
 
         //this.icePlatform.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
 
@@ -772,7 +772,7 @@ export default abstract class HW3Level extends Scene {
         
         // Give the player physics and setup collision groups and triggers for the player
         this.player.addPhysics(new AABB(this.player.position.clone(), this.player.boundary.getHalfSize().clone()));
-        this.player.setGroup(HW3PhysicsGroups.PLAYER);
+        this.player.setGroup(AAPhysicsGroups.PLAYER);
 
         // Give the player a flip animation
         this.player.tweens.add(PlayerTweens.FLIP, {
@@ -805,7 +805,7 @@ export default abstract class HW3Level extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: HW3Events.PLAYER_DEAD
+            onEnd: AAEvents.PLAYER_DEAD
         });
 
         // Give the player it's AI
@@ -840,7 +840,7 @@ export default abstract class HW3Level extends Scene {
         
         this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, { position: this.levelEndPosition, size: this.levelEndHalfSize });
         this.levelEndArea.addPhysics(undefined, undefined, false, true);
-        this.levelEndArea.setTrigger(HW3PhysicsGroups.PLAYER, HW3Events.PLAYER_ENTERED_LEVEL_END, null);
+        this.levelEndArea.setTrigger(AAPhysicsGroups.PLAYER, AAEvents.PLAYER_ENTERED_LEVEL_END, null);
         this.levelEndArea.color = new Color(255, 0, 255, .20);
         
     }

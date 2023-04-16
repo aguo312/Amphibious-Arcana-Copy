@@ -4,10 +4,10 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Receiver from "../../Wolfie2D/Events/Receiver";
 import GameNode from "../../Wolfie2D/Nodes/GameNode";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
-import { HW3Events } from "../HW3Events";
+import { AAEvents } from "../AAEvents";
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import { HW3PhysicsGroups } from "../HW3PhysicsGroups";
+import { AAPhysicsGroups } from "../AAPhysicsGroups";
 
 enum IceState {
     EXTENDING,
@@ -52,7 +52,7 @@ export default class IceBehavior implements AI {
 
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
-            case HW3Events.CREATE_PLATFORM: {
+            case AAEvents.CREATE_PLATFORM: {
                 this.handleCreatePlatform();
                 break;
             }

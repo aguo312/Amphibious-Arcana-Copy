@@ -4,7 +4,7 @@ import Scene from "../../../Wolfie2D/Scene/Scene";
 import Color from "../../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../../Wolfie2D/Utils/EaseFunctions";
 import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
-import { HW3PhysicsGroups } from "../../HW3PhysicsGroups";
+import { AAPhysicsGroups } from "../../AAPhysicsGroups";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 
 /**
@@ -78,7 +78,7 @@ export default class IceParticles extends ParticleSystem {
         super.initializePool(scene, layer);
         for (let i = 0; i < this.particlePool.length; i++) {
             // Set particle physics group to the player's weapon
-            this.particlePool[i].setGroup(HW3PhysicsGroups.ICE_PARTICLE);
+            this.particlePool[i].setGroup(AAPhysicsGroups.ICE_PARTICLE);
         }
     }
 

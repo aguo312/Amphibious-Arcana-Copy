@@ -1,6 +1,6 @@
 import { PlayerStates, PlayerAnimations } from "../PlayerController";
 import Input from "../../../../Wolfie2D/Input/Input";
-import { HW3Controls } from "../../../HW3Controls";
+import { AAControls } from "../../../AAControls";
 import PlayerState from "./PlayerState";
 
 export default class Walk extends PlayerState {
@@ -23,7 +23,7 @@ export default class Walk extends PlayerState {
 			this.finished(PlayerStates.IDLE);
 		} 
         // If the player hits the jump key - transition to the Jump state
-        else if (Input.isJustPressed(HW3Controls.JUMP)) {
+        else if (Input.isJustPressed(AAControls.JUMP)) {
             this.finished(PlayerStates.JUMP);
         } 
         // If the player is not on the ground, transition to the fall state

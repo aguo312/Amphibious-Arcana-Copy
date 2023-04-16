@@ -1,7 +1,7 @@
 /**
  * A set of events for HW4
  */
-export const HW3Events = {
+export const AAEvents = {
     // An event that tells the HW4 level to start. Has data: {}
     LEVEL_START: "LEVEL_START",
     // An event that tells the HW4 level to end. Has data: {}

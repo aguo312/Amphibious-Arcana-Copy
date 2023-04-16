@@ -1,10 +1,10 @@
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import HW3Level, {HW3Layers} from "./HW3Level";
+import HW3Level, {HW3Layers} from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import HW4Level2 from "./HW3Level2";
+import HW4Level2 from "./AALevel2";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";

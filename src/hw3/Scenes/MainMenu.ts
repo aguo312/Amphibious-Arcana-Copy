@@ -5,7 +5,7 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
-import Level1 from "./HW3Level1";
+import Level1 from "./AALevel1";
 import LevelSelect from "./LevelSelect";
 import ControlsScene from "./ControlsScene";
 import HelpScene from "./HelpScene";

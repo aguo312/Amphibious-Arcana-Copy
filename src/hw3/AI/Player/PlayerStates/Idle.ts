@@ -2,7 +2,7 @@ import { PlayerStates, PlayerAnimations } from "../PlayerController";
 import PlayerState from "./PlayerState";
 import PlayerController from "../PlayerController";
 import Input from "../../../../Wolfie2D/Input/Input";
-import { HW3Controls } from "../../../HW3Controls";
+import { AAControls } from "../../../AAControls";
 
 export default class Idle extends PlayerState {
 
@@ -26,7 +26,7 @@ export default class Idle extends PlayerState {
 			this.finished(PlayerStates.RUN);
 		} 
         // If the player is jumping, transition to the jumping state
-        else if (Input.isJustPressed(HW3Controls.JUMP)) {
+        else if (Input.isJustPressed(AAControls.JUMP)) {
             this.finished(PlayerStates.JUMP);
         }
         // If the player is not on the ground, transition to the falling state

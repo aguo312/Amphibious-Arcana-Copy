@@ -10,10 +10,10 @@ import Run from "./PlayerStates/Run";
 import Fireball from "./Fireball";
 import Input from "../../../Wolfie2D/Input/Input";
 
-import { HW3Controls } from "../../HW3Controls";
-import HW3AnimatedSprite from "../../Nodes/HW3AnimatedSprite";
+import { AAControls } from "../../AAControls";
+import HW3AnimatedSprite from "../../Nodes/AAAnimatedSprite";
 import MathUtils from "../../../Wolfie2D/Utils/MathUtils";
-import { HW3Events } from "../../HW3Events";
+import { AAEvents } from "../../AAEvents";
 import Dead from "./PlayerStates/Dead";
 import Receiver from '../../../Wolfie2D/Events/Receiver';
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
@@ -119,8 +119,8 @@ export default class PlayerController extends StateMachineAI {
         this.selectedSpell = SpellTypes.FIREBALL;
 
         this.receiver = new Receiver();
-        this.receiver.subscribe(HW3Events.PLAYER_FIRE_JUMP);
-        this.receiver.subscribe(HW3Events.PLAYER_SWING);
+        this.receiver.subscribe(AAEvents.PLAYER_FIRE_JUMP);
+        this.receiver.subscribe(AAEvents.PLAYER_SWING);
         //this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
 
     }
@@ -128,7 +128,7 @@ export default class PlayerController extends StateMachineAI {
     handleEvent(event: GameEvent): void {
         switch(event.type) {
             // Move player on a fireball jump
-            case HW3Events.PLAYER_FIRE_JUMP: {
+            case AAEvents.PLAYER_FIRE_JUMP: {
                 const vel: Vec2 = event.data.get('fireJumpVel');
                 const playerPos: Vec2 = event.data.get('playerPos');
                 const particlePos: Vec2 = event.data.get('particlePos');
@@ -152,7 +152,7 @@ export default class PlayerController extends StateMachineAI {
 
                 break;
             }
-            case HW3Events.PLAYER_SWING:{
+            case AAEvents.PLAYER_SWING:{
                 const vel: Vec2 = event.data.get('swingVel');
                 const playerPos: Vec2 = event.data.get('playerPos');
                 const particlePos: Vec2 = event.data.get('particlePos');
@@ -182,8 +182,8 @@ export default class PlayerController extends StateMachineAI {
 	 */
     public get inputDir(): Vec2 {
         let direction = Vec2.ZERO;
-		direction.x = (Input.isPressed(HW3Controls.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(HW3Controls.MOVE_RIGHT) ? 1 : 0);
-		direction.y = (Input.isJustPressed(HW3Controls.JUMP) ? -1 : 0);
+		direction.x = (Input.isPressed(AAControls.MOVE_LEFT) ? -1 : 0) + (Input.isPressed(AAControls.MOVE_RIGHT) ? 1 : 0);
+		direction.y = (Input.isJustPressed(AAControls.JUMP) ? -1 : 0);
 		return direction;
     }
     /** 
@@ -226,25 +226,25 @@ export default class PlayerController extends StateMachineAI {
                     throw new Error(`Unhandled attack type ${this.selectedSpell} caught in handlePlayerAttack()`);
                 }
             }
-            this.emitter.fireEvent(HW3Events.PLAYER_ATTACK);
+            this.emitter.fireEvent(AAEvents.PLAYER_ATTACK);
         }
 
         // Set the selected spell
-        if (Input.isPressed(HW3Controls.SELECT_TONGUE)) {
+        if (Input.isPressed(AAControls.SELECT_TONGUE)) {
             this.selectedSpell = SpellTypes.TONGUE;
-            this.emitter.fireEvent(HW3Events.SELECT_TONGUE);
+            this.emitter.fireEvent(AAEvents.SELECT_TONGUE);
         }
-        if (Input.isPressed(HW3Controls.SELECT_FIREBALL)) {
+        if (Input.isPressed(AAControls.SELECT_FIREBALL)) {
             this.selectedSpell = SpellTypes.FIREBALL;
-            this.emitter.fireEvent(HW3Events.SELECT_FIREBALL);
+            this.emitter.fireEvent(AAEvents.SELECT_FIREBALL);
         }
-        if (Input.isPressed(HW3Controls.SELECT_ICE)) {
+        if (Input.isPressed(AAControls.SELECT_ICE)) {
             this.selectedSpell = SpellTypes.ICE;
-            this.emitter.fireEvent(HW3Events.SELECT_ICE);
+            this.emitter.fireEvent(AAEvents.SELECT_ICE);
         }
 
-        if (Input.isPressed(HW3Controls.PAUSE)) {
-            this.emitter.fireEvent(HW3Events.PAUSE);
+        if (Input.isPressed(AAControls.PAUSE)) {
+            this.emitter.fireEvent(AAEvents.PAUSE);
         }
 
 	}
@@ -257,7 +257,7 @@ export default class PlayerController extends StateMachineAI {
             this.tongueProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.tongueProjectile.startSystem(500, 0, this.owner.position);
-            this.emitter.fireEvent(HW3Events.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir});
+            this.emitter.fireEvent(AAEvents.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir});
         }
     }
 
@@ -294,7 +294,7 @@ export default class PlayerController extends StateMachineAI {
     public set health(health: number) { 
         this._health = MathUtils.clamp(health, 0, this.maxHealth);
         // When the health changes, fire an event up to the scene.
-        this.emitter.fireEvent(HW3Events.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
+        this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
         // If the health hit 0, change the state of the player
         if (this.health === 0) { this.changeState(PlayerStates.DEAD); }
     }
