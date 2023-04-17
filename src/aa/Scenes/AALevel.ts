@@ -140,6 +140,8 @@ export default abstract class HW3Level extends Scene {
     protected jumpAudioKey: string;
     protected tileDestroyedAudioKey: string;
 
+    protected allNPCS: Map<number, AnimatedSprite>;
+
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
@@ -165,8 +167,8 @@ export default abstract class HW3Level extends Scene {
                 [0, 1, 1, 1, 0, 0, 0, 0, 1, 1],
                 [0, 0, 0, 0, 0, 0, 1, 0, 1, 1],
                 [1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
-                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
-                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
             ]
@@ -182,6 +184,8 @@ export default abstract class HW3Level extends Scene {
 
         // this.selectedSpell = SpellTypes.TONGUE;
         this.selectedSpell = SpellTypes.FIREBALL;
+
+        this.allNPCS = new Map<number, AnimatedSprite>();;
     }
 
     public loadScene() {
@@ -289,6 +293,46 @@ export default abstract class HW3Level extends Scene {
                 this.sceneManager.changeToScene(this.nextLevel);
                 break;
             }
+            case AAEvents.FIREBALL_HIT_ENEMY:{
+                if (this.fireballTimer.isStopped()) {
+                    this.fireballTimer.start();
+                    this.handleFireballHit();
+
+                    
+                }
+                break;
+            }
+            case AAEvents.ICEBALL_HIT_ENEMY:{
+                let enemy = this.allNPCS.get(event.data.get("other"));
+
+                if(!enemy.frozen){
+
+                    enemy.freeze();
+                    enemy.animation.pause();
+
+                    // Add a cyan overlay to indicate that the enemy is frozen
+                    const frozenOverlay = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+
+                    frozenOverlay.color = Color.CYAN; // Cyan color
+                    frozenOverlay.alpha = 0.5; // Set transparency
+                    frozenOverlay.size = enemy.size.clone().scale(.25);
+                    frozenOverlay.position = enemy.position.clone()
+                    frozenOverlay.visible = true;
+
+                    this.iceParticleSystem.getPool()[0].freeze(); 
+                    this.iceParticleSystem.getPool()[0].visible = false;   
+                }
+
+                break;
+            }
+            case AAEvents.TONGUE_HIT_ENEMY:{
+                let enemy = this.allNPCS.get(event.data.get("other"));
+                this.tongueParticleSystem.getPool()[0].freeze(); 
+                this.tongueParticleSystem.getPool()[0].visible = false;   
+                //I hope there's another way
+                this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy})
+                break;
+            }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
@@ -355,6 +399,14 @@ export default abstract class HW3Level extends Scene {
         }
     }
 
+    protected handleTongueHitEnemy(enemy: AnimatedSprite): void {
+        // TODO maybe use GameNode?
+        let playerPos = this.player.position;
+        let enemyPos = enemy.position;
+
+
+    }
+
     protected spawnTongue(pos: Vec2, dir: Vec2): void {
         // TODO maybe use GameNode?
         if (this.tongue && !this.tongue.visible) {
@@ -412,7 +464,7 @@ export default abstract class HW3Level extends Scene {
             console.warn('Fireball particle undefined');
             return;
         }
-        console.log("YEOOOO")
+
         // Rocket jump direction
         // TODO should be less effective when fireball lands farther away
         let dir = new Vec2(-0.8*particle.vel.x, -0.8*particle.vel.y);
@@ -537,9 +589,6 @@ export default abstract class HW3Level extends Scene {
             this.collidable.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_WALL_COLLISION, null);
 
         }
-
-        // this.tongueCollidable.addPhysics();
-        // this.tongueCollidable.setGroup(HW3PhysicsGroups.TONGUE_COLLIDABLE);
     }
     /**
      * Handles all subscriptions to events
@@ -560,6 +609,10 @@ export default abstract class HW3Level extends Scene {
         this.receiver.subscribe(AAEvents.RESUME);
         this.receiver.subscribe(AAEvents.CONTROLS);
         this.receiver.subscribe(AAEvents.CREATE_PLATFORM);
+        this.receiver.subscribe(AAEvents.FIREBALL_HIT_ENEMY);
+        this.receiver.subscribe(AAEvents.ICEBALL_HIT_ENEMY);
+        this.receiver.subscribe(AAEvents.TONGUE_HIT_ENEMY);
+
     }
     /**
      * Adds in any necessary UI to the game
@@ -769,16 +822,11 @@ export default abstract class HW3Level extends Scene {
         this.icePlatform.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_WALL_COLLISION, null);
         this.icePlatform.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.PARTICLE_HIT_DESTRUCTIBLE, null);
 
-        //this.icePlatform.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
-
-        // //Attempt to add physics to the tongue
-        // this.tongue.addPhysics();
-        // this.tongue.setGroup(HW3PhysicsGroups.TONGUE)
-
         // initialize Ice Blast
         this.iceParticleSystem = new IceParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
         this.iceParticleSystem.initializePool(this, HW3Layers.PRIMARY);
     }
+
     /**
      * Initializes the player, setting the player's initial position to the given position.
      * @param position the player's spawn position

@@ -10,6 +10,8 @@ import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
+import { AAPhysicsGroups } from "../AAPhysicsGroups";
+import { AAEvents } from "../AAEvents";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -144,10 +146,18 @@ export default class Level1 extends HW3Level {
         scabbers.scale.scale(0.25);
         scabbers.position.set(Level1.PLAYER_SPAWN.x, Level1.PLAYER_SPAWN.y);
         scabbers.addPhysics();
+        scabbers.setGroup(AAPhysicsGroups.ENEMY);
+        scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null)
+        scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null)
+        scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null)
+
+
         // scabbers.addPhysics(new AABB(Vec2.ZERO, scabbers.size.clone()), null, false);
         scabbers.addAI(IdleBehavior);
         // scabbers.addAI(PaceBehavior);
         scabbers.animation.play("IDLE");
+        this.allNPCS.set(scabbers.id, scabbers);
+
     }
 
     /**

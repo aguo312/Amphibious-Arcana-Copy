@@ -8,6 +8,7 @@ import { AAEvents } from "../AAEvents";
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
+import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 
 enum TongueState {
     EXTENDING,
@@ -52,6 +53,10 @@ export default class TongueBehavior implements AI {
     private tongueActive: boolean;
     private stopExtending: boolean;
 
+    private playerPos: Vec2;
+    private attachedEnemy: AnimatedSprite;
+    private wallCollision: Boolean;
+
     public initializeAI(owner: Graphic, options: Record<string, any>): void {
         this.owner = owner;
 
@@ -69,6 +74,7 @@ export default class TongueBehavior implements AI {
         this.maxYSpeed = 50;
 
         this.receiver = new Receiver();
+        this.receiver.subscribe(AAEvents.ENEMY_ATTACHED);
         this.receiver.subscribe(AAEvents.TONGUE_WALL_COLLISION);
         this.receiver.subscribe(AAEvents.PLAYER_POS_UPDATE);
         this.receiver.subscribe(AAEvents.SHOOT_TONGUE)
@@ -78,8 +84,13 @@ export default class TongueBehavior implements AI {
         this.distanceTraveled = 0;
         
         this.tongueActive = false;
-      
+
+        this.playerPos = Vec2.ZERO
+        
         this.stopExtending = false;
+
+        this.attachedEnemy = null;
+        this.wallCollision = false;
         this.activate(options);
     }
 
@@ -114,7 +125,17 @@ export default class TongueBehavior implements AI {
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case AAEvents.TONGUE_WALL_COLLISION: {
+                this.wallCollision = true;
                 this.handleTongueWallCollision();
+                break;
+            }
+            case AAEvents.ENEMY_ATTACHED: {
+                //this.handleTongueHitEnemy(event.data.get('enemy'));
+
+                if(event.data.get('enemy')){
+                    this.attachedEnemy = event.data.get('enemy')
+                    this.stopExtending = true;
+                }
                 break;
             }
             case AAEvents.PLAYER_POS_UPDATE: {
@@ -140,35 +161,56 @@ export default class TongueBehavior implements AI {
         // this.owner.visible = false;
 
         this.stopExtending = true;
-        console.log("IT COLLIDEDDDDDDDDDDDD")
     }
 
     protected handlePlayerPosUpdate(pos: Vec2): void {
 
         // Calculate the position of the tongue base
         const tongueBase = pos.clone().add(this.dir.normalized().scale(this.owner.size.y * 0.5));
+        this.playerPos = pos.clone();
         this.owner.position.copy(tongueBase);
-
     }
 
 
     public getTongueTipAABB(): AABB {
         return this.tongueTipAABB;
     }
-    
 
     private resetState(): void {
         this.state = TongueState.EXTENDING;
         this.distanceTraveled = 0;
         this.tongueActive = true;
         this.stopExtending = false;
+        this.attachedEnemy = null;
+        this.wallCollision = false;
     }
 
     public update(deltaT: number): void {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
-    
+
+
+            // Check if there's an attached enemy
+        if (this.attachedEnemy && !this.wallCollision) {
+
+            const tongueMovement = this.dir.normalized().scale(-this.currentYSpeed * deltaT);
+
+            // Calculate the vector from the enemy to the player
+            const direction = this.playerPos.clone().sub(this.attachedEnemy.position);
+
+            // Calculate the distance that the enemy moves per frame in the X and Y directions
+            const movementX = direction.normalized().x * tongueMovement.mag();
+            const movementY = direction.normalized().y * tongueMovement.mag();
+
+            // Move the enemy towards the player
+            this.attachedEnemy.position.add(new Vec2(movementX, movementY));
+
+            // Decrease the enemy's scale each frame
+            const scaleDelta = 0.01;
+            this.attachedEnemy.scale.sub(new Vec2(scaleDelta, scaleDelta));
+        }
+        
         // Only update the tongue if it's visible and the flag is not set to stop extending
         if (this.owner.visible) {
             // TODO need to set up collision somewhere for this
@@ -202,6 +244,8 @@ export default class TongueBehavior implements AI {
                     this.distanceTraveled = 0;
                     this.tongueActive = false;
                     this.stopExtending = false;
+                    this.attachedEnemy.destroy();
+                    this.attachedEnemy = null;
                     return;
                 }
             }

@@ -250,9 +250,8 @@ export default class PlayerController extends StateMachineAI {
 	}
 
     protected tongueAttack(): void {
-
-        console.log(this.tongueGraphic)
         if (!this.tongueProjectile.isSystemRunning() && !this.tongueGraphic.visible) {
+            this.tongueProjectile.getPool()[0].unfreeze();
             // Update the rotation to apply the particles velocity vector
             this.tongueProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
