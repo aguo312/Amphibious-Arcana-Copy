@@ -244,7 +244,9 @@ export default class TongueBehavior implements AI {
                     this.distanceTraveled = 0;
                     this.tongueActive = false;
                     this.stopExtending = false;
-                    this.attachedEnemy.destroy();
+                    if(this.attachedEnemy){
+                        this.attachedEnemy.destroy();
+                    }
                     this.attachedEnemy = null;
                     return;
                 }

@@ -10,13 +10,9 @@ import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
-<<<<<<< HEAD
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
-=======
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
->>>>>>> 16a0a4683808df1fbeee77fe6cf916a72dd0e966
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
