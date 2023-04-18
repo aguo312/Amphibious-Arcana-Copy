@@ -36,6 +36,7 @@ import TongueParticle from "../AI/Player/TongueParticle";
 import IceBehavior from "../Nodes/IceBehavior";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
+import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
 
 /**
  * A const object for the layer names
@@ -298,9 +299,12 @@ export default abstract class AALevel extends Scene {
             case AAEvents.FIREBALL_HIT_ENEMY:{
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
-                    this.handleFireballHit();
-
-                    
+                    // this.handleFireballHit();
+                    // console.log("FIREBALL HIT");
+                    let enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
+                    enemy.health -= 1
+                    this.fireParticleSystem.getPool()[0].freeze(); 
+                    this.fireParticleSystem.getPool()[0].visible = false; 
                 }
                 break;
             }

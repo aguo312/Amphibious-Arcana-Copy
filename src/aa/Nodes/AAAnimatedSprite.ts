@@ -1,4 +1,6 @@
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import MathUtils from "../../Wolfie2D/Utils/MathUtils";
+import { AAEvents } from "../AAEvents";
 import AALevel from "../Scenes/AALevel";
 
 /**
@@ -21,10 +23,17 @@ export default class AAAnimatedSprite extends AnimatedSprite {
     public setScene(scene: AALevel): void { this.scene = scene; }
     public getScene(): AALevel { return this.scene; }
 
-    public set health(health: number) { this._health = health; }
-    public get health(): number { return this._health; }
-
-    public set maxHealth(health: number) { this.max_health = health; }
     public get maxHealth(): number { return this.max_health; }
+    public set maxHealth(health: number) { this.max_health = health; }
+    
+    public get health(): number { return this._health; }
+    public set health(health: number) {
+        this._health = MathUtils.clamp(health, 0, this.maxHealth);
+        // this.emitter.fireEvent(AAEvents.ENEMY_HEALTH_CHANGE, {id: this.id, curhp: this.health, maxhp: this.maxHealth});
+        if (this._health === 0) {
+            // will die
+            // change state?
+        }
+    }
 
 }
