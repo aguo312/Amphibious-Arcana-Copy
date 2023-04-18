@@ -196,12 +196,16 @@ export default class TongueBehavior implements AI {
 
             const tongueMovement = this.dir.normalized().scale(-this.currentYSpeed * deltaT);
 
+            this.attachedEnemy.freeze()
             // Calculate the vector from the enemy to the player
             const direction = this.playerPos.clone().sub(this.attachedEnemy.position);
 
             // Calculate the distance that the enemy moves per frame in the X and Y directions
             const movementX = direction.normalized().x * tongueMovement.mag();
             const movementY = direction.normalized().y * tongueMovement.mag();
+
+            console.log(movementX)
+            console.log(movementY)
 
             // Move the enemy towards the player
             this.attachedEnemy.position.add(new Vec2(movementX, movementY));
