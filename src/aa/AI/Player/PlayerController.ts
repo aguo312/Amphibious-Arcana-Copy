@@ -160,19 +160,25 @@ export default class PlayerController extends StateMachineAI {
                 break;
             }
             case AAEvents.PLAYER_SWING:{
-                const vel: Vec2 = event.data.get('swingVel');
+                const dir: Vec2 = event.data.get('swingDir');
                 const playerPos: Vec2 = event.data.get('playerPos');
                 const particlePos: Vec2 = event.data.get('particlePos');
 
-                // Calculate the difference between the player and the grapple point
-                const posDiff = MathUtils.clamp(playerPos.clone().distanceTo(particlePos), 1, 25);
-                
+                // Calculate the distance between the player and the grapple point
+                const posDiff = playerPos.clone().distanceTo(particlePos);
+       
                 // Scale the velocity based on the distance between the player and the grapple point
-                const scaleFactor = MathUtils.clamp(Math.pow(25, 0.8) - 0.7 * Math.pow(posDiff, 0.8), 0, 8);
+                const minSwingDist = 5; // The minimum distance for a successful swing
+                const maxSwingDist = 20; // The maximum distance for a successful swing
+                let scaleFactor = MathUtils.clamp((posDiff - minSwingDist) / (maxSwingDist - minSwingDist), 0, 1) * 3;
 
-                // Set the player's velocity to the scaled velocity
-                // You will need to have access to the player object and its velocity vector
-                this.velocity = vel.clone().scale(scaleFactor);
+                // Adjust the scaling factor based on the state of the player
+                if (this.currentState instanceof Fall || this.currentState instanceof Jump) {
+                    scaleFactor *= 1.5;
+                }
+
+                // Set the velocity of the player
+                this.velocity = dir.clone().scale(scaleFactor);
 
                 break;
             }
@@ -270,6 +276,8 @@ export default class PlayerController extends StateMachineAI {
     protected fireballAttack(): void {
         // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
         if (!this.fireProjectile.isSystemRunning() && !this.fireParticles.isSystemRunning()) {
+            this.fireProjectile.getPool()[0].unfreeze(); 
+
             // Update the rotation to apply the particles velocity vector
             this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position

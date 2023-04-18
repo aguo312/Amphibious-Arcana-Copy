@@ -302,11 +302,11 @@ export default abstract class AALevel extends Scene {
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
                     // this.handleFireballHit();
-                    // console.log("FIREBALL HIT");
+                    console.log("FIREBALL HIT");
                     let enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     enemy.health -= 1
-                    this.fireParticleSystem.getPool()[0].freeze(); 
-                    this.fireParticleSystem.getPool()[0].visible = false; 
+                    this.fireballSystem.getPool()[0].freeze(); 
+                    this.fireballSystem.getPool()[0].visible = false; 
                 }
                 break;
             }
@@ -498,7 +498,7 @@ export default abstract class AALevel extends Scene {
 
         this.tongueParticleSystem.stopSystem();
 
-        this.emitter.fireEvent(AAEvents.PLAYER_SWING, {swingVel: dir, particlePos: particle.position, playerPos: this.player.position });
+        this.emitter.fireEvent(AAEvents.PLAYER_SWING, {swingDir: dir, particlePos: particle.position, playerPos: this.player.position });
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.grappleAudioKey, loop: false, holdReference: false });
     }
 
