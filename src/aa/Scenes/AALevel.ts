@@ -34,6 +34,7 @@ import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import IceParticles from "../AI/Player/IceParticles";
 import TongueParticle from "../AI/Player/TongueParticle";
 import IceBehavior from "../Nodes/IceBehavior";
+import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 
 /**
  * A const object for the layer names
@@ -522,6 +523,11 @@ export default abstract class AALevel extends Scene {
     protected handlePauseGame(): void {
         MainMenu.GAME_PLAYING = false;
         this.player.setAIActive(false, null);
+        this.player.animation.pause();
+        this.allNPCS.forEach(npc => {
+            npc.setAIActive(false, null)
+            npc.animation.pause();
+        });
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
         this.getLayer(AALayers.PAUSE).enable();
     }
@@ -534,6 +540,11 @@ export default abstract class AALevel extends Scene {
             iceParticleSystem: this.iceParticleSystem,
             tongueParticleSystem: this.tongueParticleSystem,
             tilemap: "Destructable"
+        });
+        this.player.animation.resume();
+        this.allNPCS.forEach(npc => {
+            npc.setAIActive(true, {})
+            npc.animation.resume();
         });
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.levelMusicKey, loop: true, holdReference: true});
         this.getLayer(AALayers.PAUSE).disable();
