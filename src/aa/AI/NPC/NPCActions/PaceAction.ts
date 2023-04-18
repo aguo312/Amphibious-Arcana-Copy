@@ -4,7 +4,7 @@ import GameNode from "../../../../Wolfie2D/Nodes/GameNode";
 import Timer from "../../../../Wolfie2D/Timing/Timer";
 import NPCActor from "../../../Actors/NPCActor";
 import { TargetableEntity } from "../../../GameSystems/Targeting/TargetableEntity";
-import HW3AnimatedSprite from "../../../Nodes/AAAnimatedSprite";
+import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import NPCAction from "./NPCAction";
 
@@ -12,12 +12,12 @@ export default class PaceAction extends NPCAction {
 
     protected moveTimer: Timer;
     protected dir: Vec2;
-    protected owner: HW3AnimatedSprite;
+    protected owner: AAAnimatedSprite;
     protected animation: string;
 
     public constructor(parent: NPCBehavior, actor: NPCActor) {
         super(parent, actor);
-        this.owner = actor as HW3AnimatedSprite;
+        this.owner = actor as AAAnimatedSprite;
         console.log('PaceAction this.owner', this.owner);
     }
 

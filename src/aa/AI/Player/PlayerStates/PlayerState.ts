@@ -2,7 +2,7 @@ import StateMachineAI from "../../../../Wolfie2D/AI/StateMachineAI";
 import State from "../../../../Wolfie2D/DataTypes/State/State";
 import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
 import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
-import HW3AnimatedSprite from "../../../Nodes/AAAnimatedSprite";
+import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import PlayerController from "../PlayerController";
 
 /**
@@ -11,10 +11,10 @@ import PlayerController from "../PlayerController";
 export default abstract class PlayerState extends State {
 
     protected parent: PlayerController;
-	protected owner: HW3AnimatedSprite;
+	protected owner: AAAnimatedSprite;
 	protected gravity: number;
 
-	public constructor(parent: PlayerController, owner: HW3AnimatedSprite){
+	public constructor(parent: PlayerController, owner: AAAnimatedSprite){
 		super(parent);
 		this.owner = owner;
         this.gravity = 500;

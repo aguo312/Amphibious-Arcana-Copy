@@ -1,6 +1,6 @@
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import HW3Level, {HW3Layers} from "./AALevel";
+import AALevel, {AALayers} from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
@@ -13,11 +13,12 @@ import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
+import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
  */
-export default class Level1 extends HW3Level {
+export default class Level1 extends AALevel {
 
     public static readonly PLAYER_SPAWN = new Vec2(50, 480);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
@@ -81,7 +82,7 @@ export default class Level1 extends HW3Level {
        let size = this.viewport.getHalfSize();
 
         // add random tutorial text
-        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(size.x, 180), text: "Try shooting fire at your feet to jump!"});
+        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(size.x, 180), text: "Try shooting fire at your feet to jump!"});
         this.tutorialText.size = new Vec2(300, 25);
         // this.tutorialText.backgroundColor = Color.BLACK;
         // this.tutorialText.backgroundColor.a = 10;
@@ -138,7 +139,7 @@ export default class Level1 extends HW3Level {
     }
 
     protected initializeNPCs(): void {
-        let scabbers = this.add.animatedSprite("Scabbers", HW3Layers.PRIMARY);
+        let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
         scabbers.scale.scale(0.25);
         scabbers.position.set(Level1.PLAYER_SPAWN.x, Level1.PLAYER_SPAWN.y);
         scabbers.addPhysics();
@@ -147,6 +148,10 @@ export default class Level1 extends HW3Level {
         scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null)
         scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null)
 
+        // scabbers.health = 10;
+        // scabbers.maxHealth = 10;
+        // let healthbar = new HealthbarHUD(this, scabbers, "primary", {size: scabbers.size.clone().scaled(2, 1/2), offset: scabbers.size.clone().scaled(0, -1/2)});
+        // this.healthbars.set(scabbers.id, healthbar);
 
         // scabbers.addPhysics(new AABB(Vec2.ZERO, scabbers.size.clone()), null, false);
         //scabbers.addAI(IdleBehavior);

@@ -1,6 +1,6 @@
 import StateMachineAI from "../../../../Wolfie2D/AI/StateMachineAI";
 import NPCActor from "../../../Actors/NPCActor";
-import HW3AnimatedSprite from "../../../Nodes/AAAnimatedSprite";
+import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import GoalReached from '../NPCStatuses/FalseStatus';
 import PaceAction from "../NPCActions/PaceAction";
@@ -16,7 +16,7 @@ export default class EnemyBehavior extends NPCBehavior {
     
     private readonly X_VEL: number = 25;
 
-    public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>): void {
+    public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>): void {
         super.initializeAI(owner, options);
         this.owner = owner;
         console.log('EnemyBehavior this.owner', this.owner);

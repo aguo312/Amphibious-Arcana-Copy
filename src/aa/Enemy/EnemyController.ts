@@ -11,7 +11,7 @@ import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Input from "../../Wolfie2D/Input/Input";
 
 import { AAControls } from "../AAControls";
-import HW3AnimatedSprite from "../Nodes/AAAnimatedSprite";
+import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { AAEvents } from "../AAEvents";
 // import Dead from "./EnemyStates/Dead";
@@ -59,7 +59,7 @@ export default class EnemyController extends StateMachineAI {
     protected _maxHealth: number;
 
     /** The Enemys game node */
-    protected owner: HW3AnimatedSprite;
+    protected owner: AAAnimatedSprite;
 
     protected _velocity: Vec2;
 	protected _speed: number;
@@ -70,7 +70,7 @@ export default class EnemyController extends StateMachineAI {
 
     protected receiver: Receiver;
     
-    public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>){
+    public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>){
         this.owner = owner;
 
         //this.weapon = options.weaponSystem;
