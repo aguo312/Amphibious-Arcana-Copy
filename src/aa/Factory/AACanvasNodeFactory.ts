@@ -6,7 +6,7 @@ import AALevel from "../Scenes/AALevel";
  * An extension of Wolfie2ds CanvasNodeFactory. The purpose of the class is to add functionality for adding custom
  * game nodes to HW3Levels. 
  */
-export default class HW3CanvasNodeFactory extends CanvasNodeFactory {
+export default class AACanvasNodeFactory extends CanvasNodeFactory {
 
     // Reference to the HW4Level
     protected scene: AALevel;
