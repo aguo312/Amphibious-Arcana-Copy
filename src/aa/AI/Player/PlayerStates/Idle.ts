@@ -34,12 +34,21 @@ export default class Idle extends PlayerState {
             this.finished(PlayerStates.FALL);
         } else {
             // Update the vertical velocity of the player
-            this.parent.velocity.y += this.gravity*deltaT;
+            // If player stationary on ground, don't add to velocity, just set it
+            // This check could probably be better but works for now
+            if (this.parent.velocity.y === 0 || this.parent.velocity.y === this.gravity*deltaT) {
+                this.parent.velocity.y = this.gravity*deltaT;
+            // Otherwise if we have a velocity from a firejump (or something else), add to velocity
+            } else {
+                this.parent.velocity.y += this.gravity*deltaT;
+            }
+
             // Move the player
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }
 
         // Otherwise, do nothing (keep idling)
+        console.log('velocity: ' + this.parent.velocity);
 		
 	}
 

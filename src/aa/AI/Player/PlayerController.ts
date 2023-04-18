@@ -141,11 +141,17 @@ export default class PlayerController extends StateMachineAI {
                     : MathUtils.clamp(Math.pow(25, 0.8) - 0.7 * Math.pow(posDiff, 0.8), 0, 8)
                      
 
-                console.log('vel before: ' + this.velocity);
-                // this.velocity = vel.clone().scale(scaleFactor);
+                console.log('vel: ' + vel);
+                console.log('player vel before: ' + this.velocity);
+
                 this.velocity.x += vel.clone().scale(scaleFactor).x;
-                this.velocity.y += vel.clone().scale(scaleFactor).y;
-                console.log('vel after: ' + this.velocity);
+                let newY = this.velocity.y + vel.clone().scale(scaleFactor).y;
+
+                if (newY < 0) {
+                    this.velocity.y += vel.clone().scale(scaleFactor).y;
+                }
+
+                console.log('player vel after: ' + this.velocity);
 
                 console.log('posDiff: ' + posDiff + ', scaleFactor: ' + scaleFactor);
 
