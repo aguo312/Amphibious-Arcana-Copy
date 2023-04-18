@@ -1,6 +1,6 @@
 import CanvasNodeFactory from "../../Wolfie2D/Scene/Factories/CanvasNodeFactory";
-import HW3AnimatedSprite from "../Nodes/AAAnimatedSprite";
-import HW3Level from "../Scenes/AALevel";
+import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
+import AALevel from "../Scenes/AALevel";
 
 /**
  * An extension of Wolfie2ds CanvasNodeFactory. The purpose of the class is to add functionality for adding custom
@@ -9,16 +9,16 @@ import HW3Level from "../Scenes/AALevel";
 export default class HW3CanvasNodeFactory extends CanvasNodeFactory {
 
     // Reference to the HW4Level
-    protected scene: HW3Level;
+    protected scene: AALevel;
     
     // Overriden to only accept HW4Levels
-    public init(scene: HW3Level): void { super.init(scene); }
+    public init(scene: AALevel): void { super.init(scene); }
 
     // Overriden to return HW3AnimatedSprites instead of regular AnimatedSprites
-    public addAnimatedSprite = (key: string, layerName: string): HW3AnimatedSprite => {
+    public addAnimatedSprite = (key: string, layerName: string): AAAnimatedSprite => {
         let layer = this.scene.getLayer(layerName);
 		let spritesheet = this.resourceManager.getSpritesheet(key);
-		let instance = new HW3AnimatedSprite(spritesheet);
+		let instance = new AAAnimatedSprite(spritesheet);
 
 		// Add instance fo scene
 		instance.setScene(this.scene);

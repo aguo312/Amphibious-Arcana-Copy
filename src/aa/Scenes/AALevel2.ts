@@ -1,6 +1,6 @@
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import HW3Level from "./AALevel";
+import AALevel from "./AALevel";
 import MainMenu from "./MainMenu";
 
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
@@ -11,7 +11,7 @@ import Level1 from "./AALevel1";
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
  */
-export default class Level2 extends HW3Level {
+export default class Level2 extends AALevel {
 
     public static readonly PLAYER_SPAWN = new Vec2(32, 64);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";

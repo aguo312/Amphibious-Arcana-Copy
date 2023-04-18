@@ -24,7 +24,7 @@ import FireParticles from "../AI/Player/FireParticles";
 
 import { AAEvents } from "../AAEvents";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
-import HW3FactoryManager from "../Factory/AAFactoryManager";
+import AAFactoryManager from "../Factory/AAFactoryManager";
 import MainMenu from "./MainMenu";
 import TongueBehavior from "../Nodes/TongueBehavior";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
@@ -38,7 +38,7 @@ import IceBehavior from "../Nodes/IceBehavior";
 /**
  * A const object for the layer names
  */
-export const HW3Layers = {
+export const AALayers = {
     // The primary layer
     PRIMARY: "PRIMARY",
     // The UI layer
@@ -49,15 +49,15 @@ export const HW3Layers = {
 } as const;
 
 // The layers as a type
-export type HW3Layer = typeof HW3Layers[keyof typeof HW3Layers]
+export type AALayer = typeof AALayers[keyof typeof AALayers]
 
 /**
  * An abstract HW4 scene class.
  */
-export default abstract class HW3Level extends Scene {
+export default abstract class AALevel extends Scene {
 
     /** Overrride the factory manager */
-    public add: HW3FactoryManager;
+    public add: AAFactoryManager;
 
 
     /** The particle system used for the fireball's explosion */
@@ -170,7 +170,7 @@ export default abstract class HW3Level extends Scene {
 
             ]
         }});
-        this.add = new HW3FactoryManager(this, this.tilemaps);
+        this.add = new AAFactoryManager(this, this.tilemaps);
 
         // this.tongueSelectPos = new Vec2(13.3, 25.5);
         // this.fireballSelectPos = new Vec2(24.3, 25.5);
@@ -210,9 +210,9 @@ export default abstract class HW3Level extends Scene {
         this.subscribeToEvents();
         this.initializeUI();
         this.initializePause();
-        this.getLayer(HW3Layers.PAUSE).disable();
+        this.getLayer(AALayers.PAUSE).disable();
         this.initializeControls();
-        this.getLayer(HW3Layers.CONTROLS).disable();
+        this.getLayer(AALayers.CONTROLS).disable();
 
         // Initialize the ends of the levels - must be initialized after the primary layer has been added
         this.initializeLevelEnds();
@@ -305,10 +305,11 @@ export default abstract class HW3Level extends Scene {
                 if(!enemy.frozen){
 
                     enemy.freeze();
-                    enemy.animation.pause();
+                    enemy.animation.stop();
+                    enemy.setAIActive(false, null);
 
                     // Add a cyan overlay to indicate that the enemy is frozen
-                    const frozenOverlay = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+                    const frozenOverlay = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
 
                     frozenOverlay.color = Color.CYAN; // Cyan color
                     frozenOverlay.alpha = 0.5; // Set transparency
@@ -522,7 +523,7 @@ export default abstract class HW3Level extends Scene {
         MainMenu.GAME_PLAYING = false;
         this.player.setAIActive(false, null);
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
-        this.getLayer(HW3Layers.PAUSE).enable();
+        this.getLayer(AALayers.PAUSE).enable();
     }
 
     protected handleResumeGame(): void {
@@ -535,12 +536,12 @@ export default abstract class HW3Level extends Scene {
             tilemap: "Destructable"
         });
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.levelMusicKey, loop: true, holdReference: true});
-        this.getLayer(HW3Layers.PAUSE).disable();
+        this.getLayer(AALayers.PAUSE).disable();
     }
 
     protected handleShowControls(): void {
-        this.getLayer(HW3Layers.PAUSE).disable();
-        this.getLayer(HW3Layers.CONTROLS).enable();
+        this.getLayer(AALayers.PAUSE).disable();
+        this.getLayer(AALayers.CONTROLS).enable();
     }
 
     /* Initialization methods for everything in the scene */
@@ -550,12 +551,12 @@ export default abstract class HW3Level extends Scene {
      */
     protected initLayers(): void {
         // Add a layer for UI
-        this.addUILayer(HW3Layers.UI);
+        this.addUILayer(AALayers.UI);
         // Add a layer for players and enemies
-        this.addLayer(HW3Layers.PRIMARY);
+        this.addLayer(AALayers.PRIMARY);
         // Add a layer for Pause Menu
-        this.addUILayer(HW3Layers.PAUSE);
-        this.addUILayer(HW3Layers.CONTROLS);
+        this.addUILayer(AALayers.PAUSE);
+        this.addUILayer(AALayers.CONTROLS);
     }
     /**
      * Initializes the tilemaps
@@ -623,42 +624,42 @@ export default abstract class HW3Level extends Scene {
 		// this.healthLabel.font = "Courier";
 
         // HealthBar
-		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(45, 15), text: ""});
+		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(45, 15), text: ""});
 		this.healthBar.size = new Vec2(300, 25);
 		this.healthBar.backgroundColor = Color.GREEN;
         this.healthBar.borderRadius = 0;
 
         // HealthBar Border
-		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(45, 15), text: ""});
+		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(45, 15), text: ""});
 		this.healthBarBg.size = new Vec2(300, 25);
 		this.healthBarBg.borderColor = Color.BLACK;
         this.healthBarBg.borderRadius = 0;
         this.healthBarBg.borderWidth = 2;
 
         // The tongue icon sprite
-        this.tongueIcon = this.add.sprite('tongueIcon', HW3Layers.UI);
+        this.tongueIcon = this.add.sprite('tongueIcon', AALayers.UI);
         this.tongueIcon.scale.set(0.7, 0.7);
         this.tongueIcon.position.copy(this.tongueSelectPos);
 
         // The fire icon sprite
-        this.fireIcon = this.add.sprite('fireIcon', HW3Layers.UI);
+        this.fireIcon = this.add.sprite('fireIcon', AALayers.UI);
         this.fireIcon.scale.set(0.7, 0.7);
         this.fireIcon.position.copy(this.fireballSelectPos);
 
         // The ice icon sprite
-        this.iceIcon = this.add.sprite('iceIcon', HW3Layers.UI);
+        this.iceIcon = this.add.sprite('iceIcon', AALayers.UI);
         this.iceIcon.scale.set(0.7, 0.7);
         this.iceIcon.position.copy(this.iceSelectPos);
 
         // Spellbar highlighted spell border thing
-        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: this.fireballSelectPos, text: ""});
+        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: this.fireballSelectPos, text: ""});
         this.spellBarSelect.size = new Vec2(45, 45);
         this.spellBarSelect.borderColor = Color.YELLOW;
         this.spellBarSelect.borderRadius = 0;
         this.spellBarSelect.borderWidth = 2;
 
         // End of level label (start off screen)
-        this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, { position: new Vec2(-300, 100), text: "Level Complete" });
+        this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, { position: new Vec2(-300, 100), text: "Level Complete" });
         this.levelEndLabel.size.set(1200, 60);
         this.levelEndLabel.borderRadius = 0;
         this.levelEndLabel.backgroundColor = new Color(34, 32, 52);
@@ -680,7 +681,7 @@ export default abstract class HW3Level extends Scene {
             ]
         });
 
-        this.levelTransitionScreen = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.UI, { position: new Vec2(300, 200), size: new Vec2(600, 400) });
+        this.levelTransitionScreen = <Rect>this.add.graphic(GraphicType.RECT, AALayers.UI, { position: new Vec2(300, 200), size: new Vec2(600, 400) });
         this.levelTransitionScreen.color = new Color(34, 32, 52);
         this.levelTransitionScreen.alpha = 1;
 
@@ -720,9 +721,9 @@ export default abstract class HW3Level extends Scene {
     protected initializePause(): void {
         let size = this.viewport.getHalfSize();
         let yPos = size.y + 100;
-        let pauseMenu = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.PAUSE, { position: new Vec2(size.x, yPos - 100), size: new Vec2(60, 80) });
+        let pauseMenu = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PAUSE, { position: new Vec2(size.x, yPos - 100), size: new Vec2(60, 80) });
         pauseMenu.color = Color.BLACK;
-        let resumeBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 120), text: "Resume"});      
+        let resumeBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {position: new Vec2(size.x, yPos - 120), text: "Resume"});      
         resumeBtn.backgroundColor = Color.TRANSPARENT;
         resumeBtn.borderColor = Color.WHITE;
         resumeBtn.borderRadius = 0;
@@ -730,7 +731,7 @@ export default abstract class HW3Level extends Scene {
         resumeBtn.font = "PixelSimple";
         resumeBtn.scale = new Vec2(0.25,0.25);
 
-        let controlsBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 100), text: "Controls"});
+        let controlsBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {position: new Vec2(size.x, yPos - 100), text: "Controls"});
         controlsBtn.backgroundColor = Color.TRANSPARENT;
         controlsBtn.borderColor = Color.WHITE;
         controlsBtn.borderRadius = 0;
@@ -738,7 +739,7 @@ export default abstract class HW3Level extends Scene {
         controlsBtn.font = "PixelSimple";
         controlsBtn.scale = new Vec2(0.25,0.25);
 
-        let quitBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.PAUSE, {position: new Vec2(size.x, yPos - 80), text: "Quit"});
+        let quitBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {position: new Vec2(size.x, yPos - 80), text: "Quit"});
         quitBtn.backgroundColor = Color.TRANSPARENT;
         quitBtn.borderColor = Color.WHITE;
         quitBtn.borderRadius = 0;
@@ -758,22 +759,22 @@ export default abstract class HW3Level extends Scene {
     protected initializeControls(): void {
         let size = this.viewport.getHalfSize();
         let yOffset = 10;
-        let controlsMenu = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.CONTROLS, { position: new Vec2(size.x, size.y), size: new Vec2(100, 130) });
+        let controlsMenu = <Rect>this.add.graphic(GraphicType.RECT, AALayers.CONTROLS, { position: new Vec2(size.x, size.y), size: new Vec2(100, 130) });
         controlsMenu.color = Color.BLACK;
         
         let i = 1;
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55), text: "W - Jump", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "A - Walk Left", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "D - Walk Right", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "1 - Select Spell 1", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "2 - Select Spell 2", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "3 - Select Spell 3", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click - Cast Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click (Hold) - Charge Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Mouse - Aim Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, HW3Layers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "ESC - Pause Game", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55), text: "W - Jump", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "A - Walk Left", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "D - Walk Right", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "1 - Select Spell 1", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "2 - Select Spell 2", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "3 - Select Spell 3", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click - Cast Spell", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click (Hold) - Charge Spell", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Mouse - Aim Spell", fontSize: 24});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "ESC - Pause Game", fontSize: 24});
         
-        let backBtn = <Button>this.add.uiElement(UIElementType.BUTTON, HW3Layers.CONTROLS, {position: new Vec2(size.x, 2*size.y - 50), text: "Back"});
+        let backBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.CONTROLS, {position: new Vec2(size.x, 2*size.y - 50), text: "Back"});
         backBtn.backgroundColor = Color.TRANSPARENT;
         backBtn.borderColor = Color.WHITE;
         backBtn.borderRadius = 0;
@@ -781,8 +782,8 @@ export default abstract class HW3Level extends Scene {
         backBtn.font = "PixelSimple";
         backBtn.scale = new Vec2(0.25,0.25);
         backBtn.onClick = () => {
-            this.getLayer(HW3Layers.CONTROLS).disable();
-            this.getLayer(HW3Layers.PAUSE).enable();
+            this.getLayer(AALayers.CONTROLS).disable();
+            this.getLayer(AALayers.PAUSE).enable();
         }
 
     }
@@ -792,24 +793,24 @@ export default abstract class HW3Level extends Scene {
      */
     protected initializeWeaponSystem(): void {
         this.fireParticleSystem = new FireParticles(50, Vec2.ZERO, 2000, 3, 10, 50); // TODO try changing mass to see if it affects gravity?
-        this.fireParticleSystem.initializePool(this, HW3Layers.PRIMARY);
+        this.fireParticleSystem.initializePool(this, AALayers.PRIMARY);
 
         this.fireballSystem = new Fireball(1, Vec2.ZERO, 1000, 3, 0, 1);
-        this.fireballSystem.initializePool(this, HW3Layers.PRIMARY);
+        this.fireballSystem.initializePool(this, AALayers.PRIMARY);
 
         // init tongue
-        this.tongue = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+        this.tongue = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
         this.tongue.useCustomShader(TongueShaderType.KEY);
         this.tongue.color = Color.RED;
         this.tongue.visible = false;
         this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
     
         this.tongueParticleSystem = new TongueParticle(1, Vec2.ZERO, 500, 3, 0, 1);
-        this.tongueParticleSystem.initializePool(this, HW3Layers.PRIMARY);
+        this.tongueParticleSystem.initializePool(this, AALayers.PRIMARY);
 
 
         //init ice platform
-        this.icePlatform = this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+        this.icePlatform = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
         //this.icePlatform.useCustomShader(TongueShaderType.KEY);
         this.icePlatform.color = Color.CYAN;
         this.icePlatform.visible = false;
@@ -821,7 +822,7 @@ export default abstract class HW3Level extends Scene {
 
         // initialize Ice Blast
         this.iceParticleSystem = new IceParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
-        this.iceParticleSystem.initializePool(this, HW3Layers.PRIMARY);
+        this.iceParticleSystem.initializePool(this, AALayers.PRIMARY);
     }
 
     /**
@@ -840,7 +841,7 @@ export default abstract class HW3Level extends Scene {
         }
 
         // Add the player to the scene
-        this.player = this.add.animatedSprite(key, HW3Layers.PRIMARY);
+        this.player = this.add.animatedSprite(key, AALayers.PRIMARY);
         this.player.scale.set(.25, .25);
         this.player.position.copy(this.playerSpawn);
         
@@ -908,11 +909,11 @@ export default abstract class HW3Level extends Scene {
      * Initializes the level end area
      */
     protected initializeLevelEnds(): void {
-        if (!this.layers.has(HW3Layers.PRIMARY)) {
+        if (!this.layers.has(AALayers.PRIMARY)) {
             throw new Error("Can't initialize the level ends until the primary layer has been added to the scene!");
         }
         
-        this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, HW3Layers.PRIMARY, { position: this.levelEndPosition, size: this.levelEndHalfSize });
+        this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, { position: this.levelEndPosition, size: this.levelEndHalfSize });
         this.levelEndArea.addPhysics(undefined, undefined, false, true);
         this.levelEndArea.setTrigger(AAPhysicsGroups.PLAYER, AAEvents.PLAYER_ENTERED_LEVEL_END, null);
         this.levelEndArea.color = new Color(255, 0, 255, .20);

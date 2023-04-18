@@ -1,6 +1,6 @@
 import StateMachineAI from "../../../../Wolfie2D/AI/StateMachineAI";
 import NPCActor from "../../../Actors/NPCActor";
-import HW3AnimatedSprite from "../../../Nodes/AAAnimatedSprite";
+import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import GoalReached from '../NPCStatuses/FalseStatus';
 import IdleAction from "../NPCActions/IdleAction";
@@ -14,7 +14,7 @@ export default class IdleBehavior extends NPCBehavior {
     /** The GameNode that owns this NPCGoapAI */
     protected override owner: NPCActor;
 
-    public initializeAI(owner: HW3AnimatedSprite, options: Record<string, any>): void {
+    public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>): void {
         // this.owner = owner;
         super.initializeAI(owner, options);
 
