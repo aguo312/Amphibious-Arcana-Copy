@@ -138,7 +138,9 @@ export default abstract class AALevel extends Scene {
     /** Sound and music */
     protected levelMusicKey: string;
     protected jumpAudioKey: string;
-    protected tileDestroyedAudioKey: string;
+    protected attackAudioKey: string;
+    protected explodeAudioKey: string;
+    protected grappleAudioKey: string;
 
     protected allNPCS: Map<number, AnimatedSprite>;
     protected healthbars: Map<number, HealthbarHUD>;
@@ -395,10 +397,6 @@ export default abstract class AALevel extends Scene {
                 this.handleTongueHit();
                 break;
             }
-            // case HW3Events.PLAYER_ATTACK: {
-            //     this.handlePlayerAttack();
-            //     break;
-            // }
             // Default: Throw an error! No unhandled events allowed.
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
@@ -484,6 +482,7 @@ export default abstract class AALevel extends Scene {
         }
 
         this.emitter.fireEvent(AAEvents.PLAYER_FIRE_JUMP, { fireJumpVel: dir, particlePos: particle.position, playerPos: this.player.position });
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.explodeAudioKey, loop: false, holdReference: false });
     }
 
     protected handleTongueHit(): void {
@@ -500,6 +499,7 @@ export default abstract class AALevel extends Scene {
         this.tongueParticleSystem.stopSystem();
 
         this.emitter.fireEvent(AAEvents.PLAYER_SWING, {swingVel: dir, particlePos: particle.position, playerPos: this.player.position });
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.grappleAudioKey, loop: false, holdReference: false });
     }
 
     /**
@@ -629,7 +629,6 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.FIREBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.ICEBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.TONGUE_HIT_ENEMY);
-
     }
     /**
      * Adds in any necessary UI to the game
@@ -943,6 +942,10 @@ export default abstract class AALevel extends Scene {
 
     // Get the key of the player's jump audio file
     public getJumpAudioKey(): string {
-        return this.jumpAudioKey
+        return this.jumpAudioKey;
+    }
+
+    public getAttackAudioKey(): string {
+        return this.attackAudioKey;
     }
 }

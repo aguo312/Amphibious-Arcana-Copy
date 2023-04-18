@@ -21,6 +21,7 @@ import {SpellTypes} from "./SpellTypes";
 import IceParticles from "./IceParticles";
 import TongueParticle from "./TongueParticle";
 import Graphic from "../../../Wolfie2D/Nodes/Graphic";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 
 /**
  * Animation keys for the player spritesheet
@@ -267,6 +268,7 @@ export default class PlayerController extends StateMachineAI {
             this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.fireProjectile.startSystem(500, 0, this.owner.position);
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.owner.getScene().getAttackAudioKey(), loop: false, holdReference: false });
         }
     }
 
