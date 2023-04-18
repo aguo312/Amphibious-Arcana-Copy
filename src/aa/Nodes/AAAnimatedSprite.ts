@@ -15,7 +15,16 @@ import AALevel from "../Scenes/AALevel";
 export default class AAAnimatedSprite extends AnimatedSprite {
 
     protected scene: AALevel;
+    protected _health: number;
+    protected max_health: number;
     
     public setScene(scene: AALevel): void { this.scene = scene; }
     public getScene(): AALevel { return this.scene; }
+
+    public set health(health: number) { this._health = health; }
+    public get health(): number { return this._health; }
+
+    public set maxHealth(health: number) { this.max_health = health; }
+    public get maxHealth(): number { return this.max_health; }
+
 }
