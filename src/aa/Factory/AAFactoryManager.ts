@@ -5,7 +5,7 @@ import UIElement from "../../Wolfie2D/Nodes/UIElement";
 import FactoryManager from "../../Wolfie2D/Scene/Factories/FactoryManager";
 import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
 import AALevel, { AALayer } from "../Scenes/AALevel";
-import HW4CanvasNodeFactory from "./AACanvasNodeFactory";
+import AACanvasNodeFactory from "./AACanvasNodeFactory";
 
 /**
  * An extension of Wolfie2ds FactoryManager. I'm creating a more specific factory for my custom HW3Level. If you want to get custom
@@ -13,16 +13,16 @@ import HW4CanvasNodeFactory from "./AACanvasNodeFactory";
  */
 export default class AAFactoryManager extends FactoryManager {
 
-    private hw3CanvasNodeFactory: HW4CanvasNodeFactory;
+    private aaCanvasNodeFactory: AACanvasNodeFactory;
 
     public constructor(scene: AALevel, tilemaps: Tilemap[]) {
         super(scene, tilemaps)
-        this.hw3CanvasNodeFactory = new HW4CanvasNodeFactory();
-        this.hw3CanvasNodeFactory.init(scene);
+        this.aaCanvasNodeFactory = new AACanvasNodeFactory();
+        this.aaCanvasNodeFactory.init(scene);
     }
 
     public animatedSprite(key: string, layerName: AALayer): AAAnimatedSprite {
-        return this.hw3CanvasNodeFactory.addAnimatedSprite(key, layerName);
+        return this.aaCanvasNodeFactory.addAnimatedSprite(key, layerName);
     }
 
     public uiElement(type: string, layerName: AALayer, options?: Record<string, any>): UIElement {

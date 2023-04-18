@@ -35,6 +35,7 @@ import IceParticles from "../AI/Player/IceParticles";
 import TongueParticle from "../AI/Player/TongueParticle";
 import IceBehavior from "../Nodes/IceBehavior";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
+import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 
 /**
  * A const object for the layer names
@@ -139,6 +140,7 @@ export default abstract class AALevel extends Scene {
     protected tileDestroyedAudioKey: string;
 
     protected allNPCS: Map<number, AnimatedSprite>;
+    protected healthbars: Map<number, HealthbarHUD>;
 
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
@@ -183,7 +185,8 @@ export default abstract class AALevel extends Scene {
         // this.selectedSpell = SpellTypes.TONGUE;
         this.selectedSpell = SpellTypes.FIREBALL;
 
-        this.allNPCS = new Map<number, AnimatedSprite>();;
+        this.allNPCS = new Map<number, AnimatedSprite>();
+        this.healthbars = new Map<number, HealthbarHUD>();
     }
 
     public loadScene() {
@@ -253,6 +256,7 @@ export default abstract class AALevel extends Scene {
             let iceParticle = this.iceParticleSystem.getPool()[0];
             this.emitter.fireEvent(AAEvents.CREATE_PLATFORM, { pos: iceParticle.position });
         }
+        this.healthbars.forEach(healthbar => healthbar.update(deltaT));
     }
 
     /**

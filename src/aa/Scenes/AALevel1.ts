@@ -13,6 +13,7 @@ import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
+import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -147,6 +148,10 @@ export default class Level1 extends AALevel {
         scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null)
         scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null)
 
+        // scabbers.health = 10;
+        // scabbers.maxHealth = 10;
+        // let healthbar = new HealthbarHUD(this, scabbers, "primary", {size: scabbers.size.clone().scaled(2, 1/2), offset: scabbers.size.clone().scaled(0, -1/2)});
+        // this.healthbars.set(scabbers.id, healthbar);
 
         // scabbers.addPhysics(new AABB(Vec2.ZERO, scabbers.size.clone()), null, false);
         //scabbers.addAI(IdleBehavior);
