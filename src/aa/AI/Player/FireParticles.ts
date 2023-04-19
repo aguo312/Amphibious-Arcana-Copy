@@ -40,7 +40,10 @@ export default class FireParticles extends ParticleSystem {
         particle.vel = RandUtils.randVec(this.particleVec.x - 50, this.particleVec.x + 50, this.particleVec.y - 50, this.particleVec.y + 50);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
-        particle.color = Color.RED;
+
+        const colors = [Color.RED, Color.YELLOW, Color.ORANGE]
+        particle.color = colors[RandUtils.randInt(0,3)];
+
 
         if (!particle.tweens) {
             return;

@@ -231,7 +231,7 @@ export default abstract class AALevel extends Scene {
         });
 
         // Init timers
-        this.fireballTimer = new Timer(1000);
+        this.fireballTimer = new Timer(300);
 
         // Initially disable player movement
         Input.disableInput();
@@ -299,9 +299,9 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.FIREBALL_HIT_ENEMY:{
+            
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
-                    // this.handleFireballHit();
                     console.log("FIREBALL HIT");
                     let enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     enemy.health -= 1
@@ -810,7 +810,7 @@ export default abstract class AALevel extends Scene {
      * Initializes the particles system used by the player's weapon.
      */
     protected initializeWeaponSystem(): void {
-        this.fireParticleSystem = new FireParticles(50, Vec2.ZERO, 2000, 3, 10, 50); // TODO try changing mass to see if it affects gravity?
+        this.fireParticleSystem = new FireParticles(50, Vec2.ZERO, 1000, 3, 10, 50); // TODO try changing mass to see if it affects gravity?
         this.fireParticleSystem.initializePool(this, AALayers.PRIMARY);
 
         this.fireballSystem = new Fireball(1, Vec2.ZERO, 1000, 3, 0, 1);
