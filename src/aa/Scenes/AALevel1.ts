@@ -4,7 +4,7 @@ import AALevel, {AALayers} from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-// import HW4Level2 from "./AALevel2";
+import Level2 from "./AALevel2";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
@@ -150,8 +150,8 @@ export default class Level1 extends AALevel {
         super.startScene();
         this.tutorialTextTimer.start();
         // Set the next level to be Level2
-        // this.nextLevel = HW4Level2;
-        // this.nextLevelNum = 2;
+        this.nextLevel = Level2;
+        this.nextLevelNum = 2;
 
         this.initializeNPCs();
     }
