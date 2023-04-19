@@ -3,6 +3,7 @@ import PlayerState from "./PlayerState";
 import PlayerController from "../PlayerController";
 import Input from "../../../../Wolfie2D/Input/Input";
 import { AAControls } from "../../../AAControls";
+import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 
 export default class Idle extends PlayerState {
 
@@ -38,17 +39,22 @@ export default class Idle extends PlayerState {
             // This check could probably be better but works for now
             if (this.parent.velocity.y === 0 || this.parent.velocity.y === this.gravity*deltaT) {
                 this.parent.velocity.y = this.gravity*deltaT;
+
             // Otherwise if we have a velocity from a firejump (or something else), add to velocity
             } else {
                 this.parent.velocity.y += this.gravity*deltaT;
             }
+
+            if (this.parent.velocity.x > 0)
+                this.parent.velocity.x = MathUtils.clampLow(this.parent.velocity.x - this.gravity*deltaT, 0);
+            else 
+                this.parent.velocity.x = MathUtils.clampHigh(this.parent.velocity.x + this.gravity*deltaT, 0);
 
             // Move the player
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }
 
         // Otherwise, do nothing (keep idling)
-        console.log('velocity: ' + this.parent.velocity);
 		
 	}
 
