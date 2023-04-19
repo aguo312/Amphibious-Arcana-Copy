@@ -25,6 +25,7 @@ export const AAEvents = {
 
     // The event sent when the player dies. Gets sent after the player's death animation
     PLAYER_DEAD: "PLAYER_DEAD",
+    NPC_KILLED: "NPC_KILLED",
 
     PLAYER_FIRE_JUMP: "PLAYER_FIRE_JUMP",
     SHOOT_TONGUE: "SHOOT_TONGUE",
