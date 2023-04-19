@@ -144,6 +144,7 @@ export default abstract class AALevel extends Scene {
 
     protected allNPCS: Map<number, AnimatedSprite>;
     protected healthbars: Map<number, HealthbarHUD>;
+    protected freezeOverlays: Map<number, Graphic>;
 
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
@@ -190,6 +191,7 @@ export default abstract class AALevel extends Scene {
 
         this.allNPCS = new Map<number, AnimatedSprite>();
         this.healthbars = new Map<number, HealthbarHUD>();
+        this.freezeOverlays = new Map<number, Graphic>();
     }
 
     public loadScene() {
@@ -320,13 +322,14 @@ export default abstract class AALevel extends Scene {
                     enemy.setAIActive(false, null);
 
                     // Add a cyan overlay to indicate that the enemy is frozen
-                    const frozenOverlay = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+                    let frozenOverlay = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
 
                     frozenOverlay.color = Color.CYAN; // Cyan color
                     frozenOverlay.alpha = 0.5; // Set transparency
                     frozenOverlay.size = enemy.size.clone().scale(.25);
                     frozenOverlay.position = enemy.position.clone()
                     frozenOverlay.visible = true;
+                    this.freezeOverlays.set(enemy.id, frozenOverlay);
 
                     this.iceParticleSystem.getPool()[0].freeze(); 
                     this.iceParticleSystem.getPool()[0].visible = false;   
@@ -359,6 +362,19 @@ export default abstract class AALevel extends Scene {
                 this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
                 this.sceneManager.changeToScene(MainMenu);
                 break;
+            }
+            case AAEvents.NPC_KILLED: {
+                let id: number = event.data.get("id");
+                let enemy = this.allNPCS.get(id);
+
+                if (enemy) {
+                    enemy.destroy();
+                    this.healthbars.get(id).visible = false;
+                    let freeze = this.freezeOverlays.get(id)
+                    if (freeze) {
+                        freeze.visible = false;
+                    }
+                }
             }
             case AAEvents.SHOOT_TONGUE: {
                 let pos = event.data.get("pos");
@@ -602,6 +618,7 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.PARTICLE_HIT_DESTRUCTIBLE);
         this.receiver.subscribe(AAEvents.HEALTH_CHANGE);
         this.receiver.subscribe(AAEvents.PLAYER_DEAD);
+        this.receiver.subscribe(AAEvents.NPC_KILLED);
         this.receiver.subscribe(AAEvents.SHOOT_TONGUE);
         this.receiver.subscribe(AAEvents.SELECT_TONGUE);
         this.receiver.subscribe(AAEvents.SELECT_FIREBALL);
