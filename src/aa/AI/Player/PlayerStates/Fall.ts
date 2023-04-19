@@ -7,7 +7,7 @@ import PlayerState from "./PlayerState";
 export default class Fall extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
-        console.log('entering fall');
+        console.log('Entering FALL');
         // If we're falling, the vertical velocity should be >= 0
         // commenting this out bc it was preventing the fireball jumps from working
         if (this.parent.velocity.y > 0) {
@@ -20,7 +20,13 @@ export default class Fall extends PlayerState {
         // If the player hits the ground, start idling and check if we should take damage
         if (this.owner.onGround) {
             this.parent.health -= Math.floor(this.parent.velocity.y / 300);
-            this.finished(PlayerStates.IDLE);
+            
+            if (Input.isPressed(AAControls.MOVE_LEFT) || Input.isPressed(AAControls.MOVE_RIGHT)) {
+                this.parent.velocity.y = 0;
+                this.finished(PlayerStates.RUN);
+            } else {
+                this.finished(PlayerStates.IDLE);
+            }
         } 
         // Otherwise, keep moving
         else {

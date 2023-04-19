@@ -8,6 +8,7 @@ import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 export default class Idle extends PlayerState {
 
 	public onEnter(options: Record<string, any>): void {
+        console.log('Entering IDLE');
         this.owner.animation.play(PlayerAnimations.IDLE);
 		this.parent.speed = this.parent.MIN_SPEED;
 
