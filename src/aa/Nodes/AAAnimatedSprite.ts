@@ -31,7 +31,8 @@ export default class AAAnimatedSprite extends AnimatedSprite {
         this._health = MathUtils.clamp(health, 0, this.maxHealth);
         // this.emitter.fireEvent(AAEvents.ENEMY_HEALTH_CHANGE, {id: this.id, curhp: this.health, maxhp: this.maxHealth});
         if (this._health === 0) {
-            this.emitter.fireEvent(AAEvents.NPC_KILLED, {id: this.id});
+            this.tweens.play("DEATH");
+            // this.emitter.fireEvent(AAEvents.NPC_KILLED, {node: this.id});
         }
     }
 

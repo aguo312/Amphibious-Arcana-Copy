@@ -15,6 +15,7 @@ import { AAEvents } from "../AAEvents";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
+import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -173,6 +174,26 @@ export default class Level1 extends AALevel {
         scabbers.animation.play("IDLE");
         this.allNPCS.set(scabbers.id, scabbers);
         scabbers.addAI(EnemyBehavior);
+
+        scabbers.tweens.add("DEATH", {
+            startDelay: 0,
+            duration: 500,
+            effects: [
+                {
+                    property: "rotation",
+                    start: 0,
+                    end: Math.PI,
+                    ease: EaseFunctionType.IN_OUT_QUAD
+                },
+                {
+                    property: "alpha",
+                    start: 1,
+                    end: 0,
+                    ease: EaseFunctionType.IN_OUT_QUAD
+                }
+            ],
+            onEnd: AAEvents.NPC_KILLED
+        });
     }
 
     public updateScene(deltaT: number) {

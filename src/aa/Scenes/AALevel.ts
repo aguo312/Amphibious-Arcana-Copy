@@ -364,7 +364,7 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.NPC_KILLED: {
-                let id: number = event.data.get("id");
+                let id: number = event.data.get("node");
                 let enemy = this.allNPCS.get(id);
 
                 if (enemy) {
