@@ -85,7 +85,8 @@ export default class PlayerController extends StateMachineAI {
     protected tongueGraphic: Graphic;
 
     public isFirejumpActive: boolean;
-    
+    public isGrappleActive: boolean;
+
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>){
         this.owner = owner;
 
@@ -105,6 +106,7 @@ export default class PlayerController extends StateMachineAI {
         this.maxHealth = 10;
 
         this.isFirejumpActive = false;
+        this.isGrappleActive = false;
 
         // Add the different states the player can be in to the PlayerController 
 		this.addState(PlayerStates.IDLE, new Idle(this, this.owner));
@@ -179,7 +181,7 @@ export default class PlayerController extends StateMachineAI {
 
                 // Set the velocity of the player
                 this.velocity = dir.clone().scale(scaleFactor);
-
+                this.isGrappleActive = true;
                 break;
             }
 

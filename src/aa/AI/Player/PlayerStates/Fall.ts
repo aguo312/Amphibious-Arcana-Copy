@@ -30,7 +30,12 @@ export default class Fall extends PlayerState {
             // Update the horizontal velocity of the player
             if (this.parent.isFirejumpActive) {
                 this.parent.velocity.x += dir.x * this.parent.speed/3.5 - 0.2*this.parent.velocity.x;
-            } else {
+            } else if(this.parent.isGrappleActive){
+                this.parent.velocity.x += dir.x * this.parent.speed/3.5 - .1* this.parent.velocity.x;
+                if (Input.isPressed(AAControls.MOVE_LEFT) || Input.isPressed(AAControls.MOVE_RIGHT)){
+                    this.parent.isGrappleActive = false;
+                }
+            }else {
                 this.parent.velocity.x += dir.x * this.parent.speed/3.5 - 0.3*this.parent.velocity.x;
             }
 
@@ -51,6 +56,7 @@ export default class Fall extends PlayerState {
 
     onExit(): Record<string, any> {
         this.parent.isFirejumpActive = false;
+        this.parent.isGrappleActive = false;
         return {};
     }
 }
