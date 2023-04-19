@@ -70,6 +70,16 @@ export default class MathUtils {
     }
 
     /**
+     * Clamps the higher end of the value of x to the range to max
+     * @param x The value to be clamped
+     * @param max The maximum allowed value of x
+     * @returns x, if it is less than max, otherwise max
+     */
+    static clampHigh(x: number, max: number): number {
+        return x > max ? max : x;
+    }
+
+    /**
      * Clamps the lower end of the value of x to zero
      * @param x The value to be clamped
      * @returns x, if it is greater than 0, otherwise 0
