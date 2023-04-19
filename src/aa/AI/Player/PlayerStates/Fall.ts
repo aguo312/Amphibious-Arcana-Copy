@@ -7,7 +7,7 @@ import PlayerState from "./PlayerState";
 export default class Fall extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
-        console.log('entering fall');
+        console.log('Entering FALL');
         // If we're falling, the vertical velocity should be >= 0
         // commenting this out bc it was preventing the fireball jumps from working
         if (this.parent.velocity.y > 0) {
@@ -20,7 +20,13 @@ export default class Fall extends PlayerState {
         // If the player hits the ground, start idling and check if we should take damage
         if (this.owner.onGround) {
             this.parent.health -= Math.floor(this.parent.velocity.y / 300);
-            this.finished(PlayerStates.IDLE);
+            
+            if (Input.isPressed(AAControls.MOVE_LEFT) || Input.isPressed(AAControls.MOVE_RIGHT)) {
+                this.parent.velocity.y = 0;
+                this.finished(PlayerStates.RUN);
+            } else {
+                this.finished(PlayerStates.IDLE);
+            }
         } 
         // Otherwise, keep moving
         else {
@@ -30,7 +36,12 @@ export default class Fall extends PlayerState {
             // Update the horizontal velocity of the player
             if (this.parent.isFirejumpActive) {
                 this.parent.velocity.x += dir.x * this.parent.speed/3.5 - 0.2*this.parent.velocity.x;
-            } else {
+            } else if(this.parent.isGrappleActive){
+                this.parent.velocity.x += dir.x * this.parent.speed/3.5 - .1* this.parent.velocity.x;
+                if (Input.isPressed(AAControls.MOVE_LEFT) || Input.isPressed(AAControls.MOVE_RIGHT)){
+                    this.parent.isGrappleActive = false;
+                }
+            }else {
                 this.parent.velocity.x += dir.x * this.parent.speed/3.5 - 0.3*this.parent.velocity.x;
             }
 
@@ -41,6 +52,8 @@ export default class Fall extends PlayerState {
             }else{
                 this.parent.velocity.y += this.gravity*deltaT;
             }
+
+
             // Move the player
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }
@@ -49,6 +62,7 @@ export default class Fall extends PlayerState {
 
     onExit(): Record<string, any> {
         this.parent.isFirejumpActive = false;
+        this.parent.isGrappleActive = false;
         return {};
     }
 }

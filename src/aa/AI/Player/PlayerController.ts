@@ -21,6 +21,7 @@ import {SpellTypes} from "./SpellTypes";
 import IceParticles from "./IceParticles";
 import TongueParticle from "./TongueParticle";
 import Graphic from "../../../Wolfie2D/Nodes/Graphic";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 
 /**
  * Animation keys for the player spritesheet
@@ -83,8 +84,11 @@ export default class PlayerController extends StateMachineAI {
 
     protected tongueGraphic: Graphic;
 
+    protected isInvincible: boolean;
+
     public isFirejumpActive: boolean;
-    
+    public isGrappleActive: boolean;
+
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>){
         this.owner = owner;
 
@@ -104,6 +108,7 @@ export default class PlayerController extends StateMachineAI {
         this.maxHealth = 10;
 
         this.isFirejumpActive = false;
+        this.isGrappleActive = false;
 
         // Add the different states the player can be in to the PlayerController 
 		this.addState(PlayerStates.IDLE, new Idle(this, this.owner));
@@ -118,9 +123,12 @@ export default class PlayerController extends StateMachineAI {
         // this.selectedSpell = SpellTypes.TONGUE;
         this.selectedSpell = SpellTypes.FIREBALL;
 
+        this.isInvincible = false;
+
         this.receiver = new Receiver();
         this.receiver.subscribe(AAEvents.PLAYER_FIRE_JUMP);
         this.receiver.subscribe(AAEvents.PLAYER_SWING);
+        this.receiver.subscribe(AAEvents.TOGGLE_INVINCIBILITY);
         //this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
 
     }
@@ -139,37 +147,42 @@ export default class PlayerController extends StateMachineAI {
                     ? 0
                     : MathUtils.clamp(Math.pow(25, 0.8) - 0.7 * Math.pow(posDiff, 0.8), 0, 8)
                      
-
-                console.log('vel before: ' + this.velocity);
-                // this.velocity = vel.clone().scale(scaleFactor);
                 this.velocity.x += vel.clone().scale(scaleFactor).x;
                 this.velocity.y += vel.clone().scale(scaleFactor).y;
-                console.log('vel after: ' + this.velocity);
-
-                console.log('posDiff: ' + posDiff + ', scaleFactor: ' + scaleFactor);
 
                 this.isFirejumpActive = true;
+
+                console.log('posDiff: ' + posDiff + ', scaleFactor: ' + scaleFactor);
 
                 break;
             }
             case AAEvents.PLAYER_SWING:{
-                const vel: Vec2 = event.data.get('swingVel');
+                const dir: Vec2 = event.data.get('swingDir');
                 const playerPos: Vec2 = event.data.get('playerPos');
                 const particlePos: Vec2 = event.data.get('particlePos');
 
-                // Calculate the difference between the player and the grapple point
-                const posDiff = MathUtils.clamp(playerPos.clone().distanceTo(particlePos), 1, 25);
-                
+                // Calculate the distance between the player and the grapple point
+                const posDiff = playerPos.clone().distanceTo(particlePos);
+       
                 // Scale the velocity based on the distance between the player and the grapple point
-                const scaleFactor = MathUtils.clamp(Math.pow(25, 0.8) - 0.7 * Math.pow(posDiff, 0.8), 0, 8);
+                const minSwingDist = 5; // The minimum distance for a successful swing
+                const maxSwingDist = 20; // The maximum distance for a successful swing
+                let scaleFactor = MathUtils.clamp((posDiff - minSwingDist) / (maxSwingDist - minSwingDist), 0, 1) * 3;
 
-                // Set the player's velocity to the scaled velocity
-                // You will need to have access to the player object and its velocity vector
-                this.velocity = vel.clone().scale(scaleFactor);
+                // Adjust the scaling factor based on the state of the player
+                if (this.currentState instanceof Fall || this.currentState instanceof Jump) {
+                    scaleFactor *= 1.5;
+                }
 
+                // Set the velocity of the player
+                this.velocity = dir.clone().scale(scaleFactor);
+                this.isGrappleActive = true;
                 break;
             }
-
+            case AAEvents.TOGGLE_INVINCIBILITY: {
+                this.isInvincible = !this.isInvincible;
+                break;
+            }
             default: {
                 throw new Error(`Unhandled event caught in player controller with type ${event.type}`)
             }
@@ -230,22 +243,25 @@ export default class PlayerController extends StateMachineAI {
         }
 
         // Set the selected spell
-        if (Input.isPressed(AAControls.SELECT_TONGUE)) {
+        if (Input.isJustPressed(AAControls.SELECT_TONGUE)) {
             this.selectedSpell = SpellTypes.TONGUE;
             this.emitter.fireEvent(AAEvents.SELECT_TONGUE);
         }
-        if (Input.isPressed(AAControls.SELECT_FIREBALL)) {
+        if (Input.isJustPressed(AAControls.SELECT_FIREBALL)) {
             this.selectedSpell = SpellTypes.FIREBALL;
             this.emitter.fireEvent(AAEvents.SELECT_FIREBALL);
         }
-        if (Input.isPressed(AAControls.SELECT_ICE)) {
+        if (Input.isJustPressed(AAControls.SELECT_ICE)) {
             this.selectedSpell = SpellTypes.ICE;
             this.emitter.fireEvent(AAEvents.SELECT_ICE);
         }
 
-        if (Input.isPressed(AAControls.PAUSE)) {
+        // Handles pausing the game
+        if (Input.isJustPressed(AAControls.PAUSE)) {
             this.emitter.fireEvent(AAEvents.PAUSE);
         }
+
+        // console.log('velocity: ' + this.velocity);
 
 	}
 
@@ -263,10 +279,13 @@ export default class PlayerController extends StateMachineAI {
     protected fireballAttack(): void {
         // If the player hits the attack button and the weapon system isn't running, restart the system and fire!
         if (!this.fireProjectile.isSystemRunning() && !this.fireParticles.isSystemRunning()) {
+            this.fireProjectile.getPool()[0].unfreeze(); 
+
             // Update the rotation to apply the particles velocity vector
             this.fireProjectile.rotation = 2*Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.fireProjectile.startSystem(500, 0, this.owner.position);
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.owner.getScene().getAttackAudioKey(), loop: false, holdReference: false });
         }
     }
 
@@ -291,6 +310,7 @@ export default class PlayerController extends StateMachineAI {
 
     public get health(): number { return this._health; }
     public set health(health: number) { 
+        if (this.isInvincible) { return; }
         this._health = MathUtils.clamp(health, 0, this.maxHealth);
         // When the health changes, fire an event up to the scene.
         this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});

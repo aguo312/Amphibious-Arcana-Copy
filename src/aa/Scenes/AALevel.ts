@@ -34,7 +34,6 @@ import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import IceParticles from "../AI/Player/IceParticles";
 import TongueParticle from "../AI/Player/TongueParticle";
 import IceBehavior from "../Nodes/IceBehavior";
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
 
@@ -62,6 +61,7 @@ export default abstract class AALevel extends Scene {
     /** Overrride the factory manager */
     public add: AAFactoryManager;
 
+    // protected cheatsManager: CheatsManager;
 
     /** The particle system used for the fireball's explosion */
     protected fireParticleSystem: FireParticles;
@@ -138,7 +138,9 @@ export default abstract class AALevel extends Scene {
     /** Sound and music */
     protected levelMusicKey: string;
     protected jumpAudioKey: string;
-    protected tileDestroyedAudioKey: string;
+    protected attackAudioKey: string;
+    protected explodeAudioKey: string;
+    protected grappleAudioKey: string;
 
     protected allNPCS: Map<number, AnimatedSprite>;
     protected healthbars: Map<number, HealthbarHUD>;
@@ -229,7 +231,7 @@ export default abstract class AALevel extends Scene {
         });
 
         // Init timers
-        this.fireballTimer = new Timer(1000);
+        this.fireballTimer = new Timer(300);
 
         // Initially disable player movement
         Input.disableInput();
@@ -297,14 +299,14 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.FIREBALL_HIT_ENEMY:{
+            
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
-                    // this.handleFireballHit();
-                    // console.log("FIREBALL HIT");
+                    console.log("FIREBALL HIT");
                     let enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     enemy.health -= 1
-                    this.fireParticleSystem.getPool()[0].freeze(); 
-                    this.fireParticleSystem.getPool()[0].visible = false; 
+                    this.fireballSystem.getPool()[0].freeze(); 
+                    this.fireballSystem.getPool()[0].visible = false; 
                 }
                 break;
             }
@@ -395,10 +397,6 @@ export default abstract class AALevel extends Scene {
                 this.handleTongueHit();
                 break;
             }
-            // case HW3Events.PLAYER_ATTACK: {
-            //     this.handlePlayerAttack();
-            //     break;
-            // }
             // Default: Throw an error! No unhandled events allowed.
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
@@ -430,22 +428,6 @@ export default abstract class AALevel extends Scene {
             this.icePlatform.setAIActive(true, {src: pos});
         }
     }
-    // protected handlePlayerAttack(): void {
-    //     switch(this.selectedSpell) {
-    //         case SpellTypes.TONGUE: {
-    //             break;
-    //         }
-    //         case SpellTypes.FIREBALL: {
-    //             break;
-    //         }
-    //         case SpellTypes.ICE: {
-    //             break;
-    //         }
-    //         default: {
-    //             throw new Error(`Unhandled attack type ${this.selectedSpell} caught in handlePlayerAttack()`);
-    //         }
-    //     }
-    // }
 
     protected handleSelectTongue(): void {
         this.selectedSpell = SpellTypes.TONGUE;
@@ -484,6 +466,7 @@ export default abstract class AALevel extends Scene {
         }
 
         this.emitter.fireEvent(AAEvents.PLAYER_FIRE_JUMP, { fireJumpVel: dir, particlePos: particle.position, playerPos: this.player.position });
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.explodeAudioKey, loop: false, holdReference: false });
     }
 
     protected handleTongueHit(): void {
@@ -499,7 +482,8 @@ export default abstract class AALevel extends Scene {
 
         this.tongueParticleSystem.stopSystem();
 
-        this.emitter.fireEvent(AAEvents.PLAYER_SWING, {swingVel: dir, particlePos: particle.position, playerPos: this.player.position });
+        this.emitter.fireEvent(AAEvents.PLAYER_SWING, {swingDir: dir, particlePos: particle.position, playerPos: this.player.position });
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.grappleAudioKey, loop: false, holdReference: false });
     }
 
     /**
@@ -629,7 +613,6 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.FIREBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.ICEBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.TONGUE_HIT_ENEMY);
-
     }
     /**
      * Adds in any necessary UI to the game
@@ -811,7 +794,7 @@ export default abstract class AALevel extends Scene {
      * Initializes the particles system used by the player's weapon.
      */
     protected initializeWeaponSystem(): void {
-        this.fireParticleSystem = new FireParticles(50, Vec2.ZERO, 2000, 3, 10, 50); // TODO try changing mass to see if it affects gravity?
+        this.fireParticleSystem = new FireParticles(50, Vec2.ZERO, 1000, 3, 10, 50); // TODO try changing mass to see if it affects gravity?
         this.fireParticleSystem.initializePool(this, AALayers.PRIMARY);
 
         this.fireballSystem = new Fireball(1, Vec2.ZERO, 1000, 3, 0, 1);
@@ -943,6 +926,10 @@ export default abstract class AALevel extends Scene {
 
     // Get the key of the player's jump audio file
     public getJumpAudioKey(): string {
-        return this.jumpAudioKey
+        return this.jumpAudioKey;
+    }
+
+    public getAttackAudioKey(): string {
+        return this.attackAudioKey;
     }
 }

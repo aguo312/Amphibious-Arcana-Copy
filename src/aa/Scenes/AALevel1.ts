@@ -4,7 +4,7 @@ import AALevel, {AALayers} from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import HW4Level2 from "./AALevel2";
+// import HW4Level2 from "./AALevel2";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
@@ -14,6 +14,7 @@ import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
+import CheatsManager from "../CheatsManager";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -25,7 +26,6 @@ export default class Level1 extends AALevel {
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
     public static readonly TILEMAP_KEY = "LEVEL1";
-    //public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level1.json";
     public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/desert_level_1.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
@@ -33,18 +33,25 @@ export default class Level1 extends AALevel {
     public static readonly WALLS_LAYER_KEY = "Main";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
-    //public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/hw5_level_music.wav";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
 
     public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
-    public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
+    public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
 
-    public static readonly TILE_DESTROYED_KEY = "TILE_DESTROYED";
-    public static readonly TILE_DESTROYED_PATH = "hw4_assets/sounds/switch.wav";
+    public static readonly ATTACK_AUDIO_KEY = "PLAYER_ATTACK";
+    public static readonly ATTACK_AUDIO_PATH = "hw4_assets/sounds/attack.wav";
+
+    public static readonly EXPLODE_AUDIO_KEY = "EXPLODE";
+    public static readonly EXPLODE_AUDIO_PATH = "hw4_assets/sounds/explode.wav";
+
+    public static readonly GRAPPLE_AUDIO_KEY = "GRAPPLE";
+    public static readonly GRAPPLE_AUDIO_PATH = "hw4_assets/sounds/grapple.wav";
 
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
     protected tutorialText: Label;
     protected tutorialTextTimer: Timer;
+
+    protected cheatsManager: CheatsManager;
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
@@ -65,7 +72,9 @@ export default class Level1 extends AALevel {
         // Music and sound
         this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
         this.jumpAudioKey = Level1.JUMP_AUDIO_KEY;
-        this.tileDestroyedAudioKey = Level1.TILE_DESTROYED_KEY;
+        this.attackAudioKey = Level1.ATTACK_AUDIO_KEY;
+        this.explodeAudioKey = Level1.EXPLODE_AUDIO_KEY;
+        this.grappleAudioKey = Level1.GRAPPLE_AUDIO_KEY;
 
         // Level end size and position
         //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
@@ -74,6 +83,10 @@ export default class Level1 extends AALevel {
         // made bigger for testing
         this.levelEndHalfSize = new Vec2(32, 300).mult(this.tilemapScale);
 
+        // Initialize cheats
+        // Have to define and update cheatsManager in each individual level 
+        // to avoid circular dependencies
+        this.cheatsManager = new CheatsManager(this.sceneManager, {levelMusicKey: this.levelMusicKey});
     }
 
     public initializeUI(): void {
@@ -106,7 +119,9 @@ export default class Level1 extends AALevel {
         // Audio and music
         this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
         this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
-        this.load.audio(this.tileDestroyedAudioKey, Level1.TILE_DESTROYED_PATH);
+        this.load.audio(this.attackAudioKey, Level1.ATTACK_AUDIO_PATH);
+        this.load.audio(this.explodeAudioKey, Level1.EXPLODE_AUDIO_PATH);
+        this.load.audio(this.grappleAudioKey, Level1.GRAPPLE_AUDIO_PATH);
 
         this.load.image('fireIcon', 'hw4_assets/sprites/fire-icon.png');
         this.load.image('tongueIcon', 'hw4_assets/sprites/tongue-icon.png');
@@ -118,9 +133,12 @@ export default class Level1 extends AALevel {
      */
     public unloadScene(): void {
         this.load.keepSpritesheet(this.playerSpriteKey);
+
         this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
-        this.load.keepAudio(this.tileDestroyedAudioKey);
+        this.load.keepAudio(this.attackAudioKey);
+        this.load.keepAudio(this.explodeAudioKey);
+        this.load.keepAudio(this.grappleAudioKey);
 
         this.load.keepImage('fireIcon')
         this.load.keepImage('tongueIcon')
@@ -132,8 +150,8 @@ export default class Level1 extends AALevel {
         super.startScene();
         this.tutorialTextTimer.start();
         // Set the next level to be Level2
-        this.nextLevel = HW4Level2;
-        this.nextLevelNum = 2;
+        // this.nextLevel = HW4Level2;
+        // this.nextLevelNum = 2;
 
         this.initializeNPCs();
     }
@@ -152,15 +170,17 @@ export default class Level1 extends AALevel {
         scabbers.maxHealth = 10;
         let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {size: scabbers.size.clone().scaled(1.5, 0.25), offset: scabbers.size.clone().scaled(0, -1/5)});
         this.healthbars.set(scabbers.id, healthbar);
-
-        // scabbers.addPhysics(new AABB(Vec2.ZERO, scabbers.size.clone()), null, false);
-        //scabbers.addAI(IdleBehavior);
-        // scabbers.addAI(PaceBehavior);
         scabbers.animation.play("IDLE");
         this.allNPCS.set(scabbers.id, scabbers);
-
-        // scabbers.addAI(IdleBehavior);
         scabbers.addAI(EnemyBehavior);
+    }
+
+    public updateScene(deltaT: number) {
+        super.updateScene(deltaT);
+
+        // Have to define and update cheatsManager in each individual level 
+        // to avoid circular dependencies
+        this.cheatsManager.update(deltaT);
     }
 
     /**
