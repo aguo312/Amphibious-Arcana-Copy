@@ -9,6 +9,7 @@ import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import Emitter from "../../Wolfie2D/Events/Emitter";
 
 enum TongueState {
     EXTENDING,
@@ -40,6 +41,7 @@ export default class TongueBehavior implements AI {
     private maxYSpeed: number;
 
     private receiver: Receiver;
+    private emitter: Emitter;
 
     protected tongueTimer: Timer;
 
@@ -79,6 +81,7 @@ export default class TongueBehavior implements AI {
         this.receiver.subscribe(AAEvents.PLAYER_POS_UPDATE);
         this.receiver.subscribe(AAEvents.SHOOT_TONGUE)
         
+        this.emitter = new Emitter();
         this.state = TongueState.EXTENDING;
         this.maxDistance = 123; // Set the maximum distance the tongue can extend
         this.distanceTraveled = 0;
@@ -249,7 +252,7 @@ export default class TongueBehavior implements AI {
                     this.tongueActive = false;
                     this.stopExtending = false;
                     if(this.attachedEnemy){
-                        this.attachedEnemy.destroy();
+                        this.emitter.fireEvent(AAEvents.NPC_KILLED, {node: this.attachedEnemy.id})
                     }
                     this.attachedEnemy = null;
                     return;
