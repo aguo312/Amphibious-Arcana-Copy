@@ -34,7 +34,6 @@ import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import IceParticles from "../AI/Player/IceParticles";
 import TongueParticle from "../AI/Player/TongueParticle";
 import IceBehavior from "../Nodes/IceBehavior";
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
 
@@ -62,6 +61,7 @@ export default abstract class AALevel extends Scene {
     /** Overrride the factory manager */
     public add: AAFactoryManager;
 
+    // protected cheatsManager: CheatsManager;
 
     /** The particle system used for the fireball's explosion */
     protected fireParticleSystem: FireParticles;
@@ -428,22 +428,6 @@ export default abstract class AALevel extends Scene {
             this.icePlatform.setAIActive(true, {src: pos});
         }
     }
-    // protected handlePlayerAttack(): void {
-    //     switch(this.selectedSpell) {
-    //         case SpellTypes.TONGUE: {
-    //             break;
-    //         }
-    //         case SpellTypes.FIREBALL: {
-    //             break;
-    //         }
-    //         case SpellTypes.ICE: {
-    //             break;
-    //         }
-    //         default: {
-    //             throw new Error(`Unhandled attack type ${this.selectedSpell} caught in handlePlayerAttack()`);
-    //         }
-    //     }
-    // }
 
     protected handleSelectTongue(): void {
         this.selectedSpell = SpellTypes.TONGUE;

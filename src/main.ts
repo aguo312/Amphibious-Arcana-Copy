@@ -18,7 +18,11 @@ import SplashScreen from "./aa/Scenes/SplashScreen";
             {name: AAControls.SELECT_FIREBALL, keys: ["1"]},
             {name: AAControls.SELECT_ICE, keys: ["2"]},
             {name: AAControls.SELECT_TONGUE, keys: ["3"]},
-            {name: AAControls.PAUSE, keys: ["escape"]}
+            {name: AAControls.PAUSE, keys: ["escape"]},
+            {name: AAControls.GOTO_BOSS, keys: ["shift"]},
+            {name: AAControls.TOGGLE_INVINCIBILITY, keys: ["i"]},
+            {name: AAControls.GOTO_LEVEL_1, keys: ["5"]},
+            {name: AAControls.GOTO_LEVEL_2, keys: ["6"]},
         ],
         useWebGL: false,                        // Tell the game we want to use webgl
         showDebug: false                       // Whether to show debug messages. You can change this to true if you want

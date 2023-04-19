@@ -84,6 +84,8 @@ export default class PlayerController extends StateMachineAI {
 
     protected tongueGraphic: Graphic;
 
+    protected isInvincible: boolean;
+
     public isFirejumpActive: boolean;
     public isGrappleActive: boolean;
 
@@ -121,9 +123,12 @@ export default class PlayerController extends StateMachineAI {
         // this.selectedSpell = SpellTypes.TONGUE;
         this.selectedSpell = SpellTypes.FIREBALL;
 
+        this.isInvincible = false;
+
         this.receiver = new Receiver();
         this.receiver.subscribe(AAEvents.PLAYER_FIRE_JUMP);
         this.receiver.subscribe(AAEvents.PLAYER_SWING);
+        this.receiver.subscribe(AAEvents.TOGGLE_INVINCIBILITY);
         //this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
 
     }
@@ -174,7 +179,10 @@ export default class PlayerController extends StateMachineAI {
                 this.isGrappleActive = true;
                 break;
             }
-
+            case AAEvents.TOGGLE_INVINCIBILITY: {
+                this.isInvincible = !this.isInvincible;
+                break;
+            }
             default: {
                 throw new Error(`Unhandled event caught in player controller with type ${event.type}`)
             }
@@ -235,22 +243,25 @@ export default class PlayerController extends StateMachineAI {
         }
 
         // Set the selected spell
-        if (Input.isPressed(AAControls.SELECT_TONGUE)) {
+        if (Input.isJustPressed(AAControls.SELECT_TONGUE)) {
             this.selectedSpell = SpellTypes.TONGUE;
             this.emitter.fireEvent(AAEvents.SELECT_TONGUE);
         }
-        if (Input.isPressed(AAControls.SELECT_FIREBALL)) {
+        if (Input.isJustPressed(AAControls.SELECT_FIREBALL)) {
             this.selectedSpell = SpellTypes.FIREBALL;
             this.emitter.fireEvent(AAEvents.SELECT_FIREBALL);
         }
-        if (Input.isPressed(AAControls.SELECT_ICE)) {
+        if (Input.isJustPressed(AAControls.SELECT_ICE)) {
             this.selectedSpell = SpellTypes.ICE;
             this.emitter.fireEvent(AAEvents.SELECT_ICE);
         }
 
-        if (Input.isPressed(AAControls.PAUSE)) {
+        // Handles pausing the game
+        if (Input.isJustPressed(AAControls.PAUSE)) {
             this.emitter.fireEvent(AAEvents.PAUSE);
         }
+
+        // console.log('velocity: ' + this.velocity);
 
 	}
 
@@ -299,6 +310,7 @@ export default class PlayerController extends StateMachineAI {
 
     public get health(): number { return this._health; }
     public set health(health: number) { 
+        if (this.isInvincible) { return; }
         this._health = MathUtils.clamp(health, 0, this.maxHealth);
         // When the health changes, fire an event up to the scene.
         this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});

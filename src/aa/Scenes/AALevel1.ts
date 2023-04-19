@@ -4,7 +4,7 @@ import AALevel, {AALayers} from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import HW4Level2 from "./AALevel2";
+// import HW4Level2 from "./AALevel2";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
@@ -14,6 +14,7 @@ import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
+import CheatsManager from "../CheatsManager";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -50,6 +51,8 @@ export default class Level1 extends AALevel {
     protected tutorialText: Label;
     protected tutorialTextTimer: Timer;
 
+    protected cheatsManager: CheatsManager;
+
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
 
@@ -80,6 +83,10 @@ export default class Level1 extends AALevel {
         // made bigger for testing
         this.levelEndHalfSize = new Vec2(32, 300).mult(this.tilemapScale);
 
+        // Initialize cheats
+        // Have to define and update cheatsManager in each individual level 
+        // to avoid circular dependencies
+        this.cheatsManager = new CheatsManager(this.sceneManager, {levelMusicKey: this.levelMusicKey});
     }
 
     public initializeUI(): void {
@@ -143,8 +150,8 @@ export default class Level1 extends AALevel {
         super.startScene();
         this.tutorialTextTimer.start();
         // Set the next level to be Level2
-        this.nextLevel = HW4Level2;
-        this.nextLevelNum = 2;
+        // this.nextLevel = HW4Level2;
+        // this.nextLevelNum = 2;
 
         this.initializeNPCs();
     }
@@ -166,6 +173,14 @@ export default class Level1 extends AALevel {
         scabbers.animation.play("IDLE");
         this.allNPCS.set(scabbers.id, scabbers);
         scabbers.addAI(EnemyBehavior);
+    }
+
+    public updateScene(deltaT: number) {
+        super.updateScene(deltaT);
+
+        // Have to define and update cheatsManager in each individual level 
+        // to avoid circular dependencies
+        this.cheatsManager.update(deltaT);
     }
 
     /**

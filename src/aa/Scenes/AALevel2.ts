@@ -7,6 +7,7 @@ import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Level1 from "./AALevel1";
+import CheatsManager from "../CheatsManager";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
@@ -32,6 +33,8 @@ export default class Level2 extends AALevel {
 
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
 
+    protected cheatsManager: CheatsManager;
+
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
 
@@ -54,6 +57,8 @@ export default class Level2 extends AALevel {
         // Level end size and position
         this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
         this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
+
+        this.cheatsManager = new CheatsManager(this.sceneManager, {levelMusicKey: this.levelMusicKey});
     }
     /**
      * Load in resources for level 2.
@@ -67,6 +72,11 @@ export default class Level2 extends AALevel {
         super.startScene();
         this.nextLevel = MainMenu;
         this.nextLevelNum = 3;
+    }
+
+    public updateScene(deltaT: number) {
+        super.updateScene(deltaT);
+        this.cheatsManager.update(deltaT);
     }
 
 }

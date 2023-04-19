@@ -45,7 +45,8 @@ export const AAEvents = {
     TONGUE_HIT_ENEMY: "TONGUE_HIT_ENEMY",
 
     //this is temp i hope
-    ENEMY_ATTACHED: "ENEMY_ATTACHED"
+    ENEMY_ATTACHED: "ENEMY_ATTACHED",
 
+    TOGGLE_INVINCIBILITY: "TOGGLE_INVINCIBILITY",
 
 } as const;
