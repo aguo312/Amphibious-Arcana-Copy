@@ -375,6 +375,7 @@ export default abstract class AALevel extends Scene {
                         freeze.visible = false;
                     }
                 }
+                break;
             }
             case AAEvents.SHOOT_TONGUE: {
                 let pos = event.data.get("pos");
