@@ -553,10 +553,11 @@ export default abstract class AALevel extends Scene {
         this.player.setAIActive(false, null);
         this.player.animation.pause();
         this.allNPCS.forEach(npc => {
-            npc.setAIActive(false, null)
+            // npc.setAIActive(false, null)
+            npc.freeze();
             npc.animation.pause();
         });
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey, holdReference: true});
         this.getLayer(AALayers.PAUSE).enable();
     }
 
@@ -571,7 +572,8 @@ export default abstract class AALevel extends Scene {
         });
         this.player.animation.resume();
         this.allNPCS.forEach(npc => {
-            npc.setAIActive(true, {})
+            // npc.setAIActive(true, {})
+            npc.unfreeze();
             npc.animation.resume();
         });
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.levelMusicKey, loop: true, holdReference: true});
