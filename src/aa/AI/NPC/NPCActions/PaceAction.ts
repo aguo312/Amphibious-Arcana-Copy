@@ -22,7 +22,6 @@ export default class PaceAction extends NPCAction {
     }
 
     public onEnter(options: Record<string, any>): void {
-        console.log("ENTERING PACE")
         this.dir = Vec2.RIGHT;
         this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
 

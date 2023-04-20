@@ -10,6 +10,7 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Emitter from "../../Wolfie2D/Events/Emitter";
+import AAAnimatedSprite from "./AAAnimatedSprite";
 
 enum TongueState {
     EXTENDING,
@@ -56,7 +57,9 @@ export default class TongueBehavior implements AI {
     private stopExtending: boolean;
 
     private playerPos: Vec2;
-    private attachedEnemy: AnimatedSprite;
+    private attachedEnemy: AAAnimatedSprite;
+    private frozenOverlay: AnimatedSprite;
+
     private wallCollision: Boolean;
 
     public initializeAI(owner: Graphic, options: Record<string, any>): void {
@@ -93,6 +96,8 @@ export default class TongueBehavior implements AI {
         this.stopExtending = false;
 
         this.attachedEnemy = null;
+        this.frozenOverlay = null;
+
         this.wallCollision = false;
         this.activate(options);
     }
@@ -137,6 +142,7 @@ export default class TongueBehavior implements AI {
 
                 if(event.data.get('enemy')){
                     this.attachedEnemy = event.data.get('enemy')
+                    this.frozenOverlay = event.data.get('overlay')
                     this.stopExtending = true;
                 }
                 break;
@@ -185,6 +191,7 @@ export default class TongueBehavior implements AI {
         this.tongueActive = true;
         this.stopExtending = false;
         this.attachedEnemy = null;
+        this.frozenOverlay = null;
         this.wallCollision = false;
     }
 
@@ -206,15 +213,15 @@ export default class TongueBehavior implements AI {
             // Calculate the distance that the enemy moves per frame in the X and Y directions
             const movementX = direction.normalized().x * tongueMovement.mag();
             const movementY = direction.normalized().y * tongueMovement.mag();
-
-            console.log(movementX)
-            console.log(movementY)
+            const scaleDelta = 0.01;
 
             // Move the enemy towards the player
             this.attachedEnemy.position.add(new Vec2(movementX, movementY));
-
+            if(this.frozenOverlay){
+                this.frozenOverlay.position.add(new Vec2(movementX, movementY));
+                this.frozenOverlay.scale.sub(new Vec2(1, 1));
+            }
             // Decrease the enemy's scale each frame
-            const scaleDelta = 0.01;
             this.attachedEnemy.scale.sub(new Vec2(scaleDelta, scaleDelta));
         }
         
@@ -252,9 +259,14 @@ export default class TongueBehavior implements AI {
                     this.tongueActive = false;
                     this.stopExtending = false;
                     if(this.attachedEnemy){
+                        if(this.frozenOverlay){
+                            this.frozenOverlay.destroy();
+                        }
+
                         this.emitter.fireEvent(AAEvents.NPC_KILLED, {node: this.attachedEnemy.id})
                     }
                     this.attachedEnemy = null;
+                    this.frozenOverlay = null;
                     return;
                 }
             }
