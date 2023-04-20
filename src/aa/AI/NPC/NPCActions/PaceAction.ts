@@ -22,16 +22,19 @@ export default class PaceAction extends NPCAction {
     }
 
     public onEnter(options: Record<string, any>): void {
+        console.log("ENTERING PACE")
         this.dir = Vec2.RIGHT;
         this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
 
         this.moveTimer = new Timer(2000, () => {
-            if (this.dir.equals(Vec2.RIGHT)) {
-                this.dir = Vec2.LEFT;
-                this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
-            } else {
-                this.dir = Vec2.RIGHT;
-                this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+            if (!this.owner.frozen){
+                if (this.dir.equals(Vec2.RIGHT)) {
+                    this.dir = Vec2.LEFT;
+                    this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
+                } else {
+                    this.dir = Vec2.RIGHT;
+                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+                }
             }
         }, true);
 

@@ -172,8 +172,8 @@ export default class Level1 extends AALevel {
         let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {size: scabbers.size.clone().scaled(1.5, 0.25), offset: scabbers.size.clone().scaled(0, -1/5)});
         this.healthbars.set(scabbers.id, healthbar);
         scabbers.animation.play("IDLE");
-        this.allNPCS.set(scabbers.id, scabbers);
         scabbers.addAI(EnemyBehavior);
+        this.allNPCS.set(scabbers.id, scabbers);
 
         scabbers.tweens.add("DEATH", {
             startDelay: 0,
