@@ -161,7 +161,7 @@ export default class Level1 extends AALevel {
     protected initializeNPCs(): void {
         let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
         scabbers.scale.scale(0.25);
-        scabbers.position.set(Level1.PLAYER_SPAWN.x, Level1.PLAYER_SPAWN.y);
+        scabbers.position.set(Level1.PLAYER_SPAWN.x+70, Level1.PLAYER_SPAWN.y);
         scabbers.addPhysics();
         scabbers.setGroup(AAPhysicsGroups.ENEMY);
         scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null)

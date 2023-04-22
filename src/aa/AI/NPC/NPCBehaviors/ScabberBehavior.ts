@@ -4,6 +4,7 @@ import NPCBehavior from "../NPCBehavior";
 import Timer from "../../../../Wolfie2D/Timing/Timer";
 import { AAEvents } from "../../../AAEvents";
 import PlayerController from "../../Player/PlayerController";
+import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 
 export const EnemyStates = {
     IDLE: "IDLE"
@@ -20,6 +21,10 @@ export default class ScabberBehavior extends NPCBehavior {
 
     protected attackCooldownTimer: Timer;
 
+    protected moveTimer: Timer;
+
+    protected dir: Vec2;
+
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>): void {
         super.initializeAI(owner, options);
         this.owner = owner;
@@ -27,40 +32,95 @@ export default class ScabberBehavior extends NPCBehavior {
         this.player = options.player;
 
         this.attackCooldownTimer = new Timer(3000);
+        this.moveTimer = new Timer(3000);
+        this.dir = Vec2.LEFT;
     }
 
     public override update(deltaT: number): void {
-        let dir = this.player.position.x > this.owner.position.x ? 1 : -1;
+        let playerDir = this.player.position.x > this.owner.position.x ? 1 : -1;
 
-        if (this.owner.position.distanceTo(this.player.position) < 100 && this.attackCooldownTimer.isStopped()) {
-            console.log("is ATTACKING PLAYER");
-            
-            if (dir > 0) {
-                this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
-            }
-            else {
-                this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
-            }
-            let x = <PlayerController>this.player.ai;
-            x.health -= 1;
-            this.attackCooldownTimer.start();
-        }
-        else if (this.owner.position.distanceTo(this.player.position)) {
-            this.owner.animation.playIfNotAlready("IDLE", true);
-        }
-        else {
-            if (!this.owner.animation.isPlaying("ATTACKING_LEFT") || !this.owner.animation.isPlaying("ATTACKING_RIGHT")) {
-                // this.owner.animation.playIfNotAlready("IDLE");
-                if (dir > 0) {
-                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", false);
+        /** if player is in attack range 20 -> attack
+         *  if player is in follow range 50 -> follow
+         *  if player is out of range -> do normal pace
+         */
+        if (!this.owner.frozen) {
+            if (this.owner.position.distanceTo(this.player.position) < 20 && this.attackCooldownTimer.isStopped()) {
+                if (playerDir > 0) {
+                    this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
                 }
                 else {
-                    this.owner.animation.playIfNotAlready("MOVING_LEFT", false);
+                    this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
+                }
+                let x = <PlayerController>this.player.ai;
+                x.health -= 1;
+                this.attackCooldownTimer.start();
+            }
+            else if (this.owner.position.distanceTo(this.player.position) < 50) {
+                if (playerDir > 0) {
+                    this.dir = Vec2.RIGHT;
+                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+                }
+                else {
+                    this.dir = Vec2.LEFT;
+                    this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
                 }
             }
+            else if (this.moveTimer.isStopped()) {
+                if (this.dir.equals(Vec2.RIGHT)) {
+                    this.dir = Vec2.LEFT;
+                    this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
+                }
+                else {
+                    this.dir = Vec2.RIGHT;
+                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+                }
+                this.moveTimer.start();
+            }
+            console.log(this.dir.x);
         }
+        // if (this.owner.position.distanceTo(this.player.position) < 20 && this.attackCooldownTimer.isStopped()) {
+        //     console.log("is ATTACKING PLAYER");
+            
+        //     if (dir > 0) {
+        //         this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
+        //     }
+        //     else {
+        //         this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
+        //     }
+        //     // let x = <PlayerController>this.player.ai;
+        //     // x.health -= 1;
+        //     this.attackCooldownTimer.start();
+        // }
+        // else if (this.owner.position.distanceTo(this.player.position) < 20) {
+        //     this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
 
-        this.owner._velocity.x = 10*dir;
+        //     this.moveTimer = new Timer(2000, () => {
+        //         if (!this.owner.frozen) {
+        //             if (this.dir.equals(Vec2.RIGHT)) {
+        //                 this.dir = Vec2.LEFT;
+        //                 this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
+        //             } else {
+        //                 this.dir = Vec2.RIGHT;
+        //                 this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+        //             }
+        //         }
+        //     }, true);
+
+        //     this.moveTimer.start();
+        // }
+        // else {
+        //     if (!this.owner.animation.isPlaying("ATTACKING_LEFT") || !this.owner.animation.isPlaying("ATTACKING_RIGHT")) {
+        //         // this.owner.animation.playIfNotAlready("IDLE");
+        //         if (dir > 0) {
+        //             this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+        //         }
+        //         else {
+        //             this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
+        //         }
+        //     }
+        // }
+
+        this.owner._velocity.x = 10*this.dir.x;
         this.owner._velocity.y += this.gravity*deltaT;
 
         this.owner.move(this.owner._velocity.scaled(deltaT));
