@@ -50,4 +50,6 @@ export const AAEvents = {
 
     TOGGLE_INVINCIBILITY: "TOGGLE_INVINCIBILITY",
 
+    PLAYER_HIT: "PLAYER_HIT"
+
 } as const;

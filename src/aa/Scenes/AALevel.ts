@@ -161,20 +161,22 @@ export default abstract class AALevel extends Scene {
                 AAPhysicsGroups.TONGUE,
                 AAPhysicsGroups.ICE_PARTICLE,
                 AAPhysicsGroups.ENEMY,
-                AAPhysicsGroups.ICE_PLATFORM
+                AAPhysicsGroups.ICE_PLATFORM,
+                AAPhysicsGroups.BOSS_PARTICLE
             ],
             collisions:
             [
-                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1],
-                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1],
-                [0, 0, 0, 0, 0, 0, 1, 0, 1, 1],
-                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0],
+                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0],
+                [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
+                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
             ]
         }});
@@ -889,6 +891,7 @@ export default abstract class AALevel extends Scene {
         // Give the player physics and setup collision groups and triggers for the player
         this.player.addPhysics(new AABB(this.player.position.clone(), this.player.boundary.getHalfSize().clone()));
         this.player.setGroup(AAPhysicsGroups.PLAYER);
+        this.player.setTrigger(AAPhysicsGroups.BOSS_PARTICLE, AAEvents.PLAYER_HIT, null);
 
         // Give the player a flip animation
         this.player.tweens.add(PlayerTweens.FLIP, {

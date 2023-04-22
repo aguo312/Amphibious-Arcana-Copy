@@ -13,6 +13,7 @@ import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import MindFlayerBehavior from "../AI/NPC/NPCBehaviors/MindFlayerBehavior";
+import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
@@ -39,6 +40,8 @@ export default class Level2 extends AALevel {
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
 
     protected cheatsManager: CheatsManager;
+
+    protected mindFlayerParticleSystem: MindFlayerParticles;
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
@@ -87,6 +90,10 @@ export default class Level2 extends AALevel {
     }
 
     protected initializeNPCs(): void {
+        // initialize boss weapon system
+        this.mindFlayerParticleSystem = new MindFlayerParticles(50, Vec2.ZERO, 1000, 3, 10, 50);
+        this.mindFlayerParticleSystem.initializePool(this, AALayers.PRIMARY);
+
         let mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
         mindFlayer.scale.scale(0.15);
         mindFlayer.position.set(Level2.PLAYER_SPAWN.x+10, Level2.PLAYER_SPAWN.y-20);
@@ -99,8 +106,9 @@ export default class Level2 extends AALevel {
         let healthbar = new HealthbarHUD(this, mindFlayer, AALayers.PRIMARY, { size: mindFlayer.size.clone().scaled(1.0, 0.1), offset: mindFlayer.size.clone().scaled(0, -0.1)});
         this.healthbars.set(mindFlayer.id, healthbar);
         mindFlayer.animation.play("IDLE");
-        mindFlayer.addAI(MindFlayerBehavior, { player: this.player });
+        mindFlayer.addAI(MindFlayerBehavior, { player: this.player, particles: this.mindFlayerParticleSystem });
         this.allNPCS.set(mindFlayer.id, mindFlayer);
+
     }
 
     public startScene(): void {
