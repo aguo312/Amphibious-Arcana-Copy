@@ -142,9 +142,10 @@ export default abstract class AALevel extends Scene {
     protected explodeAudioKey: string;
     protected grappleAudioKey: string;
 
-    protected allNPCS: Map<number, AnimatedSprite>;
+    protected allNPCS: Map<number, AAAnimatedSprite>;
     protected healthbars: Map<number, HealthbarHUD>;
     protected freezeOverlays: Map<number, Graphic>;
+    protected frozenTimer: Timer;
 
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
@@ -189,7 +190,7 @@ export default abstract class AALevel extends Scene {
         // this.selectedSpell = SpellTypes.TONGUE;
         this.selectedSpell = SpellTypes.FIREBALL;
 
-        this.allNPCS = new Map<number, AnimatedSprite>();
+        this.allNPCS = new Map<number, AAAnimatedSprite>();
         this.healthbars = new Map<number, HealthbarHUD>();
         this.freezeOverlays = new Map<number, Graphic>();
     }
@@ -301,14 +302,22 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.FIREBALL_HIT_ENEMY:{
-            
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
                     console.log("FIREBALL HIT");
                     let enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     enemy.health -= 1
-                    this.fireballSystem.getPool()[0].freeze(); 
-                    this.fireballSystem.getPool()[0].visible = false; 
+                    
+                    if(this.freezeOverlays.get(enemy.id) && enemy.frozen){
+                        enemy.unfreeze()
+                        enemy.animation.resume()
+                        enemy.health -= 5
+                        this.freezeOverlays.get(enemy.id).visible = false;
+                        this.freezeOverlays.delete(enemy.id);
+
+                    }
+
+                    this.handleFireballHit()
                 }
                 break;
             }
@@ -318,8 +327,7 @@ export default abstract class AALevel extends Scene {
                 if(!enemy.frozen){
 
                     enemy.freeze();
-                    enemy.animation.stop();
-                    enemy.setAIActive(false, null);
+                    enemy.animation.pause();
 
                     // Add a cyan overlay to indicate that the enemy is frozen
                     let frozenOverlay = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
@@ -332,7 +340,15 @@ export default abstract class AALevel extends Scene {
                     this.freezeOverlays.set(enemy.id, frozenOverlay);
 
                     this.iceParticleSystem.getPool()[0].freeze(); 
-                    this.iceParticleSystem.getPool()[0].visible = false;   
+                    this.iceParticleSystem.getPool()[0].visible = false;  
+
+                    //how long the enmy is frozen for
+                    this.frozenTimer = new Timer(3000, () => {
+                        enemy.unfreeze();
+                        enemy.animation.resume();
+                        frozenOverlay.visible = false;
+                    });
+                    this.frozenTimer.start()
                 }
 
                 break;
@@ -340,9 +356,12 @@ export default abstract class AALevel extends Scene {
             case AAEvents.TONGUE_HIT_ENEMY:{
                 let enemy = this.allNPCS.get(event.data.get("other"));
                 this.tongueParticleSystem.getPool()[0].freeze(); 
-                this.tongueParticleSystem.getPool()[0].visible = false;   
+                this.tongueParticleSystem.getPool()[0].visible = false;
+                
+                let overlay = this.freezeOverlays.get(enemy.id)
+
                 //I hope there's another way
-                this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy})
+                this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy, overlay:overlay})
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
@@ -534,10 +553,11 @@ export default abstract class AALevel extends Scene {
         this.player.setAIActive(false, null);
         this.player.animation.pause();
         this.allNPCS.forEach(npc => {
-            npc.setAIActive(false, null)
+            // npc.setAIActive(false, null)
+            npc.freeze();
             npc.animation.pause();
         });
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey, holdReference: true});
         this.getLayer(AALayers.PAUSE).enable();
     }
 
@@ -552,7 +572,8 @@ export default abstract class AALevel extends Scene {
         });
         this.player.animation.resume();
         this.allNPCS.forEach(npc => {
-            npc.setAIActive(true, {})
+            // npc.setAIActive(true, {})
+            npc.unfreeze();
             npc.animation.resume();
         });
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.levelMusicKey, loop: true, holdReference: true});

@@ -8,7 +8,7 @@ import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import NPCAction from "./NPCAction";
 
-export default class PaceAction extends NPCAction {
+export default class BossPatternAction extends NPCAction {
 
     protected moveTimer: Timer;
     protected dir: Vec2;
@@ -18,7 +18,6 @@ export default class PaceAction extends NPCAction {
     public constructor(parent: NPCBehavior, actor: NPCActor) {
         super(parent, actor);
         this.owner = actor as AAAnimatedSprite;
-        console.log('PaceAction this.owner', this.owner);
     }
 
     public onEnter(options: Record<string, any>): void {
