@@ -51,9 +51,19 @@ export default class ScabberBehavior extends NPCBehavior {
                 else {
                     this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
                 }
+                // weird way to make damage happen, can turn into event instead
+                // so it the damage would happen at the end of the animation
+                // if we do then it should automatically damage the player 1 health
+                // so we can put it as the onEnd parameter of the animation
+                // event could be called damage player
                 let x = <PlayerController>this.player.ai;
                 x.health -= 1;
                 this.attackCooldownTimer.start();
+            }
+            else if (this.owner.position.distanceTo(this.player.position) < 20) {
+                if (!this.owner.animation.isPlaying("ATTACKING_LEFT") && !this.owner.animation.isPlaying("ATTACKING_RIGHT")) {
+                    this.owner.animation.playIfNotAlready("IDLE", true);
+                }
             }
             else if (this.owner.position.distanceTo(this.player.position) < 50) {
                 if (playerDir > 0) {
@@ -76,49 +86,7 @@ export default class ScabberBehavior extends NPCBehavior {
                 }
                 this.moveTimer.start();
             }
-            console.log(this.dir.x);
         }
-        // if (this.owner.position.distanceTo(this.player.position) < 20 && this.attackCooldownTimer.isStopped()) {
-        //     console.log("is ATTACKING PLAYER");
-            
-        //     if (dir > 0) {
-        //         this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
-        //     }
-        //     else {
-        //         this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
-        //     }
-        //     // let x = <PlayerController>this.player.ai;
-        //     // x.health -= 1;
-        //     this.attackCooldownTimer.start();
-        // }
-        // else if (this.owner.position.distanceTo(this.player.position) < 20) {
-        //     this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
-
-        //     this.moveTimer = new Timer(2000, () => {
-        //         if (!this.owner.frozen) {
-        //             if (this.dir.equals(Vec2.RIGHT)) {
-        //                 this.dir = Vec2.LEFT;
-        //                 this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
-        //             } else {
-        //                 this.dir = Vec2.RIGHT;
-        //                 this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
-        //             }
-        //         }
-        //     }, true);
-
-        //     this.moveTimer.start();
-        // }
-        // else {
-        //     if (!this.owner.animation.isPlaying("ATTACKING_LEFT") || !this.owner.animation.isPlaying("ATTACKING_RIGHT")) {
-        //         // this.owner.animation.playIfNotAlready("IDLE");
-        //         if (dir > 0) {
-        //             this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
-        //         }
-        //         else {
-        //             this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
-        //         }
-        //     }
-        // }
 
         this.owner._velocity.x = 10*this.dir.x;
         this.owner._velocity.y += this.gravity*deltaT;
