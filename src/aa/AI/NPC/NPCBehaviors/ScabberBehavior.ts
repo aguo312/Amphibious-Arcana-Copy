@@ -2,6 +2,8 @@ import NPCActor from "../../../Actors/NPCActor";
 import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import Timer from "../../../../Wolfie2D/Timing/Timer";
+import { AAEvents } from "../../../AAEvents";
+import PlayerController from "../../Player/PlayerController";
 
 export const EnemyStates = {
     IDLE: "IDLE"
@@ -31,14 +33,22 @@ export default class ScabberBehavior extends NPCBehavior {
         let dir = this.player.position.x > this.owner.position.x ? 1 : -1;
 
         if (this.owner.position.distanceTo(this.player.position) < 100 && this.attackCooldownTimer.isStopped()) {
+            console.log("is ATTACKING PLAYER");
+            
             if (dir > 0) {
                 this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
             }
             else {
                 this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
             }
+            let x = <PlayerController>this.player.ai;
+            x.health -= 1;
             this.attackCooldownTimer.start();
-        } else {
+        }
+        else if (this.owner.position.distanceTo(this.player.position)) {
+            this.owner.animation.playIfNotAlready("IDLE", true);
+        }
+        else {
             if (!this.owner.animation.isPlaying("ATTACKING_LEFT") || !this.owner.animation.isPlaying("ATTACKING_RIGHT")) {
                 // this.owner.animation.playIfNotAlready("IDLE");
                 if (dir > 0) {
