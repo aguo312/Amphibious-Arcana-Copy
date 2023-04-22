@@ -31,19 +31,26 @@ export default class ScabberBehavior extends NPCBehavior {
         let dir = this.player.position.x > this.owner.position.x ? 1 : -1;
 
         if (this.owner.position.distanceTo(this.player.position) < 100 && this.attackCooldownTimer.isStopped()) {
-            // Attack player if within reasonable distance
-            this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
-
-            console.log('starting timer');
+            if (dir > 0) {
+                this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
+            }
+            else {
+                this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
+            }
             this.attackCooldownTimer.start();
         } else {
-            // Otherwise just chill
             if (!this.owner.animation.isPlaying("ATTACKING_LEFT") || !this.owner.animation.isPlaying("ATTACKING_RIGHT")) {
-                this.owner.animation.playIfNotAlready("IDLE");
+                // this.owner.animation.playIfNotAlready("IDLE");
+                if (dir > 0) {
+                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", false);
+                }
+                else {
+                    this.owner.animation.playIfNotAlready("MOVING_LEFT", false);
+                }
             }
         }
 
-        this.owner._velocity.x = 5*dir;
+        this.owner._velocity.x = 10*dir;
         this.owner._velocity.y += this.gravity*deltaT;
 
         this.owner.move(this.owner._velocity.scaled(deltaT));

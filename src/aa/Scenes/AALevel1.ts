@@ -13,6 +13,7 @@ import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
+import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
@@ -172,7 +173,7 @@ export default class Level1 extends AALevel {
         let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {size: scabbers.size.clone().scaled(1.5, 0.25), offset: scabbers.size.clone().scaled(0, -1/5)});
         this.healthbars.set(scabbers.id, healthbar);
         scabbers.animation.play("IDLE");
-        scabbers.addAI(EnemyBehavior);
+        scabbers.addAI(ScabberBehavior, { player: this.player });
         this.allNPCS.set(scabbers.id, scabbers);
 
         scabbers.tweens.add("DEATH", {
