@@ -22,6 +22,7 @@ import IceParticles from "./IceParticles";
 import TongueParticle from "./TongueParticle";
 import Graphic from "../../../Wolfie2D/Nodes/Graphic";
 import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
+import Timer from "../../../Wolfie2D/Timing/Timer";
 
 /**
  * Animation keys for the player spritesheet
@@ -89,6 +90,8 @@ export default class PlayerController extends StateMachineAI {
     public isFirejumpActive: boolean;
     public isGrappleActive: boolean;
 
+    protected iFramesTimer: Timer;
+
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>){
         this.owner = owner;
 
@@ -125,10 +128,13 @@ export default class PlayerController extends StateMachineAI {
 
         this.isInvincible = false;
 
+        this.iFramesTimer = new Timer(1000, null, false);
+
         this.receiver = new Receiver();
         this.receiver.subscribe(AAEvents.PLAYER_FIRE_JUMP);
         this.receiver.subscribe(AAEvents.PLAYER_SWING);
         this.receiver.subscribe(AAEvents.TOGGLE_INVINCIBILITY);
+        this.receiver.subscribe(AAEvents.PLAYER_HIT);
         //this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
 
     }
@@ -181,6 +187,14 @@ export default class PlayerController extends StateMachineAI {
             }
             case AAEvents.TOGGLE_INVINCIBILITY: {
                 this.isInvincible = !this.isInvincible;
+                break;
+            }
+            case AAEvents.PLAYER_HIT: {
+                // this.owner.animation.playIfNotAlready()
+                if (this.iFramesTimer.isStopped()) {
+                    this.health -= 1;
+                    this.iFramesTimer.start();
+                }
                 break;
             }
             default: {

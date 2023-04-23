@@ -2,6 +2,7 @@ import NPCActor from "../../../Actors/NPCActor";
 import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import Timer from "../../../../Wolfie2D/Timing/Timer";
+import MindFlayerParticles from "../MindFlayerParticles";
 
 export const EnemyStates = {
     IDLE: "IDLE"
@@ -17,12 +18,15 @@ export default class MindFlayerBehavior extends NPCBehavior {
     protected gravity: number;
 
     protected attackCooldownTimer: Timer;
+
+    protected weaponSystem: MindFlayerParticles;
     
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>): void {
         super.initializeAI(owner, options);
         this.owner = owner;
         this.gravity = 4000;
         this.player = options.player;
+        this.weaponSystem = options.particles;
 
         this.attackCooldownTimer = new Timer(3000);
     }
@@ -32,7 +36,11 @@ export default class MindFlayerBehavior extends NPCBehavior {
 
         if (this.owner.position.distanceTo(this.player.position) < 100 && this.attackCooldownTimer.isStopped()) {
             // Attack player if within reasonable distance
+            this.owner.invertX = dir === 1 ? true : false;
             this.owner.animation.playIfNotAlready("CASTING_LEFT", false);
+
+            this.weaponSystem.setDir(dir);
+            this.weaponSystem.startSystem(1000, 0, this.owner.position);
 
             console.log('starting timer');
             this.attackCooldownTimer.start();
