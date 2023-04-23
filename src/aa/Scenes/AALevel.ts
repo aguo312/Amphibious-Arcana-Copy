@@ -341,8 +341,8 @@ export default abstract class AALevel extends Scene {
                     frozenOverlay.visible = true;
                     this.freezeOverlays.set(enemy.id, frozenOverlay);
 
-                    this.iceParticleSystem.getPool()[0].freeze(); 
-                    this.iceParticleSystem.getPool()[0].visible = false;  
+                    this.iceParticleSystem.getPool()[0].freeze();
+                    this.iceParticleSystem.getPool()[0].visible = false;
 
                     //how long the enmy is frozen for
                     this.frozenTimer = new Timer(3000, () => {
@@ -371,6 +371,11 @@ export default abstract class AALevel extends Scene {
                     this.fireballTimer.start();
                     this.handleFireballHit();
                 }
+                break;
+            }
+            case AAEvents.ICE_COLLISION: {
+                this.iceParticleSystem.getPool()[0].freeze();
+                this.iceParticleSystem.getPool()[0].visible = false;
                 break;
             }
             case AAEvents.HEALTH_CHANGE: {
@@ -406,8 +411,8 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.CREATE_PLATFORM:{
 
-                //console.log(this.tilemap.getColRowAt(Input.getGlobalMousePosition()))
-                //this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(event.data.get('pos')),5);
+                // console.log(this.tilemap.getColRowAt(Input.getGlobalMousePosition()))
+                // this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(event.data.get('pos')),5);
                 this.spawnIceBlock(event.data.get("pos"));
 
                 break;
@@ -628,18 +633,19 @@ export default abstract class AALevel extends Scene {
             this.collidable.setGroup(AAPhysicsGroups.DESTRUCTABLE);
             this.collidable.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.PARTICLE_HIT_DESTRUCTIBLE, null);
             this.collidable.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_WALL_COLLISION, null);
-
+            this.collidable.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_COLLISION, null);
         }
     }
     /**
      * Handles all subscriptions to events
      */
     protected subscribeToEvents(): void {
-        this.receiver.subscribe(AAEvents.TONGUE_WALL_COLLISION);
         this.receiver.subscribe(AAEvents.PLAYER_ENTERED_LEVEL_END);
         this.receiver.subscribe(AAEvents.LEVEL_START);
         this.receiver.subscribe(AAEvents.LEVEL_END);
+        this.receiver.subscribe(AAEvents.TONGUE_WALL_COLLISION);
         this.receiver.subscribe(AAEvents.PARTICLE_HIT_DESTRUCTIBLE);
+        this.receiver.subscribe(AAEvents.ICE_COLLISION);
         this.receiver.subscribe(AAEvents.HEALTH_CHANGE);
         this.receiver.subscribe(AAEvents.PLAYER_DEAD);
         this.receiver.subscribe(AAEvents.NPC_KILLED);
@@ -862,6 +868,7 @@ export default abstract class AALevel extends Scene {
         this.icePlatform.setGroup(AAPhysicsGroups.ICE_PLATFORM);
         this.icePlatform.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_WALL_COLLISION, null);
         this.icePlatform.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.PARTICLE_HIT_DESTRUCTIBLE, null);
+        this.icePlatform.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_COLLISION, null);
 
         // initialize Ice Blast
         this.iceParticleSystem = new IceParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
