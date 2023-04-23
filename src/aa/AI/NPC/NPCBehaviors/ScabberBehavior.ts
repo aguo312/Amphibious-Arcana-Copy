@@ -46,18 +46,11 @@ export default class ScabberBehavior extends NPCBehavior {
         if (!this.owner.frozen) {
             if (this.owner.position.distanceTo(this.player.position) < 20 && this.attackCooldownTimer.isStopped()) {
                 if (playerDir > 0) {
-                    this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
+                    this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false, AAEvents.PLAYER_HIT);
                 }
                 else {
-                    this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
+                    this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false, AAEvents.PLAYER_HIT);
                 }
-                // weird way to make damage happen, can turn into event instead
-                // so it the damage would happen at the end of the animation
-                // if we do then it should automatically damage the player 1 health
-                // so we can put it as the onEnd parameter of the animation
-                // event could be called damage player
-                let x = <PlayerController>this.player.ai;
-                x.health -= 1;
                 this.attackCooldownTimer.start();
             }
             else if (this.owner.position.distanceTo(this.player.position) < 20) {
