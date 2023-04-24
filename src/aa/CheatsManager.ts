@@ -36,6 +36,9 @@ export default class CheatsManager {
         if (Input.isJustPressed(AAControls.TOGGLE_INVINCIBILITY)) {
             this.emitter.fireEvent(AAEvents.TOGGLE_INVINCIBILITY);
         }
+        if (Input.isJustPressed(AAControls.PLAYER_KILL)) {
+            this.emitter.fireEvent(AAEvents.KILL_PLAYER);
+        }
     }
 
 }

@@ -29,6 +29,7 @@ export default class MindFlayerBehavior extends NPCBehavior {
         this.weaponSystem = options.particles;
 
         this.attackCooldownTimer = new Timer(3000);
+        this.attackCooldownTimer.start();
     }
 
     public override update(deltaT: number): void {

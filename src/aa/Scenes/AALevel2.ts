@@ -70,6 +70,7 @@ export default class Level2 extends AALevel {
         this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
 
         this.cheatsManager = new CheatsManager(this.sceneManager, {levelMusicKey: this.levelMusicKey});
+        this.currLevel = Level2;
     }
     /**
      * Load in resources for level 2.
@@ -87,6 +88,26 @@ export default class Level2 extends AALevel {
         this.load.audio(this.attackAudioKey, Level1.ATTACK_AUDIO_PATH);
         this.load.audio(this.explodeAudioKey, Level1.EXPLODE_AUDIO_PATH);
         this.load.audio(this.grappleAudioKey, Level1.GRAPPLE_AUDIO_PATH);
+    }
+
+    /**
+     * Unload resources for level 1 - decide what to keep
+     */
+    public unloadScene(): void {
+        this.load.keepSpritesheet(this.playerSpriteKey);
+
+        this.load.keepAudio(this.levelMusicKey);
+        this.load.keepAudio(this.jumpAudioKey);
+        this.load.keepAudio(this.attackAudioKey);
+        this.load.keepAudio(this.explodeAudioKey);
+        this.load.keepAudio(this.grappleAudioKey);
+
+        this.load.keepImage('fireIcon')
+        this.load.keepImage('tongueIcon')
+        this.load.keepImage('iceIcon')
+
+        this.load.unloadAllResources();
+
     }
 
     protected initializeNPCs(): void {
