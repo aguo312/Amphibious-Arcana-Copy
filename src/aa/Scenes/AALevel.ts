@@ -366,14 +366,6 @@ export default abstract class AALevel extends Scene {
 
                 //I hope there's another way
                 this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy, overlay:overlay})
-                // if (enemy.health/enemy.maxHealth <= 1/3) {
-                // }
-                // else {
-                //     enemy.health -= 0.25
-                //     if(enemy.frozen && this.freezeOverlays.get(enemy.id)){
-                //         this.freezeOverlays.delete(enemy.id);
-                //     }
-                // }
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
