@@ -44,21 +44,7 @@ export default class TongueParticle extends ParticleSystem {
         particle.vel = new Vec2(0, 252);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
-        particle.color = Color.GREEN;
-
-        // Give the particle tweens
-        particle.tweens.add("active", {
-            startDelay: 0,
-            duration: this.lifetime,
-            effects: [
-                {
-                    property: "alpha",
-                    start: 1,
-                    end: 0,
-                    ease: EaseFunctionType.IN_OUT_SINE
-                }
-            ]
-        });
+        particle.color = Color.TRANSPARENT;
     }
 
     /**
