@@ -3,6 +3,9 @@ import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import Timer from "../../../../Wolfie2D/Timing/Timer";
 import MindFlayerParticles from "../MindFlayerParticles";
+import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
+import { AAEvents } from "../../../AAEvents";
+import Receiver from "../../../../Wolfie2D/Events/Receiver";
 
 export const EnemyStates = {
     IDLE: "IDLE"
@@ -20,22 +23,39 @@ export default class MindFlayerBehavior extends NPCBehavior {
     protected attackCooldownTimer: Timer;
 
     protected weaponSystem: MindFlayerParticles;
+
+    protected started: boolean;
+
+    protected receiver: Receiver;
     
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>): void {
         super.initializeAI(owner, options);
+        this.started = false;
         this.owner = owner;
         this.gravity = 4000;
         this.player = options.player;
         this.weaponSystem = options.particles;
+
+        this.receiver = new Receiver();
+        this.receiver.subscribe(AAEvents.SPAWN_BOSS);
 
         this.attackCooldownTimer = new Timer(3000);
         this.attackCooldownTimer.start();
     }
 
     public override update(deltaT: number): void {
+        // Handle all game events
+        while (this.receiver.hasNextEvent()) {
+            this.handleEvent(this.receiver.getNextEvent());
+        }
+
+        if (!this.started) {
+            return;
+        }
+
         let dir = this.player.position.x > this.owner.position.x ? 1 : -1;
 
-        if (this.owner.position.distanceTo(this.player.position) < 100 && this.attackCooldownTimer.isStopped()) {
+        if (/*this.owner.position.distanceTo(this.player.position) < 100 &&*/ this.attackCooldownTimer.isStopped()) {
             // Attack player if within reasonable distance
             this.owner.invertX = dir === 1 ? true : false;
             this.owner.animation.playIfNotAlready("CASTING_LEFT", false);
@@ -56,5 +76,14 @@ export default class MindFlayerBehavior extends NPCBehavior {
         this.owner._velocity.y += this.gravity*deltaT;
 
         this.owner.move(this.owner._velocity.scaled(deltaT));
+    }
+
+    public handleEvent(event: GameEvent): void {
+        switch(event.type) {
+            case AAEvents.SPAWN_BOSS: {
+                this.started = true;
+                break;
+            }
+        }
     }
 }

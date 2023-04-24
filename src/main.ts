@@ -9,6 +9,7 @@ import SplashScreen from "./aa/Scenes/SplashScreen";
     // Set up options for our game
     let options = {
         canvasSize: {x: 1200, y: 800},          // The size of the game
+        // canvasSize: {x: window.innerWidth, y: window.innerHeight},
         clearColor: {r: 12, g: 14, b: 37},   // The color the game clears to
         inputs: [
             {name: AAControls.MOVE_LEFT, keys: ["a"]},

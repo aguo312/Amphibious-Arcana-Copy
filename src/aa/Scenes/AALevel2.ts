@@ -3,6 +3,9 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import AALevel from "./AALevel";
 import MainMenu from "./MainMenu";
 import { AALayers } from "./AALevel";
+import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
+import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
+import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
@@ -14,6 +17,8 @@ import { AAEvents } from "../AAEvents";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import MindFlayerBehavior from "../AI/NPC/NPCBehaviors/MindFlayerBehavior";
 import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
+import Color from "../../Wolfie2D/Utils/Color";
+import GameEvent from "../../Wolfie2D/Events/GameEvent";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
@@ -25,11 +30,9 @@ export default class Level2 extends AALevel {
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
     public static readonly TILEMAP_KEY = "LEVEL2";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/HW4Level2.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/boss_desert.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
-    public static readonly TONGUE_COLLIDABLE_LAYER_KEY = "TongueCollidable";
-    public static readonly WALLS_LAYER_KEY = "Main";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/hw5_level_music.wav";
@@ -38,6 +41,9 @@ export default class Level2 extends AALevel {
     public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
 
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
+
+    protected bossSpawnTriggerPos: Vec2;
+    protected bossSpawnTriggerHalfSize: Vec2;
 
     protected cheatsManager: CheatsManager;
 
@@ -50,8 +56,6 @@ export default class Level2 extends AALevel {
         this.tilemapKey = Level2.TILEMAP_KEY;
         this.tilemapScale = Level2.TILEMAP_SCALE;
         this.collidableLayerKey = Level2.COLLIDABLE_LAYER_KEY;
-        this.tongueCollidableLayerKey = Level2.TONGUE_COLLIDABLE_LAYER_KEY;
-        this.wallsLayerKey = Level2.WALLS_LAYER_KEY;
 
         // Set the key for the player's sprite
         this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
@@ -66,8 +70,11 @@ export default class Level2 extends AALevel {
         this.grappleAudioKey = Level1.GRAPPLE_AUDIO_KEY;
 
         // Level end size and position
-        this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
-        this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
+        // this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
+        // this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
+
+        this.bossSpawnTriggerPos = new Vec2(500, 0).mult(this.tilemapScale);
+        this.bossSpawnTriggerHalfSize = new Vec2(10, 10000).mult(this.tilemapScale);
 
         this.cheatsManager = new CheatsManager(this.sceneManager, {levelMusicKey: this.levelMusicKey});
         this.currLevel = Level2;
@@ -102,9 +109,9 @@ export default class Level2 extends AALevel {
         this.load.keepAudio(this.explodeAudioKey);
         this.load.keepAudio(this.grappleAudioKey);
 
-        this.load.keepImage('fireIcon')
-        this.load.keepImage('tongueIcon')
-        this.load.keepImage('iceIcon')
+        this.load.keepImage('fireIcon');
+        this.load.keepImage('tongueIcon');
+        this.load.keepImage('iceIcon');
 
         this.load.unloadAllResources();
 
@@ -117,11 +124,12 @@ export default class Level2 extends AALevel {
 
         let mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
         mindFlayer.scale.scale(0.15);
-        mindFlayer.position.set(Level2.PLAYER_SPAWN.x+10, Level2.PLAYER_SPAWN.y-20);
+        mindFlayer.position.set(700, Level2.PLAYER_SPAWN.y).mult(this.tilemapScale);
         mindFlayer.addPhysics();
+        mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
         mindFlayer.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
-        mindFlayer.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
-        mindFlayer.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
+        mindFlayer.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
+        mindFlayer.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_BOSS, null);
         mindFlayer.health = 20;
         mindFlayer.maxHealth = 20;
         let healthbar = new HealthbarHUD(this, mindFlayer, AALayers.PRIMARY, { size: mindFlayer.size.clone().scaled(1.0, 0.1), offset: mindFlayer.size.clone().scaled(0, -0.1)});
@@ -130,6 +138,32 @@ export default class Level2 extends AALevel {
         mindFlayer.addAI(MindFlayerBehavior, { player: this.player, particles: this.mindFlayerParticleSystem });
         this.allNPCS.set(mindFlayer.id, mindFlayer);
 
+        mindFlayer.tweens.add("DEATH", {
+            startDelay: 0,
+            duration: 500,
+            effects: [
+                {
+                    property: "rotation",
+                    start: 0,
+                    end: Math.PI,
+                    ease: EaseFunctionType.IN_OUT_QUAD
+                },
+                {
+                    property: "alpha",
+                    start: 1,
+                    end: 0,
+                    ease: EaseFunctionType.IN_OUT_QUAD
+                }
+            ],
+            onEnd: AAEvents.NPC_KILLED
+        });
+    }
+
+    protected initializeTriggers(): void {
+        let bossSpawnTrigger = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, { position: this.bossSpawnTriggerPos, size: this.bossSpawnTriggerHalfSize });
+        bossSpawnTrigger.color = Color.TRANSPARENT;
+        bossSpawnTrigger.addPhysics(undefined, undefined, false, true);
+        bossSpawnTrigger.setTrigger(AAPhysicsGroups.PLAYER, AAEvents.SPAWN_BOSS, null);
     }
 
     public startScene(): void {
@@ -138,6 +172,7 @@ export default class Level2 extends AALevel {
         this.nextLevelNum = 3;
 
         this.initializeNPCs();
+        this.initializeTriggers();
     }
 
     public updateScene(deltaT: number) {
@@ -145,4 +180,8 @@ export default class Level2 extends AALevel {
         this.cheatsManager.update(deltaT);
     }
 
+    protected initializeViewport(): void {
+        super.initializeViewport();
+        this.viewport.setBounds(16, 16, 1600, 700);
+    }
 }

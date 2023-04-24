@@ -183,9 +183,6 @@ export default abstract class AALevel extends Scene {
         }});
         this.add = new AAFactoryManager(this, this.tilemaps);
 
-        // this.tongueSelectPos = new Vec2(13.3, 25.5);
-        // this.fireballSelectPos = new Vec2(24.3, 25.5);
-        // this.iceSelectPos = new Vec2(35.3, 25.5);
         this.tongueSelectPos = new Vec2(35.3, 25.5);
         this.fireballSelectPos = new Vec2(13.3, 25.5);
         this.iceSelectPos = new Vec2(24.3, 25.5);
@@ -355,6 +352,16 @@ export default abstract class AALevel extends Scene {
                     this.frozenTimer.start()
                 }
 
+                break;
+            }
+            case AAEvents.ICE_HIT_BOSS: {
+                let boss = this.allNPCS.get(event.data.get("other"));
+                boss.health -= 1;
+                break;
+            }
+            case AAEvents.TONGUE_HIT_BOSS: {
+                let boss = this.allNPCS.get(event.data.get("other"));
+                boss.health -= 1;
                 break;
             }
             case AAEvents.TONGUE_HIT_ENEMY:{
@@ -622,14 +629,13 @@ export default abstract class AALevel extends Scene {
         // Add the tilemap to the scene
         this.add.tilemap(this.tilemapKey, this.tilemapScale);
 
-        if (this.collidableLayerKey === undefined || this.tongueCollidableLayerKey === undefined) {
+        if (this.collidableLayerKey === undefined) {
             throw new Error("Make sure the keys for the collidable layer and tongue collidable layer are both set");
         }
 
         // Get the wall and destructible layers 
         //this.walls = this.getTilemap(this.wallsLayerKey) as OrthogonalTilemap;
         this.collidable = this.getTilemap(this.collidableLayerKey) as OrthogonalTilemap;
-        this.tongueCollidable = this.getTilemap(this.tongueCollidableLayerKey) as OrthogonalTilemap;
 
         // Add physics to the destructible layer of the tilemap
         if (this.collidable) {
@@ -965,6 +971,10 @@ export default abstract class AALevel extends Scene {
     protected initializeLevelEnds(): void {
         if (!this.layers.has(AALayers.PRIMARY)) {
             throw new Error("Can't initialize the level ends until the primary layer has been added to the scene!");
+        }
+        if (!this.levelEndPosition || !this.levelEndHalfSize) {
+            console.debug("No level end trigger set, hopefully this is intended");
+            return;
         }
         
         this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, { position: this.levelEndPosition, size: this.levelEndHalfSize });
