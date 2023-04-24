@@ -23,6 +23,10 @@ import SplashScreen from "./aa/Scenes/SplashScreen";
             {name: AAControls.TOGGLE_INVINCIBILITY, keys: ["i"]},
             {name: AAControls.GOTO_LEVEL_1, keys: ["5"]},
             {name: AAControls.GOTO_LEVEL_2, keys: ["6"]},
+            {name: AAControls.GOTO_LEVEL_3, keys: ["7"]},
+            {name: AAControls.GOTO_LEVEL_4, keys: ["8"]},
+            {name: AAControls.GOTO_LEVEL_5, keys: ["9"]},
+            {name: AAControls.GOTO_LEVEL_6, keys: ["0"]},
         ],
         useWebGL: false,                        // Tell the game we want to use webgl
         showDebug: false                       // Whether to show debug messages. You can change this to true if you want

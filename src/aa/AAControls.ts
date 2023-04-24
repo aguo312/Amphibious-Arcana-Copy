@@ -16,4 +16,8 @@ export const AAControls = {
     // FOR GOTO LEVEL/BOSS
     GOTO_LEVEL_1: "GOTO_LEVEL_1",
     GOTO_LEVEL_2: "GOTO_LEVEL_2",
+    GOTO_LEVEL_3: "GOTO_LEVEL_3",
+    GOTO_LEVEL_4: "GOTO_LEVEL_4",
+    GOTO_LEVEL_5: "GOTO_LEVEL_5",
+    GOTO_LEVEL_6: "GOTO_LEVEL_6",
 } as const;
