@@ -140,11 +140,18 @@ export default class TongueBehavior implements AI {
             case AAEvents.ENEMY_ATTACHED: {
                 //this.handleTongueHitEnemy(event.data.get('enemy'));
 
-                if(event.data.get('enemy')){
-                    this.attachedEnemy = event.data.get('enemy')
+                let enemy = event.data.get('enemy');
+                console.log(enemy.health/enemy.maxHealth);
+                // console.log();
+                
+                if(enemy && enemy.health/enemy.maxHealth <= 1/3){
+                    this.attachedEnemy = enemy;
                     this.frozenOverlay = event.data.get('overlay')
-                    this.stopExtending = true;
                 }
+                else {
+                    enemy.health -= 0.5;
+                }
+                this.stopExtending = true;
                 break;
             }
             case AAEvents.PLAYER_POS_UPDATE: {

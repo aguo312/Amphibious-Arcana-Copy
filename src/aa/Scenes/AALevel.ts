@@ -359,26 +359,21 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.TONGUE_HIT_ENEMY:{
                 let enemy = this.allNPCS.get(event.data.get("other"));
-                if (enemy.health/enemy.maxHealth <= 1/3) {
-                    this.tongueParticleSystem.getPool()[0].freeze(); 
-                    this.tongueParticleSystem.getPool()[0].visible = false;
-                    
-                    let overlay = this.freezeOverlays.get(enemy.id)
-    
-                    //I hope there's another way
-                    this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy, overlay:overlay})
-                }
-                else {
-                    enemy.health -= 1
-                    if(enemy.frozen && this.freezeOverlays.get(enemy.id)){
-                        enemy.unfreeze()
-                        enemy.animation.resume()
-                        enemy.health -= 5
-                        this.freezeOverlays.get(enemy.id).visible = false;
-                        this.freezeOverlays.delete(enemy.id);
+                this.tongueParticleSystem.getPool()[0].freeze(); 
+                this.tongueParticleSystem.getPool()[0].visible = false;
+                
+                let overlay = this.freezeOverlays.get(enemy.id)
 
-                    }
-                }
+                //I hope there's another way
+                this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy, overlay:overlay})
+                // if (enemy.health/enemy.maxHealth <= 1/3) {
+                // }
+                // else {
+                //     enemy.health -= 0.25
+                //     if(enemy.frozen && this.freezeOverlays.get(enemy.id)){
+                //         this.freezeOverlays.delete(enemy.id);
+                //     }
+                // }
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
