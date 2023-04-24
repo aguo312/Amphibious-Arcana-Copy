@@ -123,7 +123,7 @@ export default class Level2 extends AALevel {
         this.mindFlayerParticleSystem.initializePool(this, AALayers.PRIMARY);
 
         let mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
-        mindFlayer.scale.scale(0.15);
+        mindFlayer.scale.scale(0.25);
         mindFlayer.position.set(700, Level2.PLAYER_SPAWN.y).mult(this.tilemapScale);
         mindFlayer.addPhysics();
         mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
