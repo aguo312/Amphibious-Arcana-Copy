@@ -310,10 +310,10 @@ export default abstract class AALevel extends Scene {
                     let enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     enemy.health -= 1
                     
-                    if(this.freezeOverlays.get(enemy.id) && enemy.frozen){
+                    if(enemy.frozen && this.freezeOverlays.get(enemy.id)){
                         enemy.unfreeze()
                         enemy.animation.resume()
-                        enemy.health -= 5
+                        enemy.health -= 3
                         this.freezeOverlays.get(enemy.id).visible = false;
                         this.freezeOverlays.delete(enemy.id);
 
@@ -348,7 +348,8 @@ export default abstract class AALevel extends Scene {
                     this.frozenTimer = new Timer(3000, () => {
                         enemy.unfreeze();
                         enemy.animation.resume();
-                        frozenOverlay.visible = false;
+                        // frozenOverlay.visible = false;
+                        this.freezeOverlays.delete(enemy.id);
                     });
                     this.frozenTimer.start()
                 }
@@ -357,13 +358,26 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.TONGUE_HIT_ENEMY:{
                 let enemy = this.allNPCS.get(event.data.get("other"));
-                this.tongueParticleSystem.getPool()[0].freeze(); 
-                this.tongueParticleSystem.getPool()[0].visible = false;
-                
-                let overlay = this.freezeOverlays.get(enemy.id)
+                if (enemy.health/enemy.maxHealth <= 1/3) {
+                    this.tongueParticleSystem.getPool()[0].freeze(); 
+                    this.tongueParticleSystem.getPool()[0].visible = false;
+                    
+                    let overlay = this.freezeOverlays.get(enemy.id)
+    
+                    //I hope there's another way
+                    this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy, overlay:overlay})
+                }
+                else {
+                    enemy.health -= 1
+                    if(enemy.frozen && this.freezeOverlays.get(enemy.id)){
+                        enemy.unfreeze()
+                        enemy.animation.resume()
+                        enemy.health -= 5
+                        this.freezeOverlays.get(enemy.id).visible = false;
+                        this.freezeOverlays.delete(enemy.id);
 
-                //I hope there's another way
-                this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy, overlay:overlay})
+                    }
+                }
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
