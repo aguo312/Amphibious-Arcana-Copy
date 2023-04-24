@@ -22,6 +22,7 @@ export default class Walk extends PlayerState {
         // Get the input direction from the player controller
 		let dir = this.parent.inputDir;
 
+    
         // If the player is not moving - transition to the Idle state
 		if(dir.isZero()){
 			this.finished(PlayerStates.IDLE);
@@ -54,6 +55,11 @@ export default class Walk extends PlayerState {
             else 
                 this.parent.velocity.x = MathUtils.clampHigh(this.parent.velocity.x + this.gravity*deltaT, 0);
 
+
+            if(!this.owner.animation.isPlaying(PlayerAnimations.ATTACK)){
+                this.owner.animation.playIfNotAlready(PlayerAnimations.WALK)
+            }
+        
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }
 

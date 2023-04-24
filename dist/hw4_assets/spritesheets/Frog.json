@@ -2,9 +2,9 @@
     "name": "Frog",
     "spriteSheetImage": "Frog.png",
     "spriteWidth": 64,
-    "spriteHeight": 116,
-    "columns": 5,
-    "rows": 1,
+    "spriteHeight": 128,
+    "columns": 7,
+    "rows": 3,
     "durationType": "time",
     "animations": [
         { 
@@ -19,7 +19,24 @@
         },
         {
             "name": "JUMP",
-            "frames":[ {"index": 1, "duration": 32}]
+            "repeat": false,
+            "frames":[ {"index": 5, "duration": 15}, {"index": 6, "duration": 15}, {"index": 7, "duration": 35}]
+        },
+        {
+            "name": "FALL",
+            "repeat": true,
+            "frames":[ {"index": 8, "duration": 35}, {"index": 9, "duration": 35}]
+        },
+        {
+            "name": "ATTACK",
+            "repeat": false,
+            "frames":[{"index": 11, "duration": 10}, {"index": 12, "duration": 10}, {"index": 13, "duration": 10}, {"index": 14, "duration": 10}, {"index": 13, "duration": 10}]
+        },
+        {
+            "name": "JUMP_ATTACK",
+            "repeat": false,
+            "frames":[ {"index": 18, "duration": 32}]
         }
+
     ]
 }

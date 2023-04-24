@@ -54,7 +54,6 @@ export default class ControlsScene extends Scene {
         this.createLabel("2 - Select Spell 2", new Vec2(size.x, size.y + yOffset*i++));
         this.createLabel("3 - Select Spell 3", new Vec2(size.x, size.y + yOffset*i++));
         this.createLabel("Left Click - Cast Spell", new Vec2(size.x, size.y + yOffset*i++));
-        this.createLabel("Left Click (Hold) - Charge Spell", new Vec2(size.x, size.y + yOffset*i++));
         this.createLabel("Mouse - Aim Spell", new Vec2(size.x, size.y + yOffset*i++));
         this.createLabel("ESC - Pause Game", new Vec2(size.x, size.y + yOffset*i++));
 

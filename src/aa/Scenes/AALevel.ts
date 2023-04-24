@@ -110,6 +110,7 @@ export default abstract class AALevel extends Scene {
 
     protected levelEndArea: Rect;
     protected nextLevel: new (...args: any) => Scene;
+    protected currLevel: new (...args: any) => Scene;
     protected nextLevelNum: number;
     protected levelEndTimer: Timer;
     protected levelEndLabel: Label;
@@ -397,10 +398,12 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.PLAYER_DEAD: {
-                MainMenu.GAME_PLAYING = false;
+                // MainMenu.GAME_PLAYING = false;
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
-                this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
-                this.sceneManager.changeToScene(MainMenu);
+                // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: this.levelMusicKey, loop: true, holdReference: true});
+                // this.sceneManager.changeToScene(MainMenu);
+                this.sceneManager.changeToScene(this.currLevel);
+                // this.sceneManager.changeToScene(MainMenu);
                 break;
             }
             case AAEvents.NPC_KILLED: {
@@ -833,7 +836,6 @@ export default abstract class AALevel extends Scene {
         this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "2 - Select Spell 2", fontSize: 24});
         this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "3 - Select Spell 3", fontSize: 24});
         this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click - Cast Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click (Hold) - Charge Spell", fontSize: 24});
         this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Mouse - Aim Spell", fontSize: 24});
         this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "ESC - Pause Game", fontSize: 24});
         
