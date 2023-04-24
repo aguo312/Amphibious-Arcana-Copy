@@ -1,6 +1,6 @@
 import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
 import { GameEventType } from "../../../../Wolfie2D/Events/GameEventType";
-import { PlayerStates, PlayerTweens } from "../PlayerController";
+import { PlayerAnimations, PlayerStates, PlayerTweens } from "../PlayerController";
 
 import PlayerState from "./PlayerState";
 
@@ -15,7 +15,7 @@ export default class Jump extends PlayerState {
 
         // If the player is moving to the left or right, make them do a flip
         if(this.parent.velocity.x !== 0){
-            this.owner.tweens.play(PlayerTweens.FLIP);
+            this.owner.animation.play(PlayerAnimations.JUMP);
         }
 
         // Play the jump sound for the player

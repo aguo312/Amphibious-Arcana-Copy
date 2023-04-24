@@ -1,7 +1,7 @@
 import Input from "../../../../Wolfie2D/Input/Input";
 import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 import { AAControls } from "../../../AAControls";
-import { PlayerStates } from "../PlayerController";
+import { PlayerAnimations, PlayerStates } from "../PlayerController";
 import PlayerState from "./PlayerState";
 
 export default class Fall extends PlayerState {
@@ -13,6 +13,7 @@ export default class Fall extends PlayerState {
         if (this.parent.velocity.y > 0) {
             this.parent.velocity.y = 0;
         }
+        this.owner.animation.playIfNotAlready(PlayerAnimations.FALL);
     } 
 
     update(deltaT: number): void {

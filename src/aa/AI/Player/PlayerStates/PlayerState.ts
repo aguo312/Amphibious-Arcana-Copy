@@ -1,6 +1,7 @@
 import StateMachineAI from "../../../../Wolfie2D/AI/StateMachineAI";
 import State from "../../../../Wolfie2D/DataTypes/State/State";
 import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
+import Input from "../../../../Wolfie2D/Input/Input";
 import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import PlayerController from "../PlayerController";
@@ -37,9 +38,14 @@ export default abstract class PlayerState extends State {
 
 	public update(deltaT: number): void {
         let direction = this.parent.inputDir;
+        let mousePos = this.parent.faceDir;
+
 		if(direction.x !== 0){
 			this.owner.invertX = MathUtils.sign(direction.x) < 0;
 		}
+        if(mousePos.x !== 0 && Input.isMouseJustPressed()){
+            this.owner.invertX = MathUtils.sign(mousePos.x) < 0;
+        }
     }
 
     public abstract onExit(): Record<string, any>;
