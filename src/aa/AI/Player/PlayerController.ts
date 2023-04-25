@@ -144,7 +144,8 @@ export default class PlayerController extends StateMachineAI {
         this.receiver.subscribe(AAEvents.PLAYER_HIT);
         this.receiver.subscribe(AAEvents.KILL_PLAYER);
         this.receiver.subscribe(AAEvents.PLAYER_HEAL);
-        //this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
+
+        this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
 
     }
 
