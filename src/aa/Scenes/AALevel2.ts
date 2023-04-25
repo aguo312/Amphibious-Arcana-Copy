@@ -70,6 +70,7 @@ export default class Level2 extends AALevel {
         this.explodeAudioKey = Level1.EXPLODE_AUDIO_KEY;
         this.grappleAudioKey = Level1.GRAPPLE_AUDIO_KEY;
         this.enemyDeathAudioKey = Level1.ENEMY_DEATH_AUDIO_KEY;
+        this.playerDeathAudioKey = Level1.PLAYER_DEATH_AUDIO_KEY;
 
         // Level end size and position
         // this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
@@ -98,6 +99,7 @@ export default class Level2 extends AALevel {
         this.load.audio(this.explodeAudioKey, Level1.EXPLODE_AUDIO_PATH);
         this.load.audio(this.grappleAudioKey, Level1.GRAPPLE_AUDIO_PATH);
         this.load.audio(this.enemyDeathAudioKey, Level1.ENEMY_DEATH_AUDIO_PATH);
+        this.load.audio(this.playerDeathAudioKey, Level1.PLAYER_DEATH_AUDIO_PATH);
     }
 
     /**
@@ -112,6 +114,7 @@ export default class Level2 extends AALevel {
         this.load.keepAudio(this.explodeAudioKey);
         this.load.keepAudio(this.grappleAudioKey);
         this.load.keepAudio(this.enemyDeathAudioKey);
+        this.load.keepAudio(this.playerDeathAudioKey);
 
         this.load.keepImage('fireIcon');
         this.load.keepImage('tongueIcon');

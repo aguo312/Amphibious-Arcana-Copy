@@ -144,6 +144,7 @@ export default abstract class AALevel extends Scene {
     protected explodeAudioKey: string;
     protected grappleAudioKey: string;
     protected enemyDeathAudioKey: string;
+    protected playerDeathAudioKey: string;
 
     protected allNPCS: Map<number, AAAnimatedSprite>;
     protected healthbars: Map<number, HealthbarHUD>;
@@ -404,6 +405,7 @@ export default abstract class AALevel extends Scene {
             case AAEvents.PLAYER_DEAD: {
                 // MainMenu.GAME_PLAYING = false;
                 ParticleSystemManager.getInstance().clearParticleSystems();
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.playerDeathAudioKey, loop: false, holdReference: false });
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
                 // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: this.levelMusicKey, loop: true, holdReference: true});
                 // this.sceneManager.changeToScene(MainMenu);
