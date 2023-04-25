@@ -19,6 +19,7 @@ import MindFlayerBehavior from "../AI/NPC/NPCBehaviors/MindFlayerBehavior";
 import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
 import Color from "../../Wolfie2D/Utils/Color";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
+import Level5 from "./AALevel5";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
@@ -155,7 +156,7 @@ export default class Level2 extends AALevel {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: AAEvents.NPC_KILLED
+            onEnd: [AAEvents.NPC_KILLED, AAEvents.PLAYER_ENTERED_LEVEL_END]
         });
     }
 
@@ -168,8 +169,8 @@ export default class Level2 extends AALevel {
 
     public startScene(): void {
         super.startScene();
-        this.nextLevel = MainMenu;
-        this.nextLevelNum = 3;
+        this.nextLevel = Level5;
+        this.nextLevelNum = 5;
 
         this.initializeNPCs();
         this.initializeTriggers();

@@ -771,7 +771,7 @@ export default abstract class AALevel extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: AAEvents.LEVEL_END
+            onEnd: [AAEvents.LEVEL_END]
         });
 
         /*
@@ -789,7 +789,7 @@ export default abstract class AALevel extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: AAEvents.LEVEL_START
+            onEnd: [AAEvents.LEVEL_START]
         });
     }
 
@@ -958,7 +958,7 @@ export default abstract class AALevel extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: AAEvents.PLAYER_DEAD
+            onEnd: [AAEvents.PLAYER_DEAD]
         });
 
         // Give the player it's AI

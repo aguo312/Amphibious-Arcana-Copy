@@ -143,7 +143,9 @@ export default class TweenController {
 
             // If it has an onEnd, send an event
             if(tween.onEnd){
-                this.emitter.fireEvent(tween.onEnd, {key: key, node: this.owner.id}); 
+                for (let event of tween.onEnd) {
+                    this.emitter.fireEvent(event, {key: key, node: this.owner.id}); 
+                }
             }
         }
     }
