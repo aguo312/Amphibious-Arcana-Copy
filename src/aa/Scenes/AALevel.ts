@@ -36,6 +36,7 @@ import TongueParticle from "../AI/Player/TongueParticle";
 import IceBehavior from "../Nodes/IceBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
+import ParticleSystemManager from "../../Wolfie2D/Rendering/Animations/ParticleSystemManager";
 
 /**
  * A const object for the layer names
@@ -294,6 +295,7 @@ export default abstract class AALevel extends Scene {
             }
             // When the level ends, change the scene to the next level
             case AAEvents.LEVEL_END: {
+                ParticleSystemManager.getInstance().clearParticleSystems();
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
                 if (MainMenu.LEVEL_COUNTER < this.nextLevelNum) {
                     MainMenu.LEVEL_COUNTER = this.nextLevelNum;
@@ -393,9 +395,13 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.PLAYER_DEAD: {
                 // MainMenu.GAME_PLAYING = false;
+                ParticleSystemManager.getInstance().clearParticleSystems();
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
                 // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: this.levelMusicKey, loop: true, holdReference: true});
                 // this.sceneManager.changeToScene(MainMenu);
+                // this.iceParticleSystem.stopSystem();
+                // this.fireParticleSystem.stopSystem();
+                // this.tongueParticleSystem.stopSystem();
                 this.sceneManager.changeToScene(this.currLevel);
                 // this.sceneManager.changeToScene(MainMenu);
                 break;
@@ -809,6 +815,8 @@ export default abstract class AALevel extends Scene {
         resumeBtn.onClick = () => { this.emitter.fireEvent(AAEvents.RESUME); }
         controlsBtn.onClick = () => { this.emitter.fireEvent(AAEvents.CONTROLS); }
         quitBtn.onClick = () => {
+            MainMenu.GAME_PLAYING = false;
+            ParticleSystemManager.getInstance().clearParticleSystems();
             this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
             this.sceneManager.changeToScene(MainMenu);
         }
