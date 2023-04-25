@@ -926,6 +926,7 @@ export default abstract class AALevel extends Scene {
         this.player.addPhysics(new AABB(this.player.position.clone(), this.player.boundary.getHalfSize().clone()));
         this.player.setGroup(AAPhysicsGroups.PLAYER);
         this.player.setTrigger(AAPhysicsGroups.BOSS_PARTICLE, AAEvents.PLAYER_HIT, null);
+        this.player.setTrigger(AAPhysicsGroups.ENEMY, AAEvents.PLAYER_HIT, null);
 
         // Give the player a flip animation
         this.player.tweens.add(PlayerTweens.FLIP, {
