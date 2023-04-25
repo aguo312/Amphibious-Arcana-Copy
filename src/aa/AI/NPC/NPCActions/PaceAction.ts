@@ -18,7 +18,6 @@ export default class PaceAction extends NPCAction {
     public constructor(parent: NPCBehavior, actor: NPCActor) {
         super(parent, actor);
         this.owner = actor as AAAnimatedSprite;
-        console.log('PaceAction this.owner', this.owner);
     }
 
     public onEnter(options: Record<string, any>): void {

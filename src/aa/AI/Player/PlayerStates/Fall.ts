@@ -7,7 +7,6 @@ import PlayerState from "./PlayerState";
 export default class Fall extends PlayerState {
 
     onEnter(options: Record<string, any>): void {
-        console.log('Entering FALL');
         // If we're falling, the vertical velocity should be >= 0
         // commenting this out bc it was preventing the fireball jumps from working
         if (this.parent.velocity.y > 0) {
