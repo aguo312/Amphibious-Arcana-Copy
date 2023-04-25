@@ -38,7 +38,7 @@ export default class MindFlayerParticles extends ParticleSystem {
      */
     public setParticleAnimation(particle: Particle) {
         // Give the particle a random velocity.
-        particle.vel = RandUtils.randVec(this.dir*50, this.dir*100, -30, 30);
+        particle.vel = RandUtils.randVec(this.dir*100, this.dir*150, -30, 50);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
 
