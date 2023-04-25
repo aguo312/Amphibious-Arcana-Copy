@@ -23,7 +23,7 @@ import MainMenu from "./MainMenu";
  */
 export default class Level5 extends AALevel {
 
-    public static readonly PLAYER_SPAWN = new Vec2(50, 600);
+    public static readonly PLAYER_SPAWN = new Vec2(50, 630);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
@@ -160,42 +160,48 @@ export default class Level5 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-        let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
-        scabbers.scale.scale(0.25);
-        scabbers.position.set(Level5.PLAYER_SPAWN.x+70, Level5.PLAYER_SPAWN.y);
-        scabbers.addPhysics();
-        scabbers.setGroup(AAPhysicsGroups.ENEMY);
-        scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null)
-        scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null)
-        scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null)
+        let locations = [new Vec2(50, 630), new Vec2(140, 64), new Vec2(184, 288), new Vec2(248, 384), new Vec2(329, 640), new Vec2(1047, 640), new Vec2(625, 640),
+            new Vec2(1416, 640), new Vec2(1335, 368), new Vec2(1120, 368), new Vec2(712, 240), new Vec2(488, 288), new Vec2(860, 512), new Vec2(1090, 640),
+            new Vec2(1442, 640), new Vec2(1556, 432), new Vec2(1556, 256)];
+        locations.forEach(l => {
+            let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
+            scabbers.scale.scale(0.25);
+            scabbers.position.set(l.x, l.y);
+            scabbers.addPhysics();
+            scabbers.setGroup(AAPhysicsGroups.ENEMY);
+            scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null)
+            scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null)
+            scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null)
 
-        scabbers.health = 3;
-        scabbers.maxHealth = 3;
-        let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {size: scabbers.size.clone().scaled(1.5, 0.25), offset: scabbers.size.clone().scaled(0, -1/5)});
-        this.healthbars.set(scabbers.id, healthbar);
-        scabbers.animation.play("IDLE");
-        scabbers.addAI(ScabberBehavior, { player: this.player });
-        this.allNPCS.set(scabbers.id, scabbers);
+            scabbers.health = 3;
+            scabbers.maxHealth = 3;
+            let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {size: scabbers.size.clone().scaled(1.5, 0.25), offset: scabbers.size.clone().scaled(0, -1/5)});
+            this.healthbars.set(scabbers.id, healthbar);
+            scabbers.animation.play("IDLE");
+            scabbers.addAI(ScabberBehavior, { player: this.player });
+            this.allNPCS.set(scabbers.id, scabbers);
 
-        scabbers.tweens.add("DEATH", {
-            startDelay: 0,
-            duration: 500,
-            effects: [
-                {
-                    property: "rotation",
-                    start: 0,
-                    end: Math.PI,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                },
-                {
-                    property: "alpha",
-                    start: 1,
-                    end: 0,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                }
-            ],
-            onEnd: AAEvents.NPC_KILLED
+            scabbers.tweens.add("DEATH", {
+                startDelay: 0,
+                duration: 500,
+                effects: [
+                    {
+                        property: "rotation",
+                        start: 0,
+                        end: Math.PI,
+                        ease: EaseFunctionType.IN_OUT_QUAD
+                    },
+                    {
+                        property: "alpha",
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctionType.IN_OUT_QUAD
+                    }
+                ],
+                onEnd: AAEvents.NPC_KILLED
+            });
         });
+        
     }
 
     public updateScene(deltaT: number) {

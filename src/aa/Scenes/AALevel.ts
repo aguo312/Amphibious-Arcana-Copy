@@ -266,6 +266,7 @@ export default abstract class AALevel extends Scene {
             this.emitter.fireEvent(AAEvents.CREATE_PLATFORM, { pos: iceParticle.position });
         }
         this.healthbars.forEach(healthbar => healthbar.update(deltaT));
+        console.log(this.player.position.x, this.player.position.y);
     }
 
     /**
