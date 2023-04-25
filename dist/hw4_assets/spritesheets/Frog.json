@@ -3,8 +3,8 @@
     "spriteSheetImage": "Frog.png",
     "spriteWidth": 64,
     "spriteHeight": 128,
-    "columns": 7,
-    "rows": 3,
+    "columns": 11,
+    "rows": 2,
     "durationType": "time",
     "animations": [
         { 
@@ -36,6 +36,11 @@
             "name": "JUMP_ATTACK",
             "repeat": false,
             "frames":[ {"index": 18, "duration": 32}]
+        },
+        {
+            "name": "TAKING_DAMAGE",
+            "repeat": false,
+            "frames":[ {"index": 18, "duration": 20}, {"index": 19, "duration":20}]
         }
 
     ]

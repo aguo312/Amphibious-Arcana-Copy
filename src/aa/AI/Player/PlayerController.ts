@@ -32,7 +32,8 @@ export const PlayerAnimations = {
     WALK: "WALK",
     JUMP: "JUMP",
     FALL: "FALL",
-    ATTACK: "ATTACK"
+    ATTACK: "ATTACK",
+    TAKING_DAMAGE: "TAKING_DAMAGE"
 } as const
 
 /**
@@ -64,6 +65,7 @@ export default class PlayerController extends StateMachineAI {
     /** Health and max health for the player */
     protected _health: number;
     protected _maxHealth: number;
+    protected _previousHealth: number;
 
     /** The players game node */
     protected owner: AAAnimatedSprite;
@@ -354,9 +356,15 @@ export default class PlayerController extends StateMachineAI {
     public get health(): number { return this._health; }
     public set health(health: number) { 
         if (this.isInvincible) { return; }
+
+        this._previousHealth = this._health;
+
         this._health = MathUtils.clamp(health, 0, this.maxHealth);
-        // When the health changes, fire an event up to the scene.
-        this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
+        if(this._previousHealth != this._health){
+            // When the health changes, fire an event up to the scene.
+            this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
+        }
+        
         // If the health hit 0, change the state of the player
         if (this.health === 0) { this.changeState(PlayerStates.DEAD); }
     }
