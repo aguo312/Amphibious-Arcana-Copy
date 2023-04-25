@@ -1,0 +1,255 @@
+{
+    "name": "Mind Flayer",
+    "spriteSheetImage": "mind_flayer.png",
+    "spriteWidth": 256,
+    "spriteHeight": 256,
+    "leftBuffer": 0,
+    "rightBuffer": 0,
+    "topBuffer": 0,
+    "bottomBuffer": 0,
+    "columns": 8,
+    "rows": 6,
+    "animations": [
+        {
+            "name": "CASTING_LEFT",
+            "repeat": true,
+            "frames": [
+                {
+                    "index": 4,
+                    "duration": 8
+                },
+                {
+                    "index": 5,
+                    "duration": 8
+                },
+                {
+                    "index": 6,
+                    "duration": 8
+                },
+                {
+                    "index": 7,
+                    "duration": 8
+                },
+                {
+                    "index": 8,
+                    "duration": 8
+                },
+                {
+                    "index": 9,
+                    "duration": 8
+                },
+                {
+                    "index": 10,
+                    "duration": 8
+                },
+                {
+                    "index": 11,
+                    "duration": 8
+                }
+            ]
+        },
+        {
+            "name": "DANCING",
+            "repeat": true,
+            "frames": [
+                {
+                    "index": 12,
+                    "duration": 12
+                },
+                {
+                    "index": 13,
+                    "duration": 12
+                },
+                {
+                    "index": 14,
+                    "duration": 12
+                },
+                {
+                    "index": 15,
+                    "duration": 12
+                },
+                {
+                    "index": 16,
+                    "duration": 12
+                },
+                {
+                    "index": 17,
+                    "duration": 12
+                },
+                {
+                    "index": 18,
+                    "duration": 12
+                }
+            ]
+        },
+        {
+            "name": "TAKING_DAMAGE",
+            "repeat": true,
+            "frames": [
+                {
+                    "index": 19,
+                    "duration": 12
+                },
+                {
+                    "index": 20,
+                    "duration": 12
+                },
+                {
+                    "index": 21,
+                    "duration": 12
+                },
+                {
+                    "index": 22,
+                    "duration": 12
+                },
+                {
+                    "index": 23,
+                    "duration": 12
+                },
+                {
+                    "index": 24,
+                    "duration": 12
+                }
+            ]
+        },
+        {
+            "name": "IDLE",
+            "repeat": true,
+            "frames": [
+                {
+                    "index": 19,
+                    "duration": 20
+                },
+                {
+                    "index": 25,
+                    "duration": 20
+                },
+                {
+                    "index": 26,
+                    "duration": 20
+                },
+                {
+                    "index": 27,
+                    "duration": 20
+                },
+                {
+                    "index": 28,
+                    "duration": 20
+                }
+            ]
+        },
+        {
+            "name": "DYING",
+            "repeat": false,
+            "next": "DEAD",
+            "frames": [
+                {
+                    "index": 19,
+                    "duration": 12
+                },
+                {
+                    "index": 29,
+                    "duration": 12
+                },
+                {
+                    "index": 30,
+                    "duration": 12
+                },
+                {
+                    "index": 31,
+                    "duration": 12
+                },
+                {
+                    "index": 32,
+                    "duration": 12
+                },
+                {
+                    "index": 33,
+                    "duration": 12
+                },
+                {
+                    "index": 34,
+                    "duration": 12
+                },
+                {
+                    "index": 35,
+                    "duration": 12
+                },
+                {
+                    "index": 36,
+                    "duration": 12
+                },
+                {
+                    "index": 37,
+                    "duration": 12
+                }
+            ]
+        },
+        {
+            "name": "MOVING_LEFT",
+            "repeat": true,
+            "frames": [
+                {
+                    "index": 0,
+                    "duration": 12
+                },
+                {
+                    "index": 38,
+                    "duration": 12
+                },
+                {
+                    "index": 39,
+                    "duration": 12
+                },
+                {
+                    "index": 40,
+                    "duration": 12
+                },
+                {
+                    "index": 41,
+                    "duration": 12
+                },
+                {
+                    "index": 42,
+                    "duration": 12
+                }
+            ]
+        },
+        {
+            "name": "DEAD",
+            "repeat": true,
+            "frames": [
+                {
+                    "index": 37,
+                    "duration": 20
+                }
+            ]
+        },
+        {
+            "name": "MOVING_RIGHT",
+            "repeat": true,
+            "frames": [
+                {
+                    "index": 43,
+                    "duration": 12
+                },
+                {
+                    "index": 44,
+                    "duration": 12
+                },
+                {
+                    "index": 45,
+                    "duration": 12
+                },
+                {
+                    "index": 46,
+                    "duration": 12
+                },
+                {
+                    "index": 47,
+                    "duration": 12
+                }
+            ]
+        }
+    ]
+}
