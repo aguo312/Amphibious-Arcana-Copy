@@ -23,7 +23,7 @@ export default class Idle extends PlayerState {
         // Get the direction of the player's movement
 		let dir = this.parent.inputDir;
 
-        if(!this.owner.animation.isPlaying(PlayerAnimations.TAKING_DAMAGE)){
+        if(!this.owner.animation.isPlaying(PlayerAnimations.TAKING_DAMAGE) && !this.owner.animation.isPlaying(PlayerAnimations.ATTACK)){
             this.owner.animation.playIfNotAlready(PlayerAnimations.IDLE);
         }
         // If the player is moving along the x-axis, transition to the walking state
