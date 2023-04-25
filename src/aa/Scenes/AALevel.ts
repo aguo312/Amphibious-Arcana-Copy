@@ -148,6 +148,7 @@ export default abstract class AALevel extends Scene {
     protected healthbars: Map<number, HealthbarHUD>;
     protected freezeOverlays: Map<number, Graphic>;
     protected frozenTimer: Timer;
+    protected bossIFrameTimer: Timer;
 
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
@@ -236,6 +237,7 @@ export default abstract class AALevel extends Scene {
 
         // Init timers
         this.fireballTimer = new Timer(300);
+        this.bossIFrameTimer = new Timer(1000);
 
         // Initially disable player movement
         Input.disableInput();
@@ -357,13 +359,19 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.ICE_HIT_BOSS: {
-                let boss = this.allNPCS.get(event.data.get("other"));
-                boss.health -= 1;
+                if (this.bossIFrameTimer.isStopped()) {
+                    let boss = this.allNPCS.get(event.data.get("other"));
+                    boss.health -= 1;
+                    this.bossIFrameTimer.start();
+                }
                 break;
             }
             case AAEvents.TONGUE_HIT_BOSS: {
-                let boss = this.allNPCS.get(event.data.get("other"));
-                boss.health -= 1;
+                if (this.bossIFrameTimer.isStopped()) {
+                    let boss = this.allNPCS.get(event.data.get("other"));
+                    boss.health -= 1;
+                    this.bossIFrameTimer.start();
+                }
                 break;
             }
             case AAEvents.TONGUE_HIT_ENEMY:{
@@ -676,6 +684,8 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.FIREBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.ICEBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.TONGUE_HIT_ENEMY);
+        this.receiver.subscribe(AAEvents.ICE_HIT_BOSS);
+        this.receiver.subscribe(AAEvents.TONGUE_HIT_BOSS);
     }
     /**
      * Adds in any necessary UI to the game

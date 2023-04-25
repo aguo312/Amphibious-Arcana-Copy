@@ -21,6 +21,7 @@ export default class MindFlayerBehavior extends NPCBehavior {
     protected gravity: number;
 
     protected attackCooldownTimer: Timer;
+    protected iFramesTimer: Timer;
 
     protected weaponSystem: MindFlayerParticles;
 
@@ -41,6 +42,9 @@ export default class MindFlayerBehavior extends NPCBehavior {
 
         this.attackCooldownTimer = new Timer(3000);
         this.attackCooldownTimer.start();
+
+        this.iFramesTimer = new Timer(1000);
+        this.iFramesTimer.start();
     }
 
     public override update(deltaT: number): void {

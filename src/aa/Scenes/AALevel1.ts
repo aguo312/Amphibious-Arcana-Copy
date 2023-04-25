@@ -55,6 +55,8 @@ export default class Level1 extends AALevel {
 
     protected cheatsManager: CheatsManager;
 
+    protected enemyPositions: Array<Vec2>;
+
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
         super(viewport, sceneManager, renderingManager, options);
 
@@ -161,6 +163,10 @@ export default class Level1 extends AALevel {
     }
 
     protected initializeNPCs(): void {
+        this.enemyPositions = [
+            
+        ];
+
         let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
         scabbers.scale.scale(0.25);
         scabbers.position.set(Level1.PLAYER_SPAWN.x+70, Level1.PLAYER_SPAWN.y);

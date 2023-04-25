@@ -132,7 +132,7 @@ export default class Level2 extends AALevel {
         mindFlayer.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_BOSS, null);
         mindFlayer.health = 20;
         mindFlayer.maxHealth = 20;
-        let healthbar = new HealthbarHUD(this, mindFlayer, AALayers.PRIMARY, { size: mindFlayer.size.clone().scaled(1.0, 0.1), offset: mindFlayer.size.clone().scaled(0, -0.2)});
+        let healthbar = new HealthbarHUD(this, mindFlayer, AALayers.PRIMARY, { size: mindFlayer.size.clone().scaled(1.0, 0.1), offset: mindFlayer.size.clone().scaled(0, -0.1)});
         this.healthbars.set(mindFlayer.id, healthbar);
         mindFlayer.animation.play("IDLE");
         mindFlayer.addAI(MindFlayerBehavior, { player: this.player, particles: this.mindFlayerParticleSystem });
