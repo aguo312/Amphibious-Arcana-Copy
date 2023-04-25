@@ -327,9 +327,11 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.ICEBALL_HIT_ENEMY:{
+                console.log("ICE HIT ENEMY!!!!")
                 let enemy = this.allNPCS.get(event.data.get("other"));
 
                 if(!enemy.frozen){
+                    console.log("NOT FROZEENNN")
 
                     enemy.freeze();
                     enemy.animation.pause();
@@ -575,8 +577,6 @@ export default abstract class AALevel extends Scene {
      * @param maxHealth the maximum health of the player
      */
     protected handleHealthChange(currentHealth: number, maxHealth: number): void {
-        this.player.animation.playIfNotAlready(PlayerAnimations.TAKING_DAMAGE)
-
 		let unit = this.healthBarBg.size.x / maxHealth;
         
 		this.healthBar.size.set(this.healthBarBg.size.x - unit * (maxHealth - currentHealth), this.healthBarBg.size.y);

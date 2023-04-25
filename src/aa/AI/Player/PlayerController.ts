@@ -116,6 +116,7 @@ export default class PlayerController extends StateMachineAI {
 
         this.health = 5
         this.maxHealth = 5;
+        this._previousHealth = this.health;
 
         this.isFirejumpActive = false;
         this.isGrappleActive = false;
@@ -360,14 +361,19 @@ export default class PlayerController extends StateMachineAI {
     public set health(health: number) { 
         if (this.isInvincible) { return; }
 
+        this._health = MathUtils.clamp(health, 0, this.maxHealth);
+
+        if(this._previousHealth > this._health){
+            this.owner.animation.playIfNotAlready(PlayerAnimations.TAKING_DAMAGE)
+        }
+
         this._previousHealth = this._health;
 
-        this._health = MathUtils.clamp(health, 0, this.maxHealth);
-        if(this._previousHealth != this._health){
-            // When the health changes, fire an event up to the scene.
-            this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
-        }
+
         
+        // When the health changes, fire an event up to the scene.
+        this.emitter.fireEvent(AAEvents.HEALTH_CHANGE, {curhp: this.health, maxhp: this.maxHealth});
+
         // If the health hit 0, change the state of the player
         if (this.health === 0) { this.changeState(PlayerStates.DEAD); }
     }

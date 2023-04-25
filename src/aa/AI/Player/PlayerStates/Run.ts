@@ -55,7 +55,7 @@ export default class Walk extends PlayerState {
                 this.parent.velocity.x = MathUtils.clampHigh(this.parent.velocity.x + this.gravity*deltaT, 0);
 
 
-            if(!this.owner.animation.isPlaying(PlayerAnimations.ATTACK)){
+            if(!this.owner.animation.isPlaying(PlayerAnimations.TAKING_DAMAGE) && !this.owner.animation.isPlaying(PlayerAnimations.ATTACK)){
                 this.owner.animation.playIfNotAlready(PlayerAnimations.WALK)
             }
         
