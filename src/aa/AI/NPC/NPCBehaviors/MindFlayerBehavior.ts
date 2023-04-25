@@ -6,6 +6,7 @@ import MindFlayerParticles from "../MindFlayerParticles";
 import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
 import { AAEvents } from "../../../AAEvents";
 import Receiver from "../../../../Wolfie2D/Events/Receiver";
+import { GameEventType } from "../../../../Wolfie2D/Events/GameEventType";
 
 export const EnemyStates = {
     IDLE: "IDLE"
@@ -14,7 +15,7 @@ export const EnemyStates = {
 export default class MindFlayerBehavior extends NPCBehavior {
 
     /** The GameNode that owns this NPCGoapAI */
-    protected override owner: NPCActor;
+    protected override owner: AAAnimatedSprite;
 
     protected player: AAAnimatedSprite;
 
@@ -66,6 +67,7 @@ export default class MindFlayerBehavior extends NPCBehavior {
 
             this.weaponSystem.setDir(dir);
             this.weaponSystem.startSystem(1000, 0, this.owner.position);
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.owner.getScene().getAttackAudioKey(), loop: false, holdReference: false });
 
             this.attackCooldownTimer.start();
         } else {

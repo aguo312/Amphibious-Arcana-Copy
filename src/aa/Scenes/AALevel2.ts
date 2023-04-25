@@ -36,7 +36,7 @@ export default class Level2 extends AALevel {
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
-    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/hw5_level_music.wav";
+    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
     public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
@@ -64,11 +64,13 @@ export default class Level2 extends AALevel {
         this.playerSpawn = Level2.PLAYER_SPAWN;
 
         // Music and sound
-        this.levelMusicKey = Level1.LEVEL_MUSIC_KEY
+        this.levelMusicKey = Level2.LEVEL_MUSIC_KEY
         this.jumpAudioKey = Level1.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level1.ATTACK_AUDIO_KEY;
         this.explodeAudioKey = Level1.EXPLODE_AUDIO_KEY;
         this.grappleAudioKey = Level1.GRAPPLE_AUDIO_KEY;
+        this.enemyDeathAudioKey = Level1.ENEMY_DEATH_AUDIO_KEY;
+        this.playerDeathAudioKey = Level1.PLAYER_DEATH_AUDIO_KEY;
 
         // Level end size and position
         // this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
@@ -91,11 +93,13 @@ export default class Level2 extends AALevel {
         this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
 
         // Audio and music
-        this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
+        this.load.audio(this.levelMusicKey, Level2.LEVEL_MUSIC_PATH);
         this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
         this.load.audio(this.attackAudioKey, Level1.ATTACK_AUDIO_PATH);
         this.load.audio(this.explodeAudioKey, Level1.EXPLODE_AUDIO_PATH);
         this.load.audio(this.grappleAudioKey, Level1.GRAPPLE_AUDIO_PATH);
+        this.load.audio(this.enemyDeathAudioKey, Level1.ENEMY_DEATH_AUDIO_PATH);
+        this.load.audio(this.playerDeathAudioKey, Level1.PLAYER_DEATH_AUDIO_PATH);
     }
 
     /**
@@ -109,6 +113,8 @@ export default class Level2 extends AALevel {
         this.load.keepAudio(this.attackAudioKey);
         this.load.keepAudio(this.explodeAudioKey);
         this.load.keepAudio(this.grappleAudioKey);
+        this.load.keepAudio(this.enemyDeathAudioKey);
+        this.load.keepAudio(this.playerDeathAudioKey);
 
         this.load.keepImage('fireIcon');
         this.load.keepImage('tongueIcon');

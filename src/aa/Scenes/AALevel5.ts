@@ -49,6 +49,12 @@ export default class Level5 extends AALevel {
     public static readonly GRAPPLE_AUDIO_KEY = "GRAPPLE";
     public static readonly GRAPPLE_AUDIO_PATH = "hw4_assets/sounds/grapple.wav";
 
+    public static readonly ENEMY_DEATH_AUDIO_KEY = "ENEMY_DEATH";
+    public static readonly ENEMY_DEATH_AUDIO_PATH = "hw4_assets/sounds/dying_quieter.wav";
+
+    public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
+    public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
+
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
     protected tutorialText: Label;
     protected tutorialTextTimer: Timer;
@@ -77,6 +83,8 @@ export default class Level5 extends AALevel {
         this.attackAudioKey = Level5.ATTACK_AUDIO_KEY;
         this.explodeAudioKey = Level5.EXPLODE_AUDIO_KEY;
         this.grappleAudioKey = Level5.GRAPPLE_AUDIO_KEY;
+        this.enemyDeathAudioKey = Level5.ENEMY_DEATH_AUDIO_KEY;
+        this.playerDeathAudioKey = Level5.PLAYER_DEATH_AUDIO_KEY;
 
         // Level end size and position
         this.levelEndPosition = new Vec2(792, 24).mult(this.tilemapScale);
@@ -124,6 +132,8 @@ export default class Level5 extends AALevel {
         this.load.audio(this.attackAudioKey, Level5.ATTACK_AUDIO_PATH);
         this.load.audio(this.explodeAudioKey, Level5.EXPLODE_AUDIO_PATH);
         this.load.audio(this.grappleAudioKey, Level5.GRAPPLE_AUDIO_PATH);
+        this.load.audio(this.enemyDeathAudioKey, Level5.ENEMY_DEATH_AUDIO_PATH);
+        this.load.audio(this.playerDeathAudioKey, Level5.PLAYER_DEATH_AUDIO_PATH);
 
         this.load.image('fireIcon', 'hw4_assets/sprites/fire-icon.png');
         this.load.image('tongueIcon', 'hw4_assets/sprites/tongue-icon.png');
@@ -141,6 +151,8 @@ export default class Level5 extends AALevel {
         this.load.keepAudio(this.attackAudioKey);
         this.load.keepAudio(this.explodeAudioKey);
         this.load.keepAudio(this.grappleAudioKey);
+        this.load.keepAudio(this.enemyDeathAudioKey);
+        this.load.keepAudio(this.playerDeathAudioKey);
 
         this.load.keepImage('fireIcon')
         this.load.keepImage('tongueIcon')

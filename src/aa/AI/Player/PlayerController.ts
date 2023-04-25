@@ -317,6 +317,7 @@ export default class PlayerController extends StateMachineAI {
             this.owner.animation.play(PlayerAnimations.ATTACK)
 
             this.emitter.fireEvent(AAEvents.SHOOT_TONGUE, { pos: this.owner.position, dir: this.faceDir});
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.owner.getScene().getAttackAudioKey(), loop: false, holdReference: false });
         }
     }
 
@@ -342,6 +343,7 @@ export default class PlayerController extends StateMachineAI {
             this.owner.animation.play(PlayerAnimations.ATTACK)
             // Start the particle system at the player's current position
             this.iceParticles.startSystem(500, 0, this.owner.position);
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.owner.getScene().getAttackAudioKey(), loop: false, holdReference: false });
         }
     }
 
