@@ -198,7 +198,7 @@ export default class Level5 extends AALevel {
                         ease: EaseFunctionType.IN_OUT_QUAD
                     }
                 ],
-                onEnd: AAEvents.NPC_KILLED
+                onEnd: [AAEvents.NPC_KILLED]
             });
         });
         

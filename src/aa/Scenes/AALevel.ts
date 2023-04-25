@@ -772,7 +772,7 @@ export default abstract class AALevel extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: AAEvents.LEVEL_END
+            onEnd: [AAEvents.LEVEL_END]
         });
 
         /*
@@ -790,7 +790,7 @@ export default abstract class AALevel extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: AAEvents.LEVEL_START
+            onEnd: [AAEvents.LEVEL_START]
         });
     }
 
@@ -927,6 +927,7 @@ export default abstract class AALevel extends Scene {
         this.player.addPhysics(new AABB(this.player.position.clone(), this.player.boundary.getHalfSize().clone()));
         this.player.setGroup(AAPhysicsGroups.PLAYER);
         this.player.setTrigger(AAPhysicsGroups.BOSS_PARTICLE, AAEvents.PLAYER_HIT, null);
+        this.player.setTrigger(AAPhysicsGroups.ENEMY, AAEvents.PLAYER_HIT, null);
 
         // Give the player a flip animation
         this.player.tweens.add(PlayerTweens.FLIP, {
@@ -959,7 +960,7 @@ export default abstract class AALevel extends Scene {
                     ease: EaseFunctionType.IN_OUT_QUAD
                 }
             ],
-            onEnd: AAEvents.PLAYER_DEAD
+            onEnd: [AAEvents.PLAYER_DEAD]
         });
 
         // Give the player it's AI

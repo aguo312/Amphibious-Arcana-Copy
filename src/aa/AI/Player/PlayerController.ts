@@ -130,7 +130,7 @@ export default class PlayerController extends StateMachineAI {
 
         this.isInvincible = false;
 
-        this.iFramesTimer = new Timer(1000, null, false);
+        this.iFramesTimer = new Timer(2000, null, false);
 
         this.receiver = new Receiver();
         this.receiver.subscribe(AAEvents.PLAYER_FIRE_JUMP);

@@ -48,7 +48,7 @@ export class TweenData {
     /** Whether or not this tween should loop when it completes */
     loop: boolean;
     /** The name of the event to send (if any) when the tween finishes playing */
-    onEnd: string
+    onEnd: Array<string>
     
     // Members for management by the tween manager
     /** The progress of this tween through its effects */

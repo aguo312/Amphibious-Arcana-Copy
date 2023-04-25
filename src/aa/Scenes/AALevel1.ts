@@ -85,7 +85,7 @@ export default class Level1 extends AALevel {
         this.levelEndPosition = new Vec2(790, 180).mult(this.tilemapScale);
 
         // made bigger for testing
-        this.levelEndHalfSize = new Vec2(32, 300).mult(this.tilemapScale);
+        this.levelEndHalfSize = new Vec2(32, 30).mult(this.tilemapScale);
 
         // Initialize cheats
         // Have to define and update cheatsManager in each individual level 
@@ -164,45 +164,50 @@ export default class Level1 extends AALevel {
 
     protected initializeNPCs(): void {
         this.enemyPositions = [
-            
+            new Vec2(200, 600),
+            new Vec2(500, 600),
+            new Vec2(800, 600),
+            new Vec2(1150, 400)
         ];
 
-        let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
-        scabbers.scale.scale(0.25);
-        scabbers.position.set(Level1.PLAYER_SPAWN.x+70, Level1.PLAYER_SPAWN.y);
-        scabbers.addPhysics();
-        scabbers.setGroup(AAPhysicsGroups.ENEMY);
-        scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null)
-        scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null)
-        scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null)
+        for (let pos of this.enemyPositions) {
+            let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
+            scabbers.scale.scale(0.25);
+            scabbers.position.set(pos.x, pos.y);
+            scabbers.addPhysics();
+            scabbers.setGroup(AAPhysicsGroups.ENEMY);
+            scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null)
+            scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null)
+            scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null)
 
-        scabbers.health = 3;
-        scabbers.maxHealth = 3;
-        let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {size: scabbers.size.clone().scaled(1.5, 0.25), offset: scabbers.size.clone().scaled(0, -1/5)});
-        this.healthbars.set(scabbers.id, healthbar);
-        scabbers.animation.play("IDLE");
-        scabbers.addAI(ScabberBehavior, { player: this.player });
-        this.allNPCS.set(scabbers.id, scabbers);
+            scabbers.health = 3;
+            scabbers.maxHealth = 3;
+            let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {size: scabbers.size.clone().scaled(1.5, 0.25), offset: scabbers.size.clone().scaled(0, -1/5)});
+            this.healthbars.set(scabbers.id, healthbar);
+            scabbers.animation.play("IDLE");
+            scabbers.addAI(ScabberBehavior, { player: this.player });
+            this.allNPCS.set(scabbers.id, scabbers);
 
-        scabbers.tweens.add("DEATH", {
-            startDelay: 0,
-            duration: 500,
-            effects: [
-                {
-                    property: "rotation",
-                    start: 0,
-                    end: Math.PI,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                },
-                {
-                    property: "alpha",
-                    start: 1,
-                    end: 0,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                }
-            ],
-            onEnd: AAEvents.NPC_KILLED
-        });
+            scabbers.tweens.add("DEATH", {
+                startDelay: 0,
+                duration: 500,
+                effects: [
+                    {
+                        property: "rotation",
+                        start: 0,
+                        end: Math.PI,
+                        ease: EaseFunctionType.IN_OUT_QUAD
+                    },
+                    {
+                        property: "alpha",
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctionType.IN_OUT_QUAD
+                    }
+                ],
+                onEnd: [AAEvents.NPC_KILLED]
+            });
+        }
     }
 
     public updateScene(deltaT: number) {
