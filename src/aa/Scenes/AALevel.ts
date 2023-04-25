@@ -143,6 +143,7 @@ export default abstract class AALevel extends Scene {
     protected attackAudioKey: string;
     protected explodeAudioKey: string;
     protected grappleAudioKey: string;
+    protected enemyDeathAudioKey: string;
 
     protected allNPCS: Map<number, AAAnimatedSprite>;
     protected healthbars: Map<number, HealthbarHUD>;
@@ -425,6 +426,7 @@ export default abstract class AALevel extends Scene {
                         freeze.visible = false;
                     }
                 }
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.enemyDeathAudioKey, loop: false, holdReference: false });
                 break;
             }
             case AAEvents.SHOOT_TONGUE: {
