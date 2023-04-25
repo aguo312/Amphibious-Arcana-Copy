@@ -18,7 +18,7 @@ import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
-import PlayerController, { PlayerTweens } from "../AI/Player/PlayerController";
+import PlayerController, { PlayerAnimations, PlayerTweens } from "../AI/Player/PlayerController";
 import Fireball from "../AI/Player/Fireball";
 import FireParticles from "../AI/Player/FireParticles";
 
@@ -573,6 +573,8 @@ export default abstract class AALevel extends Scene {
      * @param maxHealth the maximum health of the player
      */
     protected handleHealthChange(currentHealth: number, maxHealth: number): void {
+        this.player.animation.playIfNotAlready(PlayerAnimations.TAKING_DAMAGE)
+
 		let unit = this.healthBarBg.size.x / maxHealth;
         
 		this.healthBar.size.set(this.healthBarBg.size.x - unit * (maxHealth - currentHealth), this.healthBarBg.size.y);
