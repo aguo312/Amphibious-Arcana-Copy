@@ -348,7 +348,7 @@ export default abstract class AALevel extends Scene {
                     this.frozenTimer = new Timer(3000, () => {
                         enemy.unfreeze();
                         enemy.animation.resume();
-                        // frozenOverlay.visible = false;
+                        frozenOverlay.visible = false;
                         this.freezeOverlays.delete(enemy.id);
                     });
                     this.frozenTimer.start()
