@@ -9,7 +9,6 @@ export default class Walk extends PlayerState {
     private firstUpdate: boolean;
 
 	onEnter(options: Record<string, any>): void {
-        console.log('Entering RUN');
         this.firstUpdate = true;
 		this.parent.speed = this.parent.MIN_SPEED;
         this.owner.animation.play(PlayerAnimations.WALK);
@@ -64,7 +63,6 @@ export default class Walk extends PlayerState {
         }
 
         this.firstUpdate = false;
-        console.log('velocity: ' + this.parent.velocity);
 
 	}
 

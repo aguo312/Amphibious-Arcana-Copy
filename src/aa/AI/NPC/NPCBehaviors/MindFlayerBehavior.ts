@@ -67,7 +67,6 @@ export default class MindFlayerBehavior extends NPCBehavior {
             this.weaponSystem.setDir(dir);
             this.weaponSystem.startSystem(1000, 0, this.owner.position);
 
-            console.log('starting timer');
             this.attackCooldownTimer.start();
         } else {
             // Otherwise just chill

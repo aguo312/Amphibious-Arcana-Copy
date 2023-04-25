@@ -94,6 +94,8 @@ export default class PlayerController extends StateMachineAI {
 
     protected iFramesTimer: Timer;
 
+    protected npcs: Map<number, AAAnimatedSprite>;
+
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>){
         this.owner = owner;
 
@@ -104,6 +106,7 @@ export default class PlayerController extends StateMachineAI {
         this.fireProjectile = options.fireballSystem;
         this.tongueProjectile = options.tongueParticleSystem;
         this.iceParticles = options.iceParticleSystem;
+        this.npcs = options.allNPCs;
 
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
         this.speed = 400;
@@ -200,6 +203,15 @@ export default class PlayerController extends StateMachineAI {
             case AAEvents.PLAYER_HIT: {
                 if (this.iFramesTimer.isStopped()) {
                     this.health -= 1;
+                    // TODO push player a bit when taking damage, currently not working
+                    // let enemyId = event.data.get('node');
+                    // let enemy = this.npcs.get(enemyId);
+                    // if (!enemy) {
+                    //     console.log('failed to find enemy');
+                    // }
+                    // let vec = enemy.position.dirTo(this.owner.position).scale(10);
+                    // this.velocity.x += vec.x;
+                    // this.velocity.y += vec.y;
                     this.iFramesTimer.start();
                 }
                 break;

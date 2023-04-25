@@ -266,7 +266,6 @@ export default abstract class AALevel extends Scene {
             this.emitter.fireEvent(AAEvents.CREATE_PLATFORM, { pos: iceParticle.position });
         }
         this.healthbars.forEach(healthbar => healthbar.update(deltaT));
-        console.log(this.player.position.x, this.player.position.y);
     }
 
     /**
@@ -309,7 +308,6 @@ export default abstract class AALevel extends Scene {
             case AAEvents.FIREBALL_HIT_ENEMY:{
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
-                    console.log("FIREBALL HIT");
                     let enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     enemy.health -= 1
                     
@@ -971,7 +969,8 @@ export default abstract class AALevel extends Scene {
             iceParticleSystem: this.iceParticleSystem,
             tongueParticleSystem: this.tongueParticleSystem,
             tongueGraphic: this.tongue,
-            tilemap: "Destructable"
+            tilemap: "Destructable",
+            allNPCs: this.allNPCS
         });
     }
     /**
