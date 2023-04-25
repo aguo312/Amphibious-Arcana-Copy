@@ -19,7 +19,6 @@ export default class EnemyBehavior extends NPCBehavior {
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>): void {
         super.initializeAI(owner, options);
         this.owner = owner;
-        console.log('EnemyBehavior this.owner', this.owner);
 
         // Add the goal status
         this.addStatus("goal", new GoalReached());
