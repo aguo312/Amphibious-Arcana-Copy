@@ -58,8 +58,8 @@ export default class MindFlayerParticles extends ParticleSystem {
 
         // Give the particle tweens
         particle.tweens.add("active", {
-            startDelay: 500,
-            duration: this.lifetime/2,
+            startDelay: 800,
+            duration: this.lifetime - 800,
             effects: [
                 {
                     property: "alpha",
