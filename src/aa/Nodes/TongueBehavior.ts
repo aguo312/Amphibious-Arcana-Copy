@@ -265,8 +265,8 @@ export default class TongueBehavior implements AI {
                         if(this.frozenOverlay){
                             this.frozenOverlay.destroy();
                         }
-
                         this.emitter.fireEvent(AAEvents.NPC_KILLED, {node: this.attachedEnemy.id})
+                        this.emitter.fireEvent(AAEvents.PLAYER_HEAL)
                     }
                     this.attachedEnemy = null;
                     this.frozenOverlay = null;

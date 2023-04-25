@@ -97,7 +97,7 @@ export default class Level5 extends AALevel {
        let size = this.viewport.getHalfSize();
 
         // add random tutorial text
-        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(size.x, 180), text: "Try shooting fire at your feet to jump!"});
+        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(size.x, 180), text: "Try shooting ice to freeze enemies!\nClick again while its flying to create an ice platform."});
         this.tutorialText.size = new Vec2(300, 25);
         // this.tutorialText.backgroundColor = Color.BLACK;
         // this.tutorialText.backgroundColor.a = 10;

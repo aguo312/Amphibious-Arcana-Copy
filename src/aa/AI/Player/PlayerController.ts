@@ -138,6 +138,7 @@ export default class PlayerController extends StateMachineAI {
         this.receiver.subscribe(AAEvents.TOGGLE_INVINCIBILITY);
         this.receiver.subscribe(AAEvents.PLAYER_HIT);
         this.receiver.subscribe(AAEvents.KILL_PLAYER);
+        this.receiver.subscribe(AAEvents.PLAYER_HEAL);
         //this.receiver.subscribe(HW3Events.CREATE_PLATFORM);
 
     }
@@ -197,9 +198,15 @@ export default class PlayerController extends StateMachineAI {
                 break;
             }
             case AAEvents.PLAYER_HIT: {
-                // this.owner.animation.playIfNotAlready()
                 if (this.iFramesTimer.isStopped()) {
                     this.health -= 1;
+                    this.iFramesTimer.start();
+                }
+                break;
+            }
+            case AAEvents.PLAYER_HEAL: {
+                if (this.iFramesTimer.isStopped()) {
+                    this.health += 1;
                     this.iFramesTimer.start();
                 }
                 break;
