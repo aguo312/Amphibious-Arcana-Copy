@@ -22,7 +22,6 @@ interface HealthBarOptions {
  * A UI component that's suppossed to represent a healthbar
  */
 export default class HealthbarHUD implements Updateable {
-
     /** The scene and layer in the scene the healthbar is in */
     protected scene: Scene;
     protected layer: string;
@@ -39,7 +38,14 @@ export default class HealthbarHUD implements Updateable {
     /** The healthbars background (the part with the border) */
     protected healthBarBg: Label;
 
-    public constructor(scene: Scene, owner: Health & Positioned & Unique, layer: string, options: HealthBarOptions) {
+    protected isStatic: boolean;
+
+    public constructor(
+        scene: Scene,
+        owner: Health & Positioned & Unique,
+        layer: string,
+        options: HealthBarOptions
+    ) {
         this.scene = scene;
         this.layer = layer;
         this.owner = owner;
@@ -47,11 +53,17 @@ export default class HealthbarHUD implements Updateable {
         this.size = options.size;
         this.offset = options.offset;
 
-        this.healthBar = <Label>this.scene.add.uiElement(UIElementType.LABEL, layer, {position: this.owner.position.clone().add(this.offset), text: ""});
+        this.healthBar = <Label>this.scene.add.uiElement(UIElementType.LABEL, layer, {
+            position: this.owner.position.clone().add(this.offset),
+            text: "",
+        });
         this.healthBar.size.copy(this.size);
         this.healthBar.backgroundColor = Color.RED;
 
-        this.healthBarBg = <Label>this.scene.add.uiElement(UIElementType.LABEL, layer, {position: this.owner.position.clone().add(this.offset), text: ""});
+        this.healthBarBg = <Label>this.scene.add.uiElement(UIElementType.LABEL, layer, {
+            position: this.owner.position.clone().add(this.offset),
+            text: "",
+        });
         this.healthBarBg.backgroundColor = Color.TRANSPARENT;
         this.healthBarBg.borderColor = Color.BLACK;
         this.healthBarBg.borderWidth = 1;
@@ -60,10 +72,9 @@ export default class HealthbarHUD implements Updateable {
 
     /**
      * Updates the healthbars position according to the position of it's owner
-     * @param deltaT 
+     * @param deltaT
      */
     public update(deltaT: number): void {
-        
         this.healthBar.position.copy(this.owner.position).add(this.offset);
         this.healthBarBg.position.copy(this.owner.position).add(this.offset);
 
@@ -72,18 +83,34 @@ export default class HealthbarHUD implements Updateable {
         this.healthBarBg.scale.scale(scale);
 
         let unit = this.healthBarBg.size.x / this.owner.maxHealth;
-		this.healthBar.size.set(this.healthBarBg.size.x - unit * (this.owner.maxHealth - this.owner.health), this.healthBarBg.size.y);
-		this.healthBar.position.set(this.healthBarBg.position.x - (unit / scale / 2) * (this.owner.maxHealth - this.owner.health), this.healthBarBg.position.y);
+        this.healthBar.size.set(
+            this.healthBarBg.size.x - unit * (this.owner.maxHealth - this.owner.health),
+            this.healthBarBg.size.y
+        );
+        this.healthBar.position.set(
+            this.healthBarBg.position.x -
+                (unit / scale / 2) * (this.owner.maxHealth - this.owner.health),
+            this.healthBarBg.position.y
+        );
 
-		this.healthBar.backgroundColor = this.owner.health < this.owner.maxHealth * 1/4 ? Color.RED : this.owner.health < this.owner.maxHealth * 3/4 ? Color.YELLOW : Color.GREEN;
+        this.healthBar.backgroundColor =
+            this.owner.health < (this.owner.maxHealth * 1) / 4
+                ? Color.RED
+                : this.owner.health < (this.owner.maxHealth * 3) / 4
+                ? Color.YELLOW
+                : Color.GREEN;
     }
 
-    get ownerId(): number { return this.owner.id; }
+    get ownerId(): number {
+        return this.owner.id;
+    }
 
     set visible(visible: boolean) {
         this.healthBar.visible = visible;
         this.healthBarBg.visible = visible;
     }
-    
 
+    set static(isStatic: boolean) {
+        this.isStatic = isStatic;
+    }
 }

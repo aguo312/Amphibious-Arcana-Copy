@@ -37,29 +37,29 @@ import IceBehavior from "../Nodes/IceBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
 import ParticleSystemManager from "../../Wolfie2D/Rendering/Animations/ParticleSystemManager";
+import CanvasNode from "../../Wolfie2D/Nodes/CanvasNode";
 
 /**
  * A const object for the layer names
  */
 export const AALayers = {
-    GUIDE:"GUIDE",
+    GUIDE: "GUIDE",
     // The primary layer
     PRIMARY: "PRIMARY",
     // The UI layer
     UI: "UI",
     // The PAUSE layer
     PAUSE: "PAUSE",
-    CONTROLS: "CONTROLS"
+    CONTROLS: "CONTROLS",
 } as const;
 
 // The layers as a type
-export type AALayer = typeof AALayers[keyof typeof AALayers]
+export type AALayer = (typeof AALayers)[keyof typeof AALayers];
 
 /**
  * An abstract HW4 scene class.
  */
 export default abstract class AALevel extends Scene {
-
     /** Overrride the factory manager */
     public add: AAFactoryManager;
 
@@ -94,8 +94,14 @@ export default abstract class AALevel extends Scene {
 
     private tongue: Graphic;
 
-	private healthBar: Label;
-	private healthBarBg: Label;
+    private healthBar: Label;
+    private healthBarBg: Label;
+
+    private bossHealthBar: Label;
+    private bossHealthBarBg: Label;
+    private bossNameLabel: Label;
+
+    protected bossName: string;
 
     private spellBarSelect: Label;
 
@@ -152,6 +158,8 @@ export default abstract class AALevel extends Scene {
     protected freezeOverlays: Map<number, Graphic>;
     protected frozenTimer: Timer;
     protected bossIFrameTimer: Timer;
+    protected bossFightCenterPoint: Vec2;
+    protected bossFightActive: boolean;
 
     protected guideText: Label;
     protected guideTextTimer: Timer;
@@ -159,40 +167,45 @@ export default abstract class AALevel extends Scene {
 
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
-    public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
-        super(viewport, sceneManager, renderingManager, {...options, physics: {
-            groupNames: [
-                AAPhysicsGroups.GROUND, 
-                AAPhysicsGroups.PLAYER, 
-                AAPhysicsGroups.FIREBALL, 
-                AAPhysicsGroups.FIRE_PARTICLE,
-                AAPhysicsGroups.DESTRUCTABLE,
-                AAPhysicsGroups.TONGUE_COLLIDABLE,
-                AAPhysicsGroups.TONGUE,
-                AAPhysicsGroups.ICE_PARTICLE,
-                AAPhysicsGroups.ENEMY,
-                AAPhysicsGroups.ICE_PLATFORM,
-                AAPhysicsGroups.BOSS_PARTICLE,
-                AAPhysicsGroups.TUTORIAL
-            ],
-            collisions:
-            [
-                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
-                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-                [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0],
-                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0],
-                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-
-            ]
-        }});
+    public constructor(
+        viewport: Viewport,
+        sceneManager: SceneManager,
+        renderingManager: RenderingManager,
+        options: Record<string, any>
+    ) {
+        super(viewport, sceneManager, renderingManager, {
+            ...options,
+            physics: {
+                groupNames: [
+                    AAPhysicsGroups.GROUND,
+                    AAPhysicsGroups.PLAYER,
+                    AAPhysicsGroups.FIREBALL,
+                    AAPhysicsGroups.FIRE_PARTICLE,
+                    AAPhysicsGroups.DESTRUCTABLE,
+                    AAPhysicsGroups.TONGUE_COLLIDABLE,
+                    AAPhysicsGroups.TONGUE,
+                    AAPhysicsGroups.ICE_PARTICLE,
+                    AAPhysicsGroups.ENEMY,
+                    AAPhysicsGroups.ICE_PLATFORM,
+                    AAPhysicsGroups.BOSS_PARTICLE,
+                    AAPhysicsGroups.TUTORIAL,
+                ],
+                collisions: [
+                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
+                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                ],
+            },
+        });
         this.add = new AAFactoryManager(this, this.tilemaps);
 
         this.tongueSelectPos = new Vec2(35.3, 25.5);
@@ -208,10 +221,7 @@ export default abstract class AALevel extends Scene {
     }
 
     public loadScene() {
-        this.load.shader(
-            TongueShaderType.KEY,
-            TongueShaderType.VSHADER,
-            TongueShaderType.FSHADER);
+        this.load.shader(TongueShaderType.KEY, TongueShaderType.VSHADER, TongueShaderType.FSHADER);
     }
 
     public startScene(): void {
@@ -221,10 +231,10 @@ export default abstract class AALevel extends Scene {
         // Initialize the tilemaps
         this.initializeTilemap();
 
-        // Initialize the sprite and particle system for the players weapon 
+        // Initialize the sprite and particle system for the players weapon
         this.initializeWeaponSystem();
 
-        // Initialize the player 
+        // Initialize the player
         this.initializePlayer(this.playerSpriteKey);
 
         // Initialize the viewport - this must come after the player has been initialized
@@ -250,10 +260,10 @@ export default abstract class AALevel extends Scene {
         this.bossIFrameTimer = new Timer(1000);
 
         this.guideTextTimer = new Timer(30000, () => {
-            this.guideText.backgroundColor.a = 0
-            this.guideText.textColor.a = 0
-            this.textLoopTimer.reset()
-        })
+            this.guideText.backgroundColor.a = 0;
+            this.guideText.textColor.a = 0;
+            this.textLoopTimer.reset();
+        });
 
         // Initially disable player movement
         Input.disableInput();
@@ -262,7 +272,13 @@ export default abstract class AALevel extends Scene {
         this.levelTransitionScreen.tweens.play("fadeOut");
 
         // Start playing the level music for the HW4 level
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.levelMusicKey, loop: true, holdReference: true});
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+            key: this.levelMusicKey,
+            loop: true,
+            holdReference: true,
+        });
+
+        this.bossFightActive = false;
     }
 
     /* Update method for the scene */
@@ -274,18 +290,46 @@ export default abstract class AALevel extends Scene {
         }
 
         if (this.tongue.visible) {
-            this.emitter.fireEvent(AAEvents.PLAYER_POS_UPDATE, {pos: this.player.position.clone(), vel: this.player._velocity.clone() });
+            this.emitter.fireEvent(AAEvents.PLAYER_POS_UPDATE, {
+                pos: this.player.position.clone(),
+                vel: this.player._velocity.clone(),
+            });
         }
 
-        if(this.selectedSpell ===  SpellTypes.ICE && this.iceParticleSystem.getPool()[0].visible && Input.isMouseJustPressed()){
-            let iceParticle = this.iceParticleSystem.getPool()[0];
-            this.emitter.fireEvent(AAEvents.CREATE_PLATFORM, { pos: iceParticle.position });
+        if (
+            this.selectedSpell === SpellTypes.ICE &&
+            this.iceParticleSystem.getPool()[0].visible &&
+            Input.isMouseJustPressed()
+        ) {
+            const iceParticle = this.iceParticleSystem.getPool()[0];
+            this.emitter.fireEvent(AAEvents.CREATE_PLATFORM, {
+                pos: iceParticle.position,
+            });
         }
-        this.healthbars.forEach(healthbar => healthbar.update(deltaT));
+        this.healthbars.forEach((healthbar) => healthbar.update(deltaT));
+
+        // Lock player to viewport in boss fights
+        if (this.bossFightActive) {
+            this.lockPlayer(this.player, this.viewport.getCenter(), this.viewport.getHalfSize());
+        }
+    }
+
+    protected lockPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {
+        const playerLeftEdge = player.position.x - player.size.x / 4;
+        const playerRightEdge = player.position.x + player.size.x / 4;
+        const viewportLeftEdge = viewportCenter.x - viewportHalfSize.x;
+        const viewportRightEdge = viewportCenter.x + viewportHalfSize.x;
+
+        // TODO: Player flickering
+        if (playerLeftEdge <= viewportLeftEdge) {
+            player.position.x = viewportLeftEdge + player.size.x / 4;
+        } else if (playerRightEdge >= viewportRightEdge) {
+            player.position.x = viewportRightEdge - player.size.x / 4;
+        }
     }
 
     /**
-     * Handle game events. 
+     * Handle game events.
      * @param event the game event
      */
     protected handleEvent(event: GameEvent): void {
@@ -314,46 +358,59 @@ export default abstract class AALevel extends Scene {
             // When the level ends, change the scene to the next level
             case AAEvents.LEVEL_END: {
                 ParticleSystemManager.getInstance().clearParticleSystems();
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.levelMusicKey,
+                });
                 if (MainMenu.LEVEL_COUNTER < this.nextLevelNum) {
                     MainMenu.LEVEL_COUNTER = this.nextLevelNum;
                 }
                 this.sceneManager.changeToScene(this.nextLevel);
                 break;
             }
-            case AAEvents.FIREBALL_HIT_ENEMY:{
+            case AAEvents.FIREBALL_HIT_ENEMY: {
                 if (this.fireballTimer.isStopped()) {
                     this.fireballTimer.start();
-                    let enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
-                    enemy.health -= 1
-                    
-                    if(enemy.frozen && this.freezeOverlays.get(enemy.id)){
-                        enemy.unfreeze()
-                        enemy.animation.resume()
-                        enemy.health -= 3
+                    const enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
+                    enemy.health -= 1;
+
+                    if (enemy.frozen && this.freezeOverlays.get(enemy.id)) {
+                        enemy.unfreeze();
+                        enemy.animation.resume();
+                        enemy.health -= 3;
                         this.freezeOverlays.get(enemy.id).visible = false;
                         this.freezeOverlays.delete(enemy.id);
-
                     }
 
-                    this.handleFireballHit()
+                    if (this.bossFightActive) {
+                        this.handleHealthChange(
+                            this.bossHealthBar,
+                            this.bossHealthBarBg,
+                            enemy.health,
+                            enemy.maxHealth
+                        );
+                    }
+
+                    this.handleFireballHit();
                 }
                 break;
             }
-            case AAEvents.ICEBALL_HIT_ENEMY:{
-                let enemy = this.allNPCS.get(event.data.get("other"));
+            case AAEvents.ICEBALL_HIT_ENEMY: {
+                const enemy = this.allNPCS.get(event.data.get("other"));
 
-                if(!enemy.frozen){
+                if (!enemy.frozen) {
                     enemy.freeze();
                     enemy.animation.pause();
 
                     // Add a cyan overlay to indicate that the enemy is frozen
-                    let frozenOverlay = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+                    const frozenOverlay = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
+                        position: Vec2.ZERO,
+                        size: Vec2.ZERO,
+                    });
 
                     frozenOverlay.color = Color.CYAN; // Cyan color
                     frozenOverlay.alpha = 0.5; // Set transparency
-                    frozenOverlay.size = enemy.size.clone().scale(.25);
-                    frozenOverlay.position = enemy.position.clone()
+                    frozenOverlay.size = enemy.size.clone().scale(0.25);
+                    frozenOverlay.position = enemy.position.clone();
                     frozenOverlay.visible = true;
                     this.freezeOverlays.set(enemy.id, frozenOverlay);
 
@@ -367,36 +424,51 @@ export default abstract class AALevel extends Scene {
                         frozenOverlay.visible = false;
                         this.freezeOverlays.delete(enemy.id);
                     });
-                    this.frozenTimer.start()
+                    this.frozenTimer.start();
                 }
 
                 break;
             }
             case AAEvents.ICE_HIT_BOSS: {
                 if (this.bossIFrameTimer.isStopped()) {
-                    let boss = this.allNPCS.get(event.data.get("other"));
+                    const boss = this.allNPCS.get(event.data.get("other"));
                     boss.health -= 1;
+                    this.handleHealthChange(
+                        this.bossHealthBar,
+                        this.bossHealthBarBg,
+                        boss.health,
+                        boss.maxHealth
+                    );
                     this.bossIFrameTimer.start();
                 }
                 break;
             }
             case AAEvents.TONGUE_HIT_BOSS: {
                 if (this.bossIFrameTimer.isStopped()) {
-                    let boss = this.allNPCS.get(event.data.get("other"));
+                    const boss = this.allNPCS.get(event.data.get("other"));
                     boss.health -= 1;
+                    this.handleHealthChange(
+                        this.bossHealthBar,
+                        this.bossHealthBarBg,
+                        boss.health,
+                        boss.maxHealth
+                    );
                     this.bossIFrameTimer.start();
                 }
                 break;
             }
-            case AAEvents.TONGUE_HIT_ENEMY:{
-                let enemy = this.allNPCS.get(event.data.get("other"));
-                this.tongueParticleSystem.getPool()[0].freeze(); 
+            case AAEvents.TONGUE_HIT_ENEMY: {
+                const enemy = this.allNPCS.get(event.data.get("other"));
+                this.tongueParticleSystem.getPool()[0].freeze();
                 this.tongueParticleSystem.getPool()[0].visible = false;
-                
-                let overlay = this.freezeOverlays.get(enemy.id)
+
+                const overlay = this.freezeOverlays.get(enemy.id);
 
                 //I hope there's another way
-                this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {enemy:enemy, overlay:overlay})
+                this.emitter.fireEvent(AAEvents.ENEMY_ATTACHED, {
+                    enemy: enemy,
+                    overlay: overlay,
+                });
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
@@ -412,14 +484,25 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.HEALTH_CHANGE: {
-                this.handleHealthChange(event.data.get("curhp"), event.data.get("maxhp"));
+                this.handleHealthChange(
+                    this.healthBar,
+                    this.healthBarBg,
+                    event.data.get("curhp"),
+                    event.data.get("maxhp")
+                );
                 break;
             }
             case AAEvents.PLAYER_DEAD: {
                 // MainMenu.GAME_PLAYING = false;
                 ParticleSystemManager.getInstance().clearParticleSystems();
-                this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.playerDeathAudioKey, loop: false, holdReference: false });
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey});
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.playerDeathAudioKey,
+                    loop: false,
+                    holdReference: false,
+                });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.levelMusicKey,
+                });
                 // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: this.levelMusicKey, loop: true, holdReference: true});
                 // this.sceneManager.changeToScene(MainMenu);
                 // this.iceParticleSystem.stopSystem();
@@ -430,28 +513,34 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.NPC_KILLED: {
-                let id: number = event.data.get("node");
-                let enemy = this.allNPCS.get(id);
+                const id: number = event.data.get("node");
+                const enemy = this.allNPCS.get(id);
 
                 if (enemy) {
                     enemy.destroy();
-                    this.healthbars.get(id).visible = false;
-                    let freeze = this.freezeOverlays.get(id)
+                    const healthbar = this.healthbars.get(id);
+                    if (healthbar) {
+                        healthbar.visible = false;
+                    }
+                    const freeze = this.freezeOverlays.get(id);
                     if (freeze) {
                         freeze.visible = false;
                     }
                 }
-                this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.enemyDeathAudioKey, loop: false, holdReference: false });
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.enemyDeathAudioKey,
+                    loop: false,
+                    holdReference: false,
+                });
                 break;
             }
             case AAEvents.SHOOT_TONGUE: {
-                let pos = event.data.get("pos");
-                let dir = event.data.get("dir");
+                const pos = event.data.get("pos");
+                const dir = event.data.get("dir");
                 this.spawnTongue(pos, dir);
                 break;
             }
-            case AAEvents.CREATE_PLATFORM:{
-
+            case AAEvents.CREATE_PLATFORM: {
                 // console.log(this.tilemap.getColRowAt(Input.getGlobalMousePosition()))
                 // this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(event.data.get('pos')),5);
                 this.spawnIceBlock(event.data.get("pos"));
@@ -477,45 +566,56 @@ export default abstract class AALevel extends Scene {
                 // this.handleSelectTongue();
                 break;
             }
-            case AAEvents.TONGUE_WALL_COLLISION:{
+            case AAEvents.TONGUE_WALL_COLLISION: {
                 this.handleTongueHit();
                 break;
             }
-            case "GUIDE":{
+            case AAEvents.SPAWN_BOSS: {
+                this.viewport.follow(null);
+                // this.viewport.setSmoothingFactor(4);
+                this.viewport.setFocus(this.bossFightCenterPoint);
+                this.bossFightActive = true;
+                this.bossHealthBar.visible = true;
+                this.bossHealthBarBg.visible = true;
+                this.bossNameLabel.visible = true;
+                // TODO also need to restrict player/boss to not move outside of this zone
+                break;
+            }
+            case "GUIDE": {
                 const texts = [
                     "You've unlocked your fireball! It deals damage to enemies",
                     "You can also shoot it by your feet for a boost!",
                     "It will allow you to make higher jumps and reach platforms.",
-                  ];
-                  
-                if(this.guideTextTimer.isStopped()){
+                ];
+
+                if (this.guideTextTimer.isStopped()) {
                     let currentIndex = 0;
-                    
+
                     this.guideText.text = texts[currentIndex];
-                    
+
                     this.textLoopTimer = new Timer(5000, () => {
                         // Increment the index and wrap around to the beginning of the array if necessary
                         currentIndex = (currentIndex + 1) % texts.length;
-                    
+
                         // Display the next text in the array
                         this.guideText.text = texts[currentIndex];
-                    
+
                         // Restart the timer and show the label
                         this.textLoopTimer.start();
                     });
-                    
+
                     // Start the label timer and show the label
                     this.textLoopTimer.start();
                     this.guideTextTimer.start();
                     this.guideText.backgroundColor.a = 1;
                     this.guideText.textColor.a = 1;
                 }
-                  
+
                 break;
             }
             // Default: Throw an error! No unhandled events allowed.
             default: {
-                throw new Error(`Unhandled event caught in scene with type ${event.type}`)
+                throw new Error(`Unhandled event caught in scene with type ${event.type}`);
             }
         }
     }
@@ -524,24 +624,22 @@ export default abstract class AALevel extends Scene {
         // TODO maybe use GameNode?
         let playerPos = this.player.position;
         let enemyPos = enemy.position;
-
-
     }
 
     protected spawnTongue(pos: Vec2, dir: Vec2): void {
         // TODO maybe use GameNode?
         if (this.tongue && !this.tongue.visible) {
             this.tongue.visible = true;
-            this.tongue.setAIActive(true, {src: pos, dir: dir});
+            this.tongue.setAIActive(true, { src: pos, dir: dir });
         }
     }
     protected spawnIceBlock(pos: Vec2): void {
         // TODO maybe use GameNode?
         if (this.icePlatform) {
-            this.iceParticleSystem.getPool()[0].freeze(); 
-            this.iceParticleSystem.getPool()[0].visible = false;                       
+            this.iceParticleSystem.getPool()[0].freeze();
+            this.iceParticleSystem.getPool()[0].visible = false;
             this.icePlatform.visible = true;
-            this.icePlatform.setAIActive(true, {src: pos});
+            this.icePlatform.setAIActive(true, { src: pos });
         }
     }
 
@@ -563,16 +661,16 @@ export default abstract class AALevel extends Scene {
     /* Handlers for the different events the scene is subscribed to */
 
     protected handleFireballHit(): void {
-        let particle = this.fireballSystem.getPool()[0];  // fireball is a single particle
+        const particle = this.fireballSystem.getPool()[0]; // fireball is a single particle
 
         if (!particle) {
-            console.warn('Fireball particle undefined');
+            console.warn("Fireball particle undefined");
             return;
         }
 
         // Rocket jump direction
         // TODO should be less effective when fireball lands farther away
-        let dir = new Vec2(-0.8*particle.vel.x, -0.8*particle.vel.y);
+        const dir = new Vec2(-0.8 * particle.vel.x, -0.8 * particle.vel.y);
 
         this.fireballSystem.stopSystem();
 
@@ -581,26 +679,42 @@ export default abstract class AALevel extends Scene {
             this.fireParticleSystem.startSystem(1000, 0, particle.position);
         }
 
-        this.emitter.fireEvent(AAEvents.PLAYER_FIRE_JUMP, { fireJumpVel: dir, particlePos: particle.position, playerPos: this.player.position });
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.explodeAudioKey, loop: false, holdReference: false });
+        this.emitter.fireEvent(AAEvents.PLAYER_FIRE_JUMP, {
+            fireJumpVel: dir,
+            particlePos: particle.position,
+            playerPos: this.player.position,
+        });
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+            key: this.explodeAudioKey,
+            loop: false,
+            holdReference: false,
+        });
     }
 
     protected handleTongueHit(): void {
-        let particle = this.tongueParticleSystem.getPool()[0];  // fireball is a single particle
+        const particle = this.tongueParticleSystem.getPool()[0]; // fireball is a single particle
 
         if (!particle) {
-            console.warn('Tongue particle undefined');
+            console.warn("Tongue particle undefined");
             return;
         }
 
         // gotta change this for the swing
         // let dir = new Vec2(particle.vel.x/2, particle.vel.y/2);
-        let dir = this.player.position.dirTo(particle.position).scale(250, 350).scale(1.2);
+        const dir = this.player.position.dirTo(particle.position).scale(250, 350).scale(1.2);
 
         this.tongueParticleSystem.stopSystem();
 
-        this.emitter.fireEvent(AAEvents.PLAYER_SWING, {swingDir: dir, particlePos: particle.position, playerPos: this.player.position });
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.grappleAudioKey, loop: false, holdReference: false });
+        this.emitter.fireEvent(AAEvents.PLAYER_SWING, {
+            swingDir: dir,
+            particlePos: particle.position,
+            playerPos: this.player.position,
+        });
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+            key: this.grappleAudioKey,
+            loop: false,
+            holdReference: false,
+        });
     }
 
     /**
@@ -616,48 +730,71 @@ export default abstract class AALevel extends Scene {
     /**
      * This is the same healthbar I used for hw2. I've adapted it slightly to account for the zoom factor. Other than that, the
      * code is basically the same.
-     * 
+     *
      * @param currentHealth the current health of the player
      * @param maxHealth the maximum health of the player
      */
-    protected handleHealthChange(currentHealth: number, maxHealth: number): void {
-		let unit = this.healthBarBg.size.x / maxHealth;
-        
-		this.healthBar.size.set(this.healthBarBg.size.x - unit * (maxHealth - currentHealth), this.healthBarBg.size.y);
-		this.healthBar.position.set(this.healthBarBg.position.x - (unit / 2 / this.getViewScale()) * (maxHealth - currentHealth), this.healthBarBg.position.y);
+    protected handleHealthChange(
+        healthBar: Label,
+        healthBarBg: Label,
+        currentHealth: number,
+        maxHealth: number
+    ): void {
+        const unit = healthBarBg.size.x / maxHealth;
 
-		this.healthBar.backgroundColor = currentHealth < maxHealth * 1/4 ? Color.RED: currentHealth < maxHealth * 3/4 ? Color.YELLOW : Color.GREEN;
-	}
+        healthBar.size.set(
+            healthBarBg.size.x - unit * (maxHealth - currentHealth),
+            healthBarBg.size.y
+        );
+        healthBar.position.set(
+            healthBarBg.position.x - (unit / 2 / this.getViewScale()) * (maxHealth - currentHealth),
+            healthBarBg.position.y
+        );
+
+        healthBar.backgroundColor =
+            currentHealth < (maxHealth * 1) / 4
+                ? Color.RED
+                : currentHealth < (maxHealth * 3) / 4
+                ? Color.YELLOW
+                : Color.GREEN;
+    }
 
     protected handlePauseGame(): void {
         MainMenu.GAME_PLAYING = false;
         this.player.setAIActive(false, null);
         this.player.animation.pause();
-        this.allNPCS.forEach(npc => {
+        this.allNPCS.forEach((npc) => {
             // npc.setAIActive(false, null)
             npc.freeze();
             npc.animation.pause();
         });
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.levelMusicKey, holdReference: true});
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+            key: this.levelMusicKey,
+            holdReference: true,
+        });
         this.getLayer(AALayers.PAUSE).enable();
     }
 
     protected handleResumeGame(): void {
         MainMenu.GAME_PLAYING = true;
-        this.player.setAIActive(true, { 
+        this.player.setAIActive(true, {
             fireParticleSystem: this.fireParticleSystem, // TODO do we need these in HW3Level?
             fireballSystem: this.fireballSystem,
             iceParticleSystem: this.iceParticleSystem,
             tongueParticleSystem: this.tongueParticleSystem,
-            tilemap: "Destructable"
+            tilemap: "Destructable",
         });
         this.player.animation.resume();
-        this.allNPCS.forEach(npc => {
+        this.allNPCS.forEach((npc) => {
             // npc.setAIActive(true, {})
             npc.unfreeze();
             npc.animation.resume();
         });
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.levelMusicKey, loop: true, holdReference: true});
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+            key: this.levelMusicKey,
+            loop: true,
+            holdReference: true,
+        });
         this.getLayer(AALayers.PAUSE).disable();
     }
 
@@ -676,8 +813,8 @@ export default abstract class AALevel extends Scene {
         this.addUILayer(AALayers.UI);
 
         // Add a layer for players and enemies
-        this.addLayer(AALayers.PRIMARY,1);
-        this.addLayer(AALayers.GUIDE,0)
+        this.addLayer(AALayers.PRIMARY, 1);
+        this.addLayer(AALayers.GUIDE, 0);
 
         // Add a layer for Pause Menu
         this.addUILayer(AALayers.PAUSE);
@@ -690,16 +827,20 @@ export default abstract class AALevel extends Scene {
      */
     protected initializeTilemap(): void {
         if (this.tilemapKey === undefined || this.tilemapScale === undefined) {
-            throw new Error("Cannot add the homework 4 tilemap unless the tilemap key and scale are set.");
+            throw new Error(
+                "Cannot add the homework 4 tilemap unless the tilemap key and scale are set."
+            );
         }
         // Add the tilemap to the scene
         this.add.tilemap(this.tilemapKey, this.tilemapScale);
 
         if (this.collidableLayerKey === undefined) {
-            throw new Error("Make sure the keys for the collidable layer and tongue collidable layer are both set");
+            throw new Error(
+                "Make sure the keys for the collidable layer and tongue collidable layer are both set"
+            );
         }
 
-        // Get the wall and destructible layers 
+        // Get the wall and destructible layers
         //this.walls = this.getTilemap(this.wallsLayerKey) as OrthogonalTilemap;
         this.collidable = this.getTilemap(this.collidableLayerKey) as OrthogonalTilemap;
 
@@ -707,8 +848,16 @@ export default abstract class AALevel extends Scene {
         if (this.collidable) {
             this.collidable.addPhysics();
             this.collidable.setGroup(AAPhysicsGroups.DESTRUCTABLE);
-            this.collidable.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.PARTICLE_HIT_DESTRUCTIBLE, null);
-            this.collidable.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_WALL_COLLISION, null);
+            this.collidable.setTrigger(
+                AAPhysicsGroups.FIREBALL,
+                AAEvents.PARTICLE_HIT_DESTRUCTIBLE,
+                null
+            );
+            this.collidable.setTrigger(
+                AAPhysicsGroups.TONGUE,
+                AAEvents.TONGUE_WALL_COLLISION,
+                null
+            );
             this.collidable.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_COLLISION, null);
         }
     }
@@ -738,59 +887,99 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.TONGUE_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.ICE_HIT_BOSS);
         this.receiver.subscribe(AAEvents.TONGUE_HIT_BOSS);
+        this.receiver.subscribe(AAEvents.SPAWN_BOSS);
         this.receiver.subscribe("GUIDE");
         this.receiver.subscribe("STOP_SHOWING");
-
-
     }
     /**
      * Adds in any necessary UI to the game
      */
     protected initializeUI(): void {
-
         // HP Label
-		// this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(10, 15), text: "HP "});
-		// this.healthLabel.size.set(300, 30);
-		// this.healthLabel.fontSize = 24;
-		// this.healthLabel.font = "Courier";
+        // this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, HW3Layers.UI, {position: new Vec2(10, 15), text: "HP "});
+        // this.healthLabel.size.set(300, 30);
+        // this.healthLabel.fontSize = 24;
+        // this.healthLabel.font = "Courier";
 
         // HealthBar
-		this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(45, 15), text: ""});
-		this.healthBar.size = new Vec2(300, 25);
-		this.healthBar.backgroundColor = Color.GREEN;
+        this.healthBar = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: new Vec2(45, 15),
+            text: "",
+        });
+        this.healthBar.size = new Vec2(300, 25);
+        this.healthBar.backgroundColor = Color.GREEN;
         this.healthBar.borderRadius = 0;
 
         // HealthBar Border
-		this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(45, 15), text: ""});
-		this.healthBarBg.size = new Vec2(300, 25);
-		this.healthBarBg.borderColor = Color.BLACK;
+        this.healthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: new Vec2(45, 15),
+            text: "",
+        });
+        this.healthBarBg.size = new Vec2(300, 25);
+        this.healthBarBg.borderColor = Color.BLACK;
         this.healthBarBg.borderRadius = 0;
         this.healthBarBg.borderWidth = 2;
 
+        // Boss Healthbar (displays on boss trigger)
+        this.bossHealthBar = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: new Vec2(150, 170),
+            text: "",
+        });
+        this.bossHealthBar.size = new Vec2(600, 25);
+        this.bossHealthBar.backgroundColor = Color.GREEN;
+        this.bossHealthBar.borderRadius = 0;
+        this.bossHealthBar.visible = false;
+
+        this.bossHealthBarBg = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: new Vec2(150, 170),
+            text: "",
+        });
+        this.bossHealthBarBg.size = new Vec2(600, 25);
+        this.bossHealthBarBg.borderColor = Color.BLACK;
+        this.bossHealthBarBg.borderRadius = 0;
+        this.bossHealthBarBg.borderWidth = 2;
+        this.bossHealthBarBg.visible = false;
+
+        // Boss name
+        this.bossNameLabel = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: new Vec2(95, 162),
+            text: this.bossName || "",
+        });
+        this.bossNameLabel.size.set(300, 30);
+        this.bossNameLabel.fontSize = 24;
+        this.bossNameLabel.font = "Courier";
+        this.bossNameLabel.visible = false;
+
         // The tongue icon sprite
-        this.tongueIcon = this.add.sprite('tongueIcon', AALayers.UI);
+        this.tongueIcon = this.add.sprite("tongueIcon", AALayers.UI);
         this.tongueIcon.scale.set(0.7, 0.7);
         this.tongueIcon.position.copy(this.tongueSelectPos);
 
         // The fire icon sprite
-        this.fireIcon = this.add.sprite('fireIcon', AALayers.UI);
+        this.fireIcon = this.add.sprite("fireIcon", AALayers.UI);
         this.fireIcon.scale.set(0.7, 0.7);
         this.fireIcon.position.copy(this.fireballSelectPos);
 
         // The ice icon sprite
-        this.iceIcon = this.add.sprite('iceIcon', AALayers.UI);
+        this.iceIcon = this.add.sprite("iceIcon", AALayers.UI);
         this.iceIcon.scale.set(0.7, 0.7);
         this.iceIcon.position.copy(this.iceSelectPos);
 
         // Spellbar highlighted spell border thing
-        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: this.fireballSelectPos, text: ""});
+        this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: this.fireballSelectPos,
+            text: "",
+        });
         this.spellBarSelect.size = new Vec2(45, 45);
         this.spellBarSelect.borderColor = Color.YELLOW;
         this.spellBarSelect.borderRadius = 0;
         this.spellBarSelect.borderWidth = 2;
 
         // End of level label (start off screen)
-        this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, { position: new Vec2(-300, 100), text: "Level Complete" });
+        this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: new Vec2(-300, 100),
+            text: "Level Complete",
+        });
         this.levelEndLabel.size.set(1200, 60);
         this.levelEndLabel.borderRadius = 0;
         this.levelEndLabel.backgroundColor = new Color(34, 32, 52);
@@ -807,12 +996,15 @@ export default abstract class AALevel extends Scene {
                     property: TweenableProperties.posX,
                     start: -300,
                     end: 150,
-                    ease: EaseFunctionType.OUT_SINE
-                }
-            ]
+                    ease: EaseFunctionType.OUT_SINE,
+                },
+            ],
         });
 
-        this.levelTransitionScreen = <Rect>this.add.graphic(GraphicType.RECT, AALayers.UI, { position: new Vec2(300, 200), size: new Vec2(600, 400) });
+        this.levelTransitionScreen = <Rect>this.add.graphic(GraphicType.RECT, AALayers.UI, {
+            position: new Vec2(300, 200),
+            size: new Vec2(600, 400),
+        });
         this.levelTransitionScreen.color = new Color(34, 32, 52);
         this.levelTransitionScreen.alpha = 1;
 
@@ -824,10 +1016,10 @@ export default abstract class AALevel extends Scene {
                     property: TweenableProperties.alpha,
                     start: 0,
                     end: 1,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                }
+                    ease: EaseFunctionType.IN_OUT_QUAD,
+                },
             ],
-            onEnd: [AAEvents.LEVEL_END]
+            onEnd: [AAEvents.LEVEL_END],
         });
 
         /*
@@ -842,14 +1034,17 @@ export default abstract class AALevel extends Scene {
                     property: TweenableProperties.alpha,
                     start: 1,
                     end: 0,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                }
+                    ease: EaseFunctionType.IN_OUT_QUAD,
+                },
             ],
-            onEnd: [AAEvents.LEVEL_START]
+            onEnd: [AAEvents.LEVEL_START],
         });
 
         // Guide Textbox
-        this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.PRIMARY, { position: new Vec2(0,0), text: "Hello There!" });
+        this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.PRIMARY, {
+            position: new Vec2(0, 0),
+            text: "Hello There!",
+        });
         this.guideText.size.set(600, 150);
         this.guideText.borderRadius = 25;
         this.guideText.backgroundColor = new Color(34, 32, 52, 0);
@@ -867,10 +1062,9 @@ export default abstract class AALevel extends Scene {
                     property: TweenableProperties.alpha,
                     start: 0,
                     end: 1,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                }, 
-   
-            ]
+                    ease: EaseFunctionType.IN_OUT_QUAD,
+                },
+            ],
         });
 
         this.guideText.tweens.add("fadeOut", {
@@ -881,81 +1075,141 @@ export default abstract class AALevel extends Scene {
                     property: TweenableProperties.alpha,
                     start: 1,
                     end: 0,
-                    ease: EaseFunctionType.IN_OUT_QUAD
+                    ease: EaseFunctionType.IN_OUT_QUAD,
                 },
-            ]
+            ],
         });
     }
 
     protected initializePause(): void {
-        let size = this.viewport.getHalfSize();
-        let yPos = size.y + 100;
-        let pauseMenu = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PAUSE, { position: new Vec2(size.x, yPos - 100), size: new Vec2(60, 80) });
+        const size = this.viewport.getHalfSize();
+        const yPos = size.y + 100;
+        const pauseMenu = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PAUSE, {
+            position: new Vec2(size.x, yPos - 100),
+            size: new Vec2(60, 80),
+        });
         pauseMenu.color = Color.BLACK;
-        let resumeBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {position: new Vec2(size.x, yPos - 120), text: "Resume"});      
+        const resumeBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {
+            position: new Vec2(size.x, yPos - 120),
+            text: "Resume",
+        });
         resumeBtn.backgroundColor = Color.TRANSPARENT;
         resumeBtn.borderColor = Color.WHITE;
         resumeBtn.borderRadius = 0;
         resumeBtn.setPadding(new Vec2(50, 10));
         resumeBtn.font = "PixelSimple";
-        resumeBtn.scale = new Vec2(0.25,0.25);
+        resumeBtn.scale = new Vec2(0.25, 0.25);
 
-        let controlsBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {position: new Vec2(size.x, yPos - 100), text: "Controls"});
+        const controlsBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {
+            position: new Vec2(size.x, yPos - 100),
+            text: "Controls",
+        });
         controlsBtn.backgroundColor = Color.TRANSPARENT;
         controlsBtn.borderColor = Color.WHITE;
         controlsBtn.borderRadius = 0;
         controlsBtn.setPadding(new Vec2(50, 10));
         controlsBtn.font = "PixelSimple";
-        controlsBtn.scale = new Vec2(0.25,0.25);
+        controlsBtn.scale = new Vec2(0.25, 0.25);
 
-        let quitBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {position: new Vec2(size.x, yPos - 80), text: "Quit"});
+        const quitBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {
+            position: new Vec2(size.x, yPos - 80),
+            text: "Quit",
+        });
         quitBtn.backgroundColor = Color.TRANSPARENT;
         quitBtn.borderColor = Color.WHITE;
         quitBtn.borderRadius = 0;
         quitBtn.setPadding(new Vec2(50, 10));
         quitBtn.font = "PixelSimple";
-        quitBtn.scale = new Vec2(0.25,0.25);
+        quitBtn.scale = new Vec2(0.25, 0.25);
 
-        resumeBtn.onClick = () => { this.emitter.fireEvent(AAEvents.RESUME); }
-        controlsBtn.onClick = () => { this.emitter.fireEvent(AAEvents.CONTROLS); }
+        resumeBtn.onClick = () => {
+            this.emitter.fireEvent(AAEvents.RESUME);
+        };
+        controlsBtn.onClick = () => {
+            this.emitter.fireEvent(AAEvents.CONTROLS);
+        };
         quitBtn.onClick = () => {
             MainMenu.GAME_PLAYING = false;
             ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: MainMenu.MUSIC_KEY, loop: true, holdReference: true});
+            this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {
+                key: MainMenu.MUSIC_KEY,
+                loop: true,
+                holdReference: true,
+            });
             this.sceneManager.changeToScene(MainMenu);
-        }
-
+        };
     }
 
     protected initializeControls(): void {
-        let size = this.viewport.getHalfSize();
-        let yOffset = 10;
-        let controlsMenu = <Rect>this.add.graphic(GraphicType.RECT, AALayers.CONTROLS, { position: new Vec2(size.x, size.y), size: new Vec2(100, 130) });
+        const size = this.viewport.getHalfSize();
+        const yOffset = 10;
+        const controlsMenu = <Rect>this.add.graphic(GraphicType.RECT, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y),
+            size: new Vec2(100, 130),
+        });
         controlsMenu.color = Color.BLACK;
-        
+
         let i = 1;
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55), text: "W - Jump", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "A - Walk Left", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "D - Walk Right", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "1 - Select Spell 1", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "2 - Select Spell 2", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "3 - Select Spell 3", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Left Click - Cast Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "Mouse - Aim Spell", fontSize: 24});
-        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {position: new Vec2(size.x, size.y - 55 + yOffset*i++), text: "ESC - Pause Game", fontSize: 24});
-        
-        let backBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.CONTROLS, {position: new Vec2(size.x, 2*size.y - 50), text: "Back"});
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55),
+            text: "W - Jump",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55 + yOffset * i++),
+            text: "A - Walk Left",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55 + yOffset * i++),
+            text: "D - Walk Right",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55 + yOffset * i++),
+            text: "1 - Select Spell 1",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55 + yOffset * i++),
+            text: "2 - Select Spell 2",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55 + yOffset * i++),
+            text: "3 - Select Spell 3",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55 + yOffset * i++),
+            text: "Left Click - Cast Spell",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55 + yOffset * i++),
+            text: "Mouse - Aim Spell",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
+            position: new Vec2(size.x, size.y - 55 + yOffset * i++),
+            text: "ESC - Pause Game",
+            fontSize: 24,
+        });
+
+        const backBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.CONTROLS, {
+            position: new Vec2(size.x, 2 * size.y - 50),
+            text: "Back",
+        });
         backBtn.backgroundColor = Color.TRANSPARENT;
         backBtn.borderColor = Color.WHITE;
         backBtn.borderRadius = 0;
         backBtn.setPadding(new Vec2(50, 10));
         backBtn.font = "PixelSimple";
-        backBtn.scale = new Vec2(0.25,0.25);
+        backBtn.scale = new Vec2(0.25, 0.25);
         backBtn.onClick = () => {
             this.getLayer(AALayers.CONTROLS).disable();
             this.getLayer(AALayers.PAUSE).enable();
-        }
-
+        };
     }
 
     /**
@@ -969,26 +1223,35 @@ export default abstract class AALevel extends Scene {
         this.fireballSystem.initializePool(this, AALayers.PRIMARY);
 
         // init tongue
-        this.tongue = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+        this.tongue = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
+            position: Vec2.ZERO,
+            size: Vec2.ZERO,
+        });
         this.tongue.useCustomShader(TongueShaderType.KEY);
         this.tongue.color = Color.RED;
         this.tongue.visible = false;
-        this.tongue.addAI(TongueBehavior, {src: Vec2.ZERO, dir: Vec2.ZERO});
-    
+        this.tongue.addAI(TongueBehavior, { src: Vec2.ZERO, dir: Vec2.ZERO });
+
         this.tongueParticleSystem = new TongueParticle(1, Vec2.ZERO, 500, 3, 0, 1);
         this.tongueParticleSystem.initializePool(this, AALayers.PRIMARY);
 
-
         //init ice platform
-        this.icePlatform = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {position: Vec2.ZERO, size: Vec2.ZERO});
+        this.icePlatform = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
+            position: Vec2.ZERO,
+            size: Vec2.ZERO,
+        });
         //this.icePlatform.useCustomShader(TongueShaderType.KEY);
         this.icePlatform.color = Color.CYAN;
         this.icePlatform.visible = false;
-        this.icePlatform.addAI(IceBehavior, {src: Vec2.ZERO});
+        this.icePlatform.addAI(IceBehavior, { src: Vec2.ZERO });
         this.icePlatform.addPhysics();
         this.icePlatform.setGroup(AAPhysicsGroups.ICE_PLATFORM);
         this.icePlatform.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_WALL_COLLISION, null);
-        this.icePlatform.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.PARTICLE_HIT_DESTRUCTIBLE, null);
+        this.icePlatform.setTrigger(
+            AAPhysicsGroups.FIREBALL,
+            AAEvents.PARTICLE_HIT_DESTRUCTIBLE,
+            null
+        );
         this.icePlatform.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_COLLISION, null);
 
         // initialize Ice Blast
@@ -1002,10 +1265,14 @@ export default abstract class AALevel extends Scene {
      */
     protected initializePlayer(key: string): void {
         if (this.fireParticleSystem === undefined) {
-            throw new Error("Fire particle system must be initialized before initializing the player!");
+            throw new Error(
+                "Fire particle system must be initialized before initializing the player!"
+            );
         }
         if (this.iceParticleSystem === undefined) {
-            throw new Error("Ice particle system must be initialized before initializing the player!");
+            throw new Error(
+                "Ice particle system must be initialized before initializing the player!"
+            );
         }
         if (this.playerSpawn === undefined) {
             throw new Error("Player spawn must be set before initializing the player!");
@@ -1013,11 +1280,13 @@ export default abstract class AALevel extends Scene {
 
         // Add the player to the scene
         this.player = this.add.animatedSprite(key, AALayers.PRIMARY);
-        this.player.scale.set(.25, .25);
+        this.player.scale.set(0.25, 0.25);
         this.player.position.copy(this.playerSpawn);
-        
+
         // Give the player physics and setup collision groups and triggers for the player
-        this.player.addPhysics(new AABB(this.player.position.clone(), this.player.boundary.getHalfSize().clone()));
+        this.player.addPhysics(
+            new AABB(this.player.position.clone(), this.player.boundary.getHalfSize().clone())
+        );
         this.player.setGroup(AAPhysicsGroups.PLAYER);
         this.player.setTrigger(AAPhysicsGroups.BOSS_PARTICLE, AAEvents.PLAYER_HIT, null);
         this.player.setTrigger(AAPhysicsGroups.ENEMY, AAEvents.PLAYER_HIT, null);
@@ -1030,10 +1299,10 @@ export default abstract class AALevel extends Scene {
                 {
                     property: "rotation",
                     start: 0,
-                    end: 2*Math.PI,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                }
-            ]
+                    end: 2 * Math.PI,
+                    ease: EaseFunctionType.IN_OUT_QUAD,
+                },
+            ],
         });
         // Give the player a death animation
         this.player.tweens.add(PlayerTweens.DEATH, {
@@ -1044,28 +1313,28 @@ export default abstract class AALevel extends Scene {
                     property: "rotation",
                     start: 0,
                     end: Math.PI,
-                    ease: EaseFunctionType.IN_OUT_QUAD
+                    ease: EaseFunctionType.IN_OUT_QUAD,
                 },
                 {
                     property: "alpha",
                     start: 1,
                     end: 0,
-                    ease: EaseFunctionType.IN_OUT_QUAD
-                }
+                    ease: EaseFunctionType.IN_OUT_QUAD,
+                },
             ],
-            onEnd: [AAEvents.PLAYER_DEAD]
+            onEnd: [AAEvents.PLAYER_DEAD],
         });
 
         // Give the player it's AI
         // This is just the option object, can pass in whatever "weapons" we want here
-        this.player.addAI(PlayerController, { 
+        this.player.addAI(PlayerController, {
             fireParticleSystem: this.fireParticleSystem, // TODO do we need these in HW3Level?
             fireballSystem: this.fireballSystem,
             iceParticleSystem: this.iceParticleSystem,
             tongueParticleSystem: this.tongueParticleSystem,
             tongueGraphic: this.tongue,
             tilemap: "Destructable",
-            allNPCs: this.allNPCS
+            allNPCs: this.allNPCS,
         });
     }
     /**
@@ -1073,7 +1342,9 @@ export default abstract class AALevel extends Scene {
      */
     protected initializeViewport(): void {
         if (this.player === undefined) {
-            throw new Error("Player must be initialized before setting the viewport to folow the player");
+            throw new Error(
+                "Player must be initialized before setting the viewport to folow the player"
+            );
         }
         this.viewport.follow(this.player);
         this.viewport.setZoomLevel(4);
@@ -1084,18 +1355,26 @@ export default abstract class AALevel extends Scene {
      */
     protected initializeLevelEnds(): void {
         if (!this.layers.has(AALayers.PRIMARY)) {
-            throw new Error("Can't initialize the level ends until the primary layer has been added to the scene!");
+            throw new Error(
+                "Can't initialize the level ends until the primary layer has been added to the scene!"
+            );
         }
         if (!this.levelEndPosition || !this.levelEndHalfSize) {
             console.debug("No level end trigger set, hopefully this is intended");
             return;
         }
-        
-        this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, { position: this.levelEndPosition, size: this.levelEndHalfSize });
+
+        this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
+            position: this.levelEndPosition,
+            size: this.levelEndHalfSize,
+        });
         this.levelEndArea.addPhysics(undefined, undefined, false, true);
-        this.levelEndArea.setTrigger(AAPhysicsGroups.PLAYER, AAEvents.PLAYER_ENTERED_LEVEL_END, null);
-        this.levelEndArea.color = new Color(255, 0, 255, .20);
-        
+        this.levelEndArea.setTrigger(
+            AAPhysicsGroups.PLAYER,
+            AAEvents.PLAYER_ENTERED_LEVEL_END,
+            null
+        );
+        this.levelEndArea.color = new Color(255, 0, 255, 0.2);
     }
 
     /* Misc methods */
