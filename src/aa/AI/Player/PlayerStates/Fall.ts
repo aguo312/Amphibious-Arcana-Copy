@@ -54,6 +54,7 @@ export default class Fall extends PlayerState {
                 this.parent.velocity.y += this.gravity*deltaT;
             }
 
+            if (this.owner.onCeiling && this.parent.velocity.y < 0) this.parent.velocity.y = Math.min(-this.parent.velocity.y, 20);
 
             // Move the player
             this.owner.move(this.parent.velocity.scaled(deltaT));

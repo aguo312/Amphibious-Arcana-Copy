@@ -17,13 +17,15 @@ import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
+import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
+import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
  */
 export default class Level1 extends AALevel {
 
-    public static readonly PLAYER_SPAWN = new Vec2(50, 480);
+    public static readonly PLAYER_SPAWN = new Vec2(50, 528);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
@@ -104,9 +106,21 @@ export default class Level1 extends AALevel {
     }
 
     public initializeUI(): void {
-       super.initializeUI();
+        super.initializeUI();
 
-       let size = this.viewport.getHalfSize();
+        let size = this.viewport.getHalfSize();
+
+        // // Guide Textbox
+        // this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, { position: new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50), text: "I HAVE SO MUCH TO SAY TO YOU" });
+        // this.guideText.size.set(550, 180);
+        // this.guideText.borderRadius = 25;
+        // this.guideText.backgroundColor = new Color(34, 32, 52, 0);
+        // this.guideText.textColor = Color.WHITE;
+        // this.guideText.textColor.a = 0;
+        // this.guideText.fontSize = 24;
+        // this.guideText.font = "MyFont";
+
+        this.guideText.position = new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50)
 
         // add random tutorial text
         this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(size.x, 180), text: "Try shooting fire at your feet to jump!"});
@@ -114,6 +128,17 @@ export default class Level1 extends AALevel {
         // this.tutorialText.backgroundColor = Color.BLACK;
         // this.tutorialText.backgroundColor.a = 10;
         this.tutorialTextTimer = new Timer(10000, () => this.tutorialText.visible = false, false);
+    }
+
+    public initializeTutorialBox(){
+        let size = this.viewport.getHalfSize();
+
+        let tutorialBox = <Rect>this.add.graphic(GraphicType.RECT, AALayers.GUIDE, { position: new Vec2(size.x, size.y), size: new Vec2(100, 100) });
+        tutorialBox.color = new Color(34, 32, 52, 0);
+
+
+
+
     }
 
     /**
@@ -129,6 +154,9 @@ export default class Level1 extends AALevel {
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
+
+        // Load in the guide sprite
+        this.load.spritesheet("Guide", "hw4_assets/spritesheets/traveler.json");
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
@@ -167,6 +195,8 @@ export default class Level1 extends AALevel {
     public startScene(): void {
         super.startScene();
         this.tutorialTextTimer.start();
+        this.guideText.tweens.play("fadeIn");
+
         // Set the next level to be Level2
         this.nextLevel = Level2;
         this.nextLevelNum = 2;
@@ -220,6 +250,17 @@ export default class Level1 extends AALevel {
                 onEnd: [AAEvents.NPC_KILLED]
             });
         }
+
+        let guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
+        guide.scale.scale(0.30);
+        guide.position.set(this.playerSpawn.x + 90, this.playerSpawn.y -3);
+        guide.addPhysics(null, null, false)
+        guide.setGroup(AAPhysicsGroups.TUTORIAL)
+        guide.setTrigger(AAPhysicsGroups.PLAYER, "GUIDE", null)
+
+        guide.animation.play("IDLE")
+        this.allNPCS.set(guide.id, guide)
+
     }
 
     public updateScene(deltaT: number) {

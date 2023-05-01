@@ -42,6 +42,7 @@ import ParticleSystemManager from "../../Wolfie2D/Rendering/Animations/ParticleS
  * A const object for the layer names
  */
 export const AALayers = {
+    GUIDE:"GUIDE",
     // The primary layer
     PRIMARY: "PRIMARY",
     // The UI layer
@@ -152,6 +153,10 @@ export default abstract class AALevel extends Scene {
     protected frozenTimer: Timer;
     protected bossIFrameTimer: Timer;
 
+    protected guideText: Label;
+    protected guideTextTimer: Timer;
+    protected textLoopTimer: Timer;
+
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
     public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
@@ -167,21 +172,24 @@ export default abstract class AALevel extends Scene {
                 AAPhysicsGroups.ICE_PARTICLE,
                 AAPhysicsGroups.ENEMY,
                 AAPhysicsGroups.ICE_PLATFORM,
-                AAPhysicsGroups.BOSS_PARTICLE
+                AAPhysicsGroups.BOSS_PARTICLE,
+                AAPhysicsGroups.TUTORIAL
             ],
             collisions:
             [
-                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0],
-                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0],
-                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0],
-                [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0],
-                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0],
-                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0],
-                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
+                [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
+                [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0],
+                [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0],
+                [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 
             ]
         }});
@@ -240,6 +248,12 @@ export default abstract class AALevel extends Scene {
         // Init timers
         this.fireballTimer = new Timer(300);
         this.bossIFrameTimer = new Timer(1000);
+
+        this.guideTextTimer = new Timer(30000, () => {
+            this.guideText.backgroundColor.a = 0
+            this.guideText.textColor.a = 0
+            this.textLoopTimer.reset()
+        })
 
         // Initially disable player movement
         Input.disableInput();
@@ -327,12 +341,9 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.ICEBALL_HIT_ENEMY:{
-                console.log("ICE HIT ENEMY!!!!")
                 let enemy = this.allNPCS.get(event.data.get("other"));
 
                 if(!enemy.frozen){
-                    console.log("NOT FROZEENNN")
-
                     enemy.freeze();
                     enemy.animation.pause();
 
@@ -470,6 +481,38 @@ export default abstract class AALevel extends Scene {
                 this.handleTongueHit();
                 break;
             }
+            case "GUIDE":{
+                const texts = [
+                    "You've unlocked your fireball! It deals damage to enemies",
+                    "You can also shoot it by your feet for a boost!",
+                    "It will allow you to make higher jumps and reach platforms.",
+                  ];
+                  
+                if(this.guideTextTimer.isStopped()){
+                    let currentIndex = 0;
+                    
+                    this.guideText.text = texts[currentIndex];
+                    
+                    this.textLoopTimer = new Timer(5000, () => {
+                        // Increment the index and wrap around to the beginning of the array if necessary
+                        currentIndex = (currentIndex + 1) % texts.length;
+                    
+                        // Display the next text in the array
+                        this.guideText.text = texts[currentIndex];
+                    
+                        // Restart the timer and show the label
+                        this.textLoopTimer.start();
+                    });
+                    
+                    // Start the label timer and show the label
+                    this.textLoopTimer.start();
+                    this.guideTextTimer.start();
+                    this.guideText.backgroundColor.a = 1;
+                    this.guideText.textColor.a = 1;
+                }
+                  
+                break;
+            }
             // Default: Throw an error! No unhandled events allowed.
             default: {
                 throw new Error(`Unhandled event caught in scene with type ${event.type}`)
@@ -551,7 +594,8 @@ export default abstract class AALevel extends Scene {
         }
 
         // gotta change this for the swing
-        let dir = new Vec2(particle.vel.x/2, particle.vel.y/2);
+        // let dir = new Vec2(particle.vel.x/2, particle.vel.y/2);
+        let dir = this.player.position.dirTo(particle.position).scale(250, 350).scale(1.2);
 
         this.tongueParticleSystem.stopSystem();
 
@@ -630,8 +674,11 @@ export default abstract class AALevel extends Scene {
     protected initLayers(): void {
         // Add a layer for UI
         this.addUILayer(AALayers.UI);
+
         // Add a layer for players and enemies
-        this.addLayer(AALayers.PRIMARY);
+        this.addLayer(AALayers.PRIMARY,1);
+        this.addLayer(AALayers.GUIDE,0)
+
         // Add a layer for Pause Menu
         this.addUILayer(AALayers.PAUSE);
         this.addUILayer(AALayers.CONTROLS);
@@ -691,6 +738,10 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.TONGUE_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.ICE_HIT_BOSS);
         this.receiver.subscribe(AAEvents.TONGUE_HIT_BOSS);
+        this.receiver.subscribe("GUIDE");
+        this.receiver.subscribe("STOP_SHOWING");
+
+
     }
     /**
      * Adds in any necessary UI to the game
@@ -795,6 +846,44 @@ export default abstract class AALevel extends Scene {
                 }
             ],
             onEnd: [AAEvents.LEVEL_START]
+        });
+
+        // Guide Textbox
+        this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.PRIMARY, { position: new Vec2(0,0), text: "Hello There!" });
+        this.guideText.size.set(600, 150);
+        this.guideText.borderRadius = 25;
+        this.guideText.backgroundColor = new Color(34, 32, 52, 0);
+        this.guideText.textColor = Color.WHITE;
+        this.guideText.textColor.a = 0;
+        this.guideText.backgroundColor.a = 0;
+        this.guideText.fontSize = 24;
+        this.guideText.font = "MyFont";
+
+        this.guideText.tweens.add("fadeIn", {
+            startDelay: 0,
+            duration: 500,
+            effects: [
+                {
+                    property: TweenableProperties.alpha,
+                    start: 0,
+                    end: 1,
+                    ease: EaseFunctionType.IN_OUT_QUAD
+                }, 
+   
+            ]
+        });
+
+        this.guideText.tweens.add("fadeOut", {
+            startDelay: 0,
+            duration: 500,
+            effects: [
+                {
+                    property: TweenableProperties.alpha,
+                    start: 1,
+                    end: 0,
+                    ease: EaseFunctionType.IN_OUT_QUAD
+                },
+            ]
         });
     }
 

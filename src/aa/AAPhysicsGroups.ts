@@ -19,7 +19,8 @@ export const AAPhysicsGroups = {
     TONGUE: "TONGUE",
     ENEMY: "ENEMY",
 
-    ICE_PLATFORM: "ICE_PLATFORM"
+    ICE_PLATFORM: "ICE_PLATFORM",
+    TUTORIAL:"TUTORIAL"
 
     
 } as const;

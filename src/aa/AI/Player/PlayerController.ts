@@ -182,21 +182,24 @@ export default class PlayerController extends StateMachineAI {
                 const playerPos: Vec2 = event.data.get('playerPos');
                 const particlePos: Vec2 = event.data.get('particlePos');
 
-                // Calculate the distance between the player and the grapple point
-                const posDiff = playerPos.clone().distanceTo(particlePos);
+                this.velocity.mult(Vec2.ZERO);
+                this.velocity.add(dir);
+
+                // // Calculate the distance between the player and the grapple point
+                // const posDiff = playerPos.clone().distanceTo(particlePos);
        
-                // Scale the velocity based on the distance between the player and the grapple point
-                const minSwingDist = 5; // The minimum distance for a successful swing
-                const maxSwingDist = 20; // The maximum distance for a successful swing
-                let scaleFactor = MathUtils.clamp((posDiff - minSwingDist) / (maxSwingDist - minSwingDist), 0, 1) * 3;
+                // // Scale the velocity based on the distance between the player and the grapple point
+                // const minSwingDist = 5; // The minimum distance for a successful swing
+                // const maxSwingDist = 20; // The maximum distance for a successful swing
+                // let scaleFactor = MathUtils.clamp((posDiff - minSwingDist) / (maxSwingDist - minSwingDist), 0, 1) * 3;
 
-                // Adjust the scaling factor based on the state of the player
-                if (this.currentState instanceof Fall || this.currentState instanceof Jump) {
-                    scaleFactor *= 1.5;
-                }
+                // // Adjust the scaling factor based on the state of the player
+                // if (this.currentState instanceof Fall || this.currentState instanceof Jump) {
+                //     scaleFactor *= 1.5;
+                // }
 
-                // Set the velocity of the player
-                this.velocity = dir.clone().scale(scaleFactor);
+                // // Set the velocity of the player
+                // this.velocity = dir.clone().scale(scaleFactor);
                 this.isGrappleActive = true;
                 break;
             }

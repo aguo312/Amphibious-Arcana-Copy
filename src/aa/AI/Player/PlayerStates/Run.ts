@@ -58,6 +58,10 @@ export default class Walk extends PlayerState {
             if(!this.owner.animation.isPlaying(PlayerAnimations.TAKING_DAMAGE) && !this.owner.animation.isPlaying(PlayerAnimations.ATTACK)){
                 this.owner.animation.playIfNotAlready(PlayerAnimations.WALK)
             }
+
+            if (this.owner.onCeiling && this.parent.velocity.y < 0) 
+                this.parent.velocity.y = Math.min(-this.parent.velocity.y, 20);
+
         
             this.owner.move(this.parent.velocity.scaled(deltaT));
         }

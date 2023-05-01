@@ -137,6 +137,7 @@ export default class Label extends UIElement{
 	sizeToText(): void {
 		this.sizeAssigned = false;
 	}
+
 }
 
 export enum VAlign {

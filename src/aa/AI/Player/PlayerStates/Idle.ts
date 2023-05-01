@@ -25,6 +25,7 @@ export default class Idle extends PlayerState {
         if(!this.owner.animation.isPlaying(PlayerAnimations.TAKING_DAMAGE) && !this.owner.animation.isPlaying(PlayerAnimations.ATTACK)){
             this.owner.animation.playIfNotAlready(PlayerAnimations.IDLE);
         }
+        
         // If the player is moving along the x-axis, transition to the walking state
 		if (!dir.isZero() && dir.y === 0){
 			this.finished(PlayerStates.RUN);
@@ -52,6 +53,9 @@ export default class Idle extends PlayerState {
                 this.parent.velocity.x = MathUtils.clampLow(this.parent.velocity.x - this.gravity*deltaT, 0);
             else 
                 this.parent.velocity.x = MathUtils.clampHigh(this.parent.velocity.x + this.gravity*deltaT, 0);
+
+            if (this.owner.onCeiling && this.parent.velocity.y < 0) 
+                this.parent.velocity.y = Math.min(-this.parent.velocity.y, 20);
 
             // Move the player
             this.owner.move(this.parent.velocity.scaled(deltaT));
