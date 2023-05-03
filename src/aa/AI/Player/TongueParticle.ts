@@ -2,37 +2,46 @@ import Particle from "../../../Wolfie2D/Nodes/Graphics/Particle";
 import ParticleSystem from "../../../Wolfie2D/Rendering/Animations/ParticleSystem";
 import Scene from "../../../Wolfie2D/Scene/Scene";
 import Color from "../../../Wolfie2D/Utils/Color";
-import { EaseFunctionType } from "../../../Wolfie2D/Utils/EaseFunctions";
-import RandUtils from "../../../Wolfie2D/Utils/RandUtils";
 import { AAPhysicsGroups } from "../../AAPhysicsGroups";
 import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../Wolfie2D/Events/GameEvent";
 import { AAEvents } from "../../AAEvents";
 import Receiver from "../../../Wolfie2D/Events/Receiver";
+import AAAnimatedSprite from "../../Nodes/AAAnimatedSprite";
+import Graphic from "../../../Wolfie2D/Nodes/Graphic";
 
 /**
  * The particle system used for the player's weapon
  */
 export default class TongueParticle extends ParticleSystem {
-
     protected receiver: Receiver;
+    private player: AAAnimatedSprite;
+    private owner: Graphic;
 
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
      */
-    protected _rotation: number = 0;
-    public get rotation(): number { return this._rotation; }
-    public set rotation(rotation: number) { this._rotation = rotation; }
+    protected _rotation = 0;
+    public get rotation(): number {
+        return this._rotation;
+    }
+    public set rotation(rotation: number) {
+        this._rotation = rotation;
+    }
 
     /**
      * @returns true if the particle system is running; false otherwise.
      */
-    public isSystemRunning(): boolean { return this.systemRunning; }
+    public isSystemRunning(): boolean {
+        return this.systemRunning;
+    }
     /**
-     * 
+     *
      * @returns the particles in the pool of particles used in this particles system
      */
-    public getPool(): Array<Particle> { return this.particlePool; }
+    public getPool(): Array<Particle> {
+        return this.particlePool;
+    }
 
     /**
      * Sets the animations for a particle in the player's weapon
@@ -49,10 +58,10 @@ export default class TongueParticle extends ParticleSystem {
 
     /**
      * Initializes this particle system in the given scene and layer
-     * 
-     * All particles in the particle system should have their physics group set to 
+     *
+     * All particles in the particle system should have their physics group set to
      * the HW4PhysicsGroup.PLAYER_WEAPON.
-     * 
+     *
      * @param scene the scene
      * @param layer the layer in the scene
      */
@@ -64,7 +73,7 @@ export default class TongueParticle extends ParticleSystem {
         }
 
         this.receiver = new Receiver();
-        this.receiver.subscribe(AAEvents.PLAYER_POS_UPDATE);
+        this.receiver.subscribe(AAEvents.PLAYER_CREATED);
     }
 
     public update(deltaT: number) {
@@ -73,31 +82,42 @@ export default class TongueParticle extends ParticleSystem {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
+
+        if (this.player && this.owner && this.isSystemRunning()) {
+            const particle = this.particlePool[0];
+
+            const newPos = this.owner.position
+                .clone()
+                .add(particle._velocity.normalized().scale(this.owner.size.y / 2));
+
+            particle.position.copy(newPos);
+        }
     }
 
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
-            case AAEvents.PLAYER_POS_UPDATE: {
-                this.handlePlayerPosUpdate(event.data.get('vel'));
+            case AAEvents.PLAYER_CREATED: {
+                this.player = event.data.get("player");
+                this.owner = event.data.get("tongue");
                 break;
             }
             default: {
-                throw new Error(`Unhandled event caught in TongueParticle! Event type: ${event.type}`);
+                throw new Error(
+                    `Unhandled event caught in TongueParticle! Event type: ${event.type}`
+                );
             }
         }
     }
 
     protected handlePlayerPosUpdate(vel: Vec2): void {
         if (this.particlePool.length > 0 && this.isSystemRunning()) {
-            let particle = this.particlePool[0];
-            if (!particle) { 
-                return; 
+            const particle = this.particlePool[0];
+            if (!particle) {
+                return;
             }
 
-            
-            let newPos = particle.position.clone().add(vel.normalized());
+            const newPos = particle.position.clone().add(vel.normalized());
             particle.position.copy(newPos);
         }
     }
-
 }

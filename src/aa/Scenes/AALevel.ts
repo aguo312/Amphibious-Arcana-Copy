@@ -289,13 +289,6 @@ export default abstract class AALevel extends Scene {
             this.handleEvent(this.receiver.getNextEvent());
         }
 
-        if (this.tongue.visible) {
-            this.emitter.fireEvent(AAEvents.PLAYER_POS_UPDATE, {
-                pos: this.player.position.clone(),
-                vel: this.player._velocity.clone(),
-            });
-        }
-
         if (
             this.selectedSpell === SpellTypes.ICE &&
             this.iceParticleSystem.getPool()[0].visible &&
@@ -1232,7 +1225,7 @@ export default abstract class AALevel extends Scene {
         this.tongue.visible = false;
         this.tongue.addAI(TongueBehavior, { src: Vec2.ZERO, dir: Vec2.ZERO });
 
-        this.tongueParticleSystem = new TongueParticle(1, Vec2.ZERO, 500, 3, 0, 1);
+        this.tongueParticleSystem = new TongueParticle(1, Vec2.ZERO, 1000, 3, 0, 1);
         this.tongueParticleSystem.initializePool(this, AALayers.PRIMARY);
 
         //init ice platform
@@ -1335,6 +1328,11 @@ export default abstract class AALevel extends Scene {
             tongueGraphic: this.tongue,
             tilemap: "Destructable",
             allNPCs: this.allNPCS,
+        });
+
+        this.emitter.fireEvent(AAEvents.PLAYER_CREATED, {
+            player: this.player,
+            tongue: this.tongue,
         });
     }
     /**
