@@ -7,6 +7,8 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import Level1 from "./AALevel1";
 import Level2 from "./AALevel2";
+import Level5 from "./AALevel5";
+import Level6 from "./AALevel6";
 import MainMenu from "./MainMenu";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 
@@ -114,6 +116,7 @@ export default class LevelSelect extends Scene {
             if (MainMenu.LEVEL_COUNTER >= 5) {
                 MainMenu.CURRENT_LEVEL = 5;
                 MainMenu.GAME_PLAYING = true;
+                this.sceneManager.changeToScene(Level5);
             }
         };
 
@@ -122,6 +125,7 @@ export default class LevelSelect extends Scene {
             if (MainMenu.LEVEL_COUNTER >= 6) {
                 MainMenu.CURRENT_LEVEL = 6;
                 MainMenu.GAME_PLAYING = true;
+                this.sceneManager.changeToScene(Level6);
             }
         };
 
