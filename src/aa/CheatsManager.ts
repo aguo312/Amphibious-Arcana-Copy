@@ -2,15 +2,16 @@ import Input from "../Wolfie2D/Input/Input";
 import SceneManager from "../Wolfie2D/Scene/SceneManager";
 import { AAControls } from "./AAControls";
 import Emitter from "../Wolfie2D/Events/Emitter";
-import Level2 from "./Scenes/AALevel2";
 import Level1 from "./Scenes/AALevel1";
+import Level2 from "./Scenes/AALevel2";
+import Level5 from "./Scenes/AALevel5";
+import Level6 from "./Scenes/AALevel6";
 import { AAEvents } from "./AAEvents";
 import { GameEventType } from "../Wolfie2D/Events/GameEventType";
-import Level5 from "./Scenes/AALevel5";
 import ParticleSystemManager from "../Wolfie2D/Rendering/Animations/ParticleSystemManager";
+import MainMenu from "./Scenes/MainMenu";
 
 export default class CheatsManager {
-
     protected emitter: Emitter;
     protected sceneManager: SceneManager;
     protected options: Record<string, any>;
@@ -24,18 +25,27 @@ export default class CheatsManager {
     public update(deltaT: number): void {
         if (Input.isJustPressed(AAControls.GOTO_LEVEL_1)) {
             ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.options.levelMusicKey});
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
+            MainMenu.CURRENT_LEVEL = 1;
             this.sceneManager.changeToScene(Level1);
         }
         if (Input.isJustPressed(AAControls.GOTO_LEVEL_2)) {
             ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.options.levelMusicKey});
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
+            MainMenu.CURRENT_LEVEL = 2;
             this.sceneManager.changeToScene(Level2);
         }
         if (Input.isJustPressed(AAControls.GOTO_LEVEL_5)) {
             ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: this.options.levelMusicKey});
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
+            MainMenu.CURRENT_LEVEL = 5;
             this.sceneManager.changeToScene(Level5);
+        }
+        if (Input.isJustPressed(AAControls.GOTO_LEVEL_6)) {
+            ParticleSystemManager.getInstance().clearParticleSystems();
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
+            MainMenu.CURRENT_LEVEL = 6;
+            this.sceneManager.changeToScene(Level6);
         }
         if (Input.isJustPressed(AAControls.TOGGLE_INVINCIBILITY)) {
             this.emitter.fireEvent(AAEvents.TOGGLE_INVINCIBILITY);
@@ -44,5 +54,4 @@ export default class CheatsManager {
             this.emitter.fireEvent(AAEvents.KILL_PLAYER);
         }
     }
-
 }

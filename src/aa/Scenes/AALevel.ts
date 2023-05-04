@@ -360,6 +360,7 @@ export default abstract class AALevel extends Scene {
                 if (MainMenu.LEVEL_COUNTER < this.nextLevelNum) {
                     MainMenu.LEVEL_COUNTER = this.nextLevelNum;
                 }
+                MainMenu.CURRENT_LEVEL = this.nextLevelNum;
                 this.sceneManager.changeToScene(this.nextLevel);
                 break;
             }
@@ -947,17 +948,26 @@ export default abstract class AALevel extends Scene {
         this.bossNameLabel.visible = false;
 
         // The tongue icon sprite
-        this.tongueIcon = this.add.sprite("tongueIcon", AALayers.UI);
+        this.tongueIcon =
+            MainMenu.CURRENT_LEVEL >= 1
+                ? this.add.sprite("tongueIcon", AALayers.UI)
+                : this.add.sprite("lockIcon", AALayers.UI);
         this.tongueIcon.scale.set(0.7, 0.7);
         this.tongueIcon.position.copy(this.tongueSelectPos);
 
         // The fire icon sprite
-        this.fireIcon = this.add.sprite("fireIcon", AALayers.UI);
+        this.fireIcon =
+            MainMenu.CURRENT_LEVEL >= 3
+                ? this.add.sprite("fireIcon", AALayers.UI)
+                : this.add.sprite("lockIcon", AALayers.UI);
         this.fireIcon.scale.set(0.7, 0.7);
         this.fireIcon.position.copy(this.fireballSelectPos);
 
         // The ice icon sprite
-        this.iceIcon = this.add.sprite("iceIcon", AALayers.UI);
+        this.iceIcon =
+            MainMenu.CURRENT_LEVEL >= 5
+                ? this.add.sprite("iceIcon", AALayers.UI)
+                : this.add.sprite("lockIcon", AALayers.UI);
         this.iceIcon.scale.set(0.7, 0.7);
         this.iceIcon.position.copy(this.iceSelectPos);
 
