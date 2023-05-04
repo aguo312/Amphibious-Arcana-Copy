@@ -1,11 +1,11 @@
 import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import AALevel, {AALayers} from "./AALevel";
+import AALevel, { AALayers } from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
-import {UIElementType} from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
@@ -22,7 +22,6 @@ import MainMenu from "./MainMenu";
  * The first level for HW4 - should be the one with the grass and the clouds.
  */
 export default class Level5 extends AALevel {
-
     public static readonly PLAYER_SPAWN = new Vec2(50, 630);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
@@ -61,7 +60,12 @@ export default class Level5 extends AALevel {
 
     protected cheatsManager: CheatsManager;
 
-    public constructor(viewport: Viewport, sceneManager: SceneManager, renderingManager: RenderingManager, options: Record<string, any>) {
+    public constructor(
+        viewport: Viewport,
+        sceneManager: SceneManager,
+        renderingManager: RenderingManager,
+        options: Record<string, any>
+    ) {
         super(viewport, sceneManager, renderingManager, options);
 
         // Set the keys for the different layers of the tilemap
@@ -78,7 +82,7 @@ export default class Level5 extends AALevel {
         // Set the key for the spells sprite
 
         // Music and sound
-        this.levelMusicKey = Level5.LEVEL_MUSIC_KEY
+        this.levelMusicKey = Level5.LEVEL_MUSIC_KEY;
         this.jumpAudioKey = Level5.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level5.ATTACK_AUDIO_KEY;
         this.explodeAudioKey = Level5.EXPLODE_AUDIO_KEY;
@@ -93,23 +97,28 @@ export default class Level5 extends AALevel {
         this.levelEndHalfSize = new Vec2(16, 32).mult(this.tilemapScale);
 
         // Initialize cheats
-        // Have to define and update cheatsManager in each individual level 
+        // Have to define and update cheatsManager in each individual level
         // to avoid circular dependencies
-        this.cheatsManager = new CheatsManager(this.sceneManager, {levelMusicKey: this.levelMusicKey});
+        this.cheatsManager = new CheatsManager(this.sceneManager, {
+            levelMusicKey: this.levelMusicKey,
+        });
         this.currLevel = Level5;
     }
 
     public initializeUI(): void {
-       super.initializeUI();
+        super.initializeUI();
 
-       let size = this.viewport.getHalfSize();
+        let size = this.viewport.getHalfSize();
 
         // add random tutorial text
-        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {position: new Vec2(size.x, 180), text: "Try shooting ice to freeze enemies!\nClick again while its flying to create an ice platform."});
+        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: new Vec2(size.x, 180),
+            text: "Try shooting ice to freeze enemies!\nClick again while its flying to create an ice platform.",
+        });
         this.tutorialText.size = new Vec2(300, 25);
         // this.tutorialText.backgroundColor = Color.BLACK;
         // this.tutorialText.backgroundColor.a = 10;
-        this.tutorialTextTimer = new Timer(10000, () => this.tutorialText.visible = false, false);
+        this.tutorialTextTimer = new Timer(10000, () => (this.tutorialText.visible = false), false);
     }
 
     /**
@@ -135,9 +144,9 @@ export default class Level5 extends AALevel {
         this.load.audio(this.enemyDeathAudioKey, Level5.ENEMY_DEATH_AUDIO_PATH);
         this.load.audio(this.playerDeathAudioKey, Level5.PLAYER_DEATH_AUDIO_PATH);
 
-        this.load.image('fireIcon', 'hw4_assets/sprites/fire-icon.png');
-        this.load.image('tongueIcon', 'hw4_assets/sprites/tongue-icon.png');
-        this.load.image('iceIcon', 'hw4_assets/sprites/ice-icon.png');
+        this.load.image("fireIcon", "hw4_assets/sprites/fire-icon.png");
+        this.load.image("tongueIcon", "hw4_assets/sprites/tongue-icon.png");
+        this.load.image("iceIcon", "hw4_assets/sprites/ice-icon.png");
     }
 
     /**
@@ -154,10 +163,9 @@ export default class Level5 extends AALevel {
         this.load.keepAudio(this.enemyDeathAudioKey);
         this.load.keepAudio(this.playerDeathAudioKey);
 
-        this.load.keepImage('fireIcon')
-        this.load.keepImage('tongueIcon')
-        this.load.keepImage('iceIcon')
-
+        this.load.keepImage("fireIcon");
+        this.load.keepImage("tongueIcon");
+        this.load.keepImage("iceIcon");
     }
 
     public startScene(): void {
@@ -172,22 +180,41 @@ export default class Level5 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-        let locations = [new Vec2(50, 630), new Vec2(140, 64), new Vec2(184, 288), new Vec2(248, 384), new Vec2(329, 640), new Vec2(1047, 640), new Vec2(625, 640),
-            new Vec2(1416, 640), new Vec2(1335, 368), new Vec2(1120, 368), new Vec2(712, 240), new Vec2(488, 288), new Vec2(860, 512), new Vec2(1090, 640),
-            new Vec2(1442, 640), new Vec2(1556, 432), new Vec2(1556, 256)];
-        locations.forEach(l => {
+        let locations = [
+            new Vec2(50, 630),
+            new Vec2(140, 64),
+            new Vec2(184, 288),
+            new Vec2(248, 384),
+            new Vec2(329, 640),
+            new Vec2(1047, 640),
+            new Vec2(625, 640),
+            new Vec2(1416, 640),
+            new Vec2(1335, 368),
+            new Vec2(1120, 368),
+            new Vec2(712, 240),
+            new Vec2(488, 288),
+            new Vec2(860, 512),
+            new Vec2(1090, 640),
+            new Vec2(1442, 640),
+            new Vec2(1556, 432),
+            new Vec2(1556, 256),
+        ];
+        locations.forEach((l) => {
             let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
             scabbers.scale.scale(0.25);
             scabbers.position.set(l.x, l.y);
             scabbers.addPhysics();
             scabbers.setGroup(AAPhysicsGroups.ENEMY);
-            scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null)
-            scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null)
-            scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null)
+            scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+            scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
+            scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
 
             scabbers.health = 3;
             scabbers.maxHealth = 3;
-            let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {size: scabbers.size.clone().scaled(1.5, 0.25), offset: scabbers.size.clone().scaled(0, -1/5)});
+            let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
+                size: scabbers.size.clone().scaled(1.5, 0.25),
+                offset: scabbers.size.clone().scaled(0, -1 / 5),
+            });
             this.healthbars.set(scabbers.id, healthbar);
             scabbers.animation.play("IDLE");
             scabbers.addAI(ScabberBehavior, { player: this.player });
@@ -201,38 +228,36 @@ export default class Level5 extends AALevel {
                         property: "rotation",
                         start: 0,
                         end: Math.PI,
-                        ease: EaseFunctionType.IN_OUT_QUAD
+                        ease: EaseFunctionType.IN_OUT_QUAD,
                     },
                     {
                         property: "alpha",
                         start: 1,
                         end: 0,
-                        ease: EaseFunctionType.IN_OUT_QUAD
-                    }
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
                 ],
-                onEnd: [AAEvents.NPC_KILLED]
+                onEnd: [AAEvents.NPC_KILLED],
             });
         });
-        
     }
 
     public updateScene(deltaT: number) {
         super.updateScene(deltaT);
 
-        // Have to define and update cheatsManager in each individual level 
+        // Have to define and update cheatsManager in each individual level
         // to avoid circular dependencies
         this.cheatsManager.update(deltaT);
     }
 
     /**
-     * I had to override this method to adjust the viewport for the first level. I screwed up 
+     * I had to override this method to adjust the viewport for the first level. I screwed up
      * when I was making the tilemap for the first level is what it boils down to.
-     * 
+     *
      * - Peter
      */
     protected initializeViewport(): void {
         super.initializeViewport();
         this.viewport.setBounds(16, 16, 1600, 700);
     }
-
 }
