@@ -5,6 +5,7 @@ import Timer from "../../../../Wolfie2D/Timing/Timer";
 import { AAEvents } from "../../../AAEvents";
 import PlayerController from "../../Player/PlayerController";
 import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
+import RangedEnemyParticles from "../RangedEnemyParticles";
 
 export const EnemyStates = {
     IDLE: "IDLE",
@@ -24,6 +25,8 @@ export default class RangedEnemyBehavior extends NPCBehavior {
 
     protected runTimer: Timer;
 
+    protected weaponSystem: RangedEnemyParticles;
+
     protected dir: Vec2;
 
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>): void {
@@ -31,6 +34,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
         this.owner = owner;
         this.gravity = 4000;
         this.player = options.player;
+        this.weaponSystem = options.particles;
 
         this.attackCooldownTimer = new Timer(3000);
         this.moveTimer = new Timer(3000);
@@ -60,12 +64,14 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                         false,
                         AAEvents.PLAYER_HIT
                     );
+                    this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 } else {
                     this.owner.animation.playIfNotAlready(
                         "ATTACKING_LEFT",
                         false,
                         AAEvents.PLAYER_HIT
                     );
+                    this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 }
                 this.attackCooldownTimer.start();
             }

@@ -18,6 +18,7 @@ import CheatsManager from "../CheatsManager";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import MainMenu from "./MainMenu";
 import Level6 from "./AALevel6";
+import RangedEnemyBehavior from "../AI/NPC/NPCBehaviors/RangedEnemyBehavior";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -218,7 +219,7 @@ export default class Level5 extends AALevel {
             });
             this.healthbars.set(scabbers.id, healthbar);
             scabbers.animation.play("IDLE");
-            scabbers.addAI(ScabberBehavior, { player: this.player });
+            scabbers.addAI(RangedEnemyBehavior, { player: this.player }); // add particles here
             this.allNPCS.set(scabbers.id, scabbers);
 
             scabbers.tweens.add("DEATH", {
