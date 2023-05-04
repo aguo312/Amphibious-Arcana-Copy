@@ -7,12 +7,14 @@ export const AAEvents = {
     // An event that tells the HW4 level to end. Has data: {}
     LEVEL_END: "LEVEL_END",
 
+    PLAYER_CREATED: "PLAYER_CREATED",
+
     // An event triggered when the player enters an area designated as a "level end" location. Had data: {}
     PLAYER_ENTERED_LEVEL_END: "PLAYER_ENTERED_LEVEL_END",
 
     /**
      * The event that gets emitted when the player's health changes
-     * 
+     *
      * Has data: { curhp: number, maxhp: number }
      */
     HEALTH_CHANGE: "HEALTH_CHANGE",
@@ -30,10 +32,9 @@ export const AAEvents = {
     PLAYER_FIRE_JUMP: "PLAYER_FIRE_JUMP",
     SHOOT_TONGUE: "SHOOT_TONGUE",
     TONGUE_WALL_COLLISION: "TONGUE_WALL_COLLISION",
-    PLAYER_POS_UPDATE: "PLAYER_POS_UPDATE",
 
     ICE_COLLISION: "ICE_COLLISION",
-    
+
     PLAYER_ATTACK: "PLAYER_ATTACK",
 
     SELECT_TONGUE: "SELECT_TONGUE",
@@ -58,6 +59,5 @@ export const AAEvents = {
     ICE_HIT_BOSS: "ICE_HIT_BOSS",
     TONGUE_HIT_BOSS: "TONGUE_HIT_BOSS",
     SPAWN_BOSS: "SPAWN_BOSS",
-    PLAYER_TOUCH_ENEMY: "PLAYER_TOUCH_ENEMY"
-
+    PLAYER_TOUCH_ENEMY: "PLAYER_TOUCH_ENEMY",
 } as const;
