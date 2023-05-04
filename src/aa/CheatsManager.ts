@@ -2,8 +2,8 @@ import Input from "../Wolfie2D/Input/Input";
 import SceneManager from "../Wolfie2D/Scene/SceneManager";
 import { AAControls } from "./AAControls";
 import Emitter from "../Wolfie2D/Events/Emitter";
-import Level1 from "./Scenes/AALevel1";
-import Level2 from "./Scenes/AALevel2";
+import Level3 from "./Scenes/AALevel3";
+import Level4 from "./Scenes/AALevel4";
 import Level5 from "./Scenes/AALevel5";
 import Level6 from "./Scenes/AALevel6";
 import { AAEvents } from "./AAEvents";
@@ -27,13 +27,25 @@ export default class CheatsManager {
             ParticleSystemManager.getInstance().clearParticleSystems();
             this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
             MainMenu.CURRENT_LEVEL = 1;
-            this.sceneManager.changeToScene(Level1);
+            this.sceneManager.changeToScene(Level3);
         }
         if (Input.isJustPressed(AAControls.GOTO_LEVEL_2)) {
             ParticleSystemManager.getInstance().clearParticleSystems();
             this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
             MainMenu.CURRENT_LEVEL = 2;
-            this.sceneManager.changeToScene(Level2);
+            this.sceneManager.changeToScene(Level4);
+        }
+        if (Input.isJustPressed(AAControls.GOTO_LEVEL_3)) {
+            ParticleSystemManager.getInstance().clearParticleSystems();
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
+            MainMenu.CURRENT_LEVEL = 3;
+            this.sceneManager.changeToScene(Level3);
+        }
+        if (Input.isJustPressed(AAControls.GOTO_LEVEL_4)) {
+            ParticleSystemManager.getInstance().clearParticleSystems();
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
+            MainMenu.CURRENT_LEVEL = 4;
+            this.sceneManager.changeToScene(Level4);
         }
         if (Input.isJustPressed(AAControls.GOTO_LEVEL_5)) {
             ParticleSystemManager.getInstance().clearParticleSystems();

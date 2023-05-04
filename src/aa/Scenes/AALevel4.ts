@@ -9,7 +9,7 @@ import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
-import Level1 from "./AALevel1";
+import Level3 from "./AALevel3";
 import CheatsManager from "../CheatsManager";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
@@ -22,7 +22,7 @@ import Level5 from "./AALevel5";
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
  */
-export default class Level2 extends AALevel {
+export default class Level4 extends AALevel {
     public static readonly PLAYER_SPAWN = new Vec2(32, 64);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
@@ -56,23 +56,23 @@ export default class Level2 extends AALevel {
         super(viewport, sceneManager, renderingManager, options);
 
         // Set the keys for the different layers of the tilemap
-        this.tilemapKey = Level2.TILEMAP_KEY;
-        this.tilemapScale = Level2.TILEMAP_SCALE;
-        this.collidableLayerKey = Level2.COLLIDABLE_LAYER_KEY;
+        this.tilemapKey = Level4.TILEMAP_KEY;
+        this.tilemapScale = Level4.TILEMAP_SCALE;
+        this.collidableLayerKey = Level4.COLLIDABLE_LAYER_KEY;
 
         // Set the key for the player's sprite
-        this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
+        this.playerSpriteKey = Level3.PLAYER_SPRITE_KEY;
         // Set the player's spawn
-        this.playerSpawn = Level2.PLAYER_SPAWN;
+        this.playerSpawn = Level4.PLAYER_SPAWN;
 
         // Music and sound
-        this.levelMusicKey = Level2.LEVEL_MUSIC_KEY;
-        this.jumpAudioKey = Level1.JUMP_AUDIO_KEY;
-        this.attackAudioKey = Level1.ATTACK_AUDIO_KEY;
-        this.explodeAudioKey = Level1.EXPLODE_AUDIO_KEY;
-        this.grappleAudioKey = Level1.GRAPPLE_AUDIO_KEY;
-        this.enemyDeathAudioKey = Level1.ENEMY_DEATH_AUDIO_KEY;
-        this.playerDeathAudioKey = Level1.PLAYER_DEATH_AUDIO_KEY;
+        this.levelMusicKey = Level4.LEVEL_MUSIC_KEY;
+        this.jumpAudioKey = Level3.JUMP_AUDIO_KEY;
+        this.attackAudioKey = Level3.ATTACK_AUDIO_KEY;
+        this.explodeAudioKey = Level3.EXPLODE_AUDIO_KEY;
+        this.grappleAudioKey = Level3.GRAPPLE_AUDIO_KEY;
+        this.enemyDeathAudioKey = Level3.ENEMY_DEATH_AUDIO_KEY;
+        this.playerDeathAudioKey = Level3.PLAYER_DEATH_AUDIO_KEY;
 
         // Level end size and position
         // this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
@@ -87,26 +87,26 @@ export default class Level2 extends AALevel {
         this.cheatsManager = new CheatsManager(this.sceneManager, {
             levelMusicKey: this.levelMusicKey,
         });
-        this.currLevel = Level2;
+        this.currLevel = Level4;
     }
     /**
      * Load in resources for level 2.
      */
     public loadScene(): void {
         // Load in the tilemap
-        this.load.tilemap(this.tilemapKey, Level2.TILEMAP_PATH);
+        this.load.tilemap(this.tilemapKey, Level4.TILEMAP_PATH);
 
         // Load in the enemy sprites
         this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
 
         // Audio and music
-        this.load.audio(this.levelMusicKey, Level2.LEVEL_MUSIC_PATH);
-        this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
-        this.load.audio(this.attackAudioKey, Level1.ATTACK_AUDIO_PATH);
-        this.load.audio(this.explodeAudioKey, Level1.EXPLODE_AUDIO_PATH);
-        this.load.audio(this.grappleAudioKey, Level1.GRAPPLE_AUDIO_PATH);
-        this.load.audio(this.enemyDeathAudioKey, Level1.ENEMY_DEATH_AUDIO_PATH);
-        this.load.audio(this.playerDeathAudioKey, Level1.PLAYER_DEATH_AUDIO_PATH);
+        this.load.audio(this.levelMusicKey, Level4.LEVEL_MUSIC_PATH);
+        this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
+        this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
+        this.load.audio(this.explodeAudioKey, Level3.EXPLODE_AUDIO_PATH);
+        this.load.audio(this.grappleAudioKey, Level3.GRAPPLE_AUDIO_PATH);
+        this.load.audio(this.enemyDeathAudioKey, Level3.ENEMY_DEATH_AUDIO_PATH);
+        this.load.audio(this.playerDeathAudioKey, Level3.PLAYER_DEATH_AUDIO_PATH);
     }
 
     /**
@@ -137,7 +137,7 @@ export default class Level2 extends AALevel {
 
         const mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
         mindFlayer.scale.scale(0.25);
-        mindFlayer.position.set(700, Level2.PLAYER_SPAWN.y).mult(this.tilemapScale);
+        mindFlayer.position.set(700, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
         mindFlayer.addPhysics();
         mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
         mindFlayer.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);

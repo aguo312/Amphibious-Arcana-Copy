@@ -5,7 +5,7 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
-import Level1 from "./AALevel1";
+import Level3 from "./AALevel3";
 import LevelSelect from "./LevelSelect";
 import ControlsScene from "./ControlsScene";
 import HelpScene from "./HelpScene";
@@ -61,8 +61,8 @@ export default class MainMenu extends Scene {
         // When the play button is clicked, go to the next scene
         playBtn.onClick = () => {
             MainMenu.GAME_PLAYING = true;
-            MainMenu.CURRENT_LEVEL = 1;
-            this.sceneManager.changeToScene(Level1);
+            MainMenu.CURRENT_LEVEL = 3;
+            this.sceneManager.changeToScene(Level3);
         };
 
         levelSelectBtn.onClick = () => {

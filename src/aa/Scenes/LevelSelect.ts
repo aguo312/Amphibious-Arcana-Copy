@@ -5,8 +5,8 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
-import Level1 from "./AALevel1";
-import Level2 from "./AALevel2";
+import Level3 from "./AALevel3";
+import Level4 from "./AALevel4";
 import Level5 from "./AALevel5";
 import Level6 from "./AALevel6";
 import MainMenu from "./MainMenu";
@@ -83,7 +83,7 @@ export default class LevelSelect extends Scene {
             // TODO
             MainMenu.GAME_PLAYING = true;
             MainMenu.CURRENT_LEVEL = 1;
-            this.sceneManager.changeToScene(Level1);
+            this.sceneManager.changeToScene(Level3);
         };
 
         level2Btn.onClick = () => {
@@ -91,7 +91,7 @@ export default class LevelSelect extends Scene {
             if (MainMenu.LEVEL_COUNTER >= 2) {
                 MainMenu.GAME_PLAYING = true;
                 MainMenu.CURRENT_LEVEL = 2;
-                this.sceneManager.changeToScene(Level2);
+                this.sceneManager.changeToScene(Level4);
             }
         };
 
@@ -100,6 +100,7 @@ export default class LevelSelect extends Scene {
             if (MainMenu.LEVEL_COUNTER >= 3) {
                 MainMenu.CURRENT_LEVEL = 3;
                 MainMenu.GAME_PLAYING = true;
+                this.sceneManager.changeToScene(Level3);
             }
         };
 
@@ -108,6 +109,7 @@ export default class LevelSelect extends Scene {
             if (MainMenu.LEVEL_COUNTER >= 4) {
                 MainMenu.CURRENT_LEVEL = 4;
                 MainMenu.GAME_PLAYING = true;
+                this.sceneManager.changeToScene(Level4);
             }
         };
 

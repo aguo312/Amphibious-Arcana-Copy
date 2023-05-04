@@ -4,7 +4,7 @@ import AALevel, { AALayers } from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import Level2 from "./AALevel2";
+import Level4 from "./AALevel4";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
@@ -23,7 +23,7 @@ import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
  */
-export default class Level1 extends AALevel {
+export default class Level3 extends AALevel {
     public static readonly PLAYER_SPAWN = new Vec2(50, 528);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
@@ -73,26 +73,26 @@ export default class Level1 extends AALevel {
         super(viewport, sceneManager, renderingManager, options);
 
         // Set the keys for the different layers of the tilemap
-        this.tilemapKey = Level1.TILEMAP_KEY;
-        this.tilemapScale = Level1.TILEMAP_SCALE;
-        this.collidableLayerKey = Level1.COLLIDABLE_LAYER_KEY;
-        this.tongueCollidableLayerKey = Level1.TONGUE_COLLIDABLE_LAYER_KEY;
-        this.wallsLayerKey = Level1.WALLS_LAYER_KEY;
+        this.tilemapKey = Level3.TILEMAP_KEY;
+        this.tilemapScale = Level3.TILEMAP_SCALE;
+        this.collidableLayerKey = Level3.COLLIDABLE_LAYER_KEY;
+        this.tongueCollidableLayerKey = Level3.TONGUE_COLLIDABLE_LAYER_KEY;
+        this.wallsLayerKey = Level3.WALLS_LAYER_KEY;
 
         // Set the key for the player's sprite
-        this.playerSpriteKey = Level1.PLAYER_SPRITE_KEY;
+        this.playerSpriteKey = Level3.PLAYER_SPRITE_KEY;
         // Set the player's spawn
-        this.playerSpawn = Level1.PLAYER_SPAWN;
+        this.playerSpawn = Level3.PLAYER_SPAWN;
         // Set the key for the spells sprite
 
         // Music and sound
-        this.levelMusicKey = Level1.LEVEL_MUSIC_KEY;
-        this.jumpAudioKey = Level1.JUMP_AUDIO_KEY;
-        this.attackAudioKey = Level1.ATTACK_AUDIO_KEY;
-        this.explodeAudioKey = Level1.EXPLODE_AUDIO_KEY;
-        this.grappleAudioKey = Level1.GRAPPLE_AUDIO_KEY;
-        this.enemyDeathAudioKey = Level1.ENEMY_DEATH_AUDIO_KEY;
-        this.playerDeathAudioKey = Level1.PLAYER_DEATH_AUDIO_KEY;
+        this.levelMusicKey = Level3.LEVEL_MUSIC_KEY;
+        this.jumpAudioKey = Level3.JUMP_AUDIO_KEY;
+        this.attackAudioKey = Level3.ATTACK_AUDIO_KEY;
+        this.explodeAudioKey = Level3.EXPLODE_AUDIO_KEY;
+        this.grappleAudioKey = Level3.GRAPPLE_AUDIO_KEY;
+        this.enemyDeathAudioKey = Level3.ENEMY_DEATH_AUDIO_KEY;
+        this.playerDeathAudioKey = Level3.PLAYER_DEATH_AUDIO_KEY;
 
         // Level end size and position
         //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
@@ -108,7 +108,7 @@ export default class Level1 extends AALevel {
             levelMusicKey: this.levelMusicKey,
         });
 
-        this.currLevel = Level1;
+        this.currLevel = Level3;
     }
 
     public initializeUI(): void {
@@ -156,9 +156,9 @@ export default class Level1 extends AALevel {
         // Load the tongue shader
         super.loadScene();
         // Load in the tilemap
-        this.load.tilemap(this.tilemapKey, Level1.TILEMAP_PATH);
+        this.load.tilemap(this.tilemapKey, Level3.TILEMAP_PATH);
         // Load in the player's sprite
-        this.load.spritesheet(this.playerSpriteKey, Level1.PLAYER_SPRITE_PATH);
+        this.load.spritesheet(this.playerSpriteKey, Level3.PLAYER_SPRITE_PATH);
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
@@ -167,13 +167,13 @@ export default class Level1 extends AALevel {
         this.load.spritesheet("Guide", "hw4_assets/spritesheets/traveler.json");
 
         // Audio and music
-        this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
-        this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
-        this.load.audio(this.attackAudioKey, Level1.ATTACK_AUDIO_PATH);
-        this.load.audio(this.explodeAudioKey, Level1.EXPLODE_AUDIO_PATH);
-        this.load.audio(this.grappleAudioKey, Level1.GRAPPLE_AUDIO_PATH);
-        this.load.audio(this.enemyDeathAudioKey, Level1.ENEMY_DEATH_AUDIO_PATH);
-        this.load.audio(this.playerDeathAudioKey, Level1.PLAYER_DEATH_AUDIO_PATH);
+        this.load.audio(this.levelMusicKey, Level3.LEVEL_MUSIC_PATH);
+        this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
+        this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
+        this.load.audio(this.explodeAudioKey, Level3.EXPLODE_AUDIO_PATH);
+        this.load.audio(this.grappleAudioKey, Level3.GRAPPLE_AUDIO_PATH);
+        this.load.audio(this.enemyDeathAudioKey, Level3.ENEMY_DEATH_AUDIO_PATH);
+        this.load.audio(this.playerDeathAudioKey, Level3.PLAYER_DEATH_AUDIO_PATH);
 
         this.load.image("fireIcon", "hw4_assets/sprites/fire-icon.png");
         this.load.image("tongueIcon", "hw4_assets/sprites/tongue-icon.png");
@@ -206,9 +206,9 @@ export default class Level1 extends AALevel {
         this.tutorialTextTimer.start();
         this.guideText.tweens.play("fadeIn");
 
-        // Set the next level to be Level2
-        this.nextLevel = Level2;
-        this.nextLevelNum = 2;
+        // Set the next level to be Level4
+        this.nextLevel = Level4;
+        this.nextLevelNum = 4;
 
         this.initializeNPCs();
     }

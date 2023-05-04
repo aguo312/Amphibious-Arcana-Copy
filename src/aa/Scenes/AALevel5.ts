@@ -219,7 +219,7 @@ export default class Level5 extends AALevel {
             });
             this.healthbars.set(scabbers.id, healthbar);
             scabbers.animation.play("IDLE");
-            scabbers.addAI(RangedEnemyBehavior, { player: this.player }); // add particles here
+            scabbers.addAI(ScabberBehavior, { player: this.player }); // add particles here
             this.allNPCS.set(scabbers.id, scabbers);
 
             scabbers.tweens.add("DEATH", {
