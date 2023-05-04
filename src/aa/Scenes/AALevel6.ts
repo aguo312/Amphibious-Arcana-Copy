@@ -17,12 +17,11 @@ import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import MainMenu from "./MainMenu";
-import Level6 from "./AALevel6";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
  */
-export default class Level5 extends AALevel {
+export default class Level6 extends AALevel {
     public static readonly PLAYER_SPAWN = new Vec2(50, 630);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
@@ -70,26 +69,26 @@ export default class Level5 extends AALevel {
         super(viewport, sceneManager, renderingManager, options);
 
         // Set the keys for the different layers of the tilemap
-        this.tilemapKey = Level5.TILEMAP_KEY;
-        this.tilemapScale = Level5.TILEMAP_SCALE;
-        this.collidableLayerKey = Level5.COLLIDABLE_LAYER_KEY;
-        this.tongueCollidableLayerKey = Level5.TONGUE_COLLIDABLE_LAYER_KEY;
-        this.wallsLayerKey = Level5.WALLS_LAYER_KEY;
+        this.tilemapKey = Level6.TILEMAP_KEY;
+        this.tilemapScale = Level6.TILEMAP_SCALE;
+        this.collidableLayerKey = Level6.COLLIDABLE_LAYER_KEY;
+        this.tongueCollidableLayerKey = Level6.TONGUE_COLLIDABLE_LAYER_KEY;
+        this.wallsLayerKey = Level6.WALLS_LAYER_KEY;
 
         // Set the key for the player's sprite
-        this.playerSpriteKey = Level5.PLAYER_SPRITE_KEY;
+        this.playerSpriteKey = Level6.PLAYER_SPRITE_KEY;
         // Set the player's spawn
-        this.playerSpawn = Level5.PLAYER_SPAWN;
+        this.playerSpawn = Level6.PLAYER_SPAWN;
         // Set the key for the spells sprite
 
         // Music and sound
-        this.levelMusicKey = Level5.LEVEL_MUSIC_KEY;
-        this.jumpAudioKey = Level5.JUMP_AUDIO_KEY;
-        this.attackAudioKey = Level5.ATTACK_AUDIO_KEY;
-        this.explodeAudioKey = Level5.EXPLODE_AUDIO_KEY;
-        this.grappleAudioKey = Level5.GRAPPLE_AUDIO_KEY;
-        this.enemyDeathAudioKey = Level5.ENEMY_DEATH_AUDIO_KEY;
-        this.playerDeathAudioKey = Level5.PLAYER_DEATH_AUDIO_KEY;
+        this.levelMusicKey = Level6.LEVEL_MUSIC_KEY;
+        this.jumpAudioKey = Level6.JUMP_AUDIO_KEY;
+        this.attackAudioKey = Level6.ATTACK_AUDIO_KEY;
+        this.explodeAudioKey = Level6.EXPLODE_AUDIO_KEY;
+        this.grappleAudioKey = Level6.GRAPPLE_AUDIO_KEY;
+        this.enemyDeathAudioKey = Level6.ENEMY_DEATH_AUDIO_KEY;
+        this.playerDeathAudioKey = Level6.PLAYER_DEATH_AUDIO_KEY;
 
         // Level end size and position
         this.levelEndPosition = new Vec2(792, 24).mult(this.tilemapScale);
@@ -103,7 +102,7 @@ export default class Level5 extends AALevel {
         this.cheatsManager = new CheatsManager(this.sceneManager, {
             levelMusicKey: this.levelMusicKey,
         });
-        this.currLevel = Level5;
+        this.currLevel = Level6;
     }
 
     public initializeUI(): void {
@@ -129,21 +128,21 @@ export default class Level5 extends AALevel {
         // Load the tongue shader
         super.loadScene();
         // Load in the tilemap
-        this.load.tilemap(this.tilemapKey, Level5.TILEMAP_PATH);
+        this.load.tilemap(this.tilemapKey, Level6.TILEMAP_PATH);
         // Load in the player's sprite
-        this.load.spritesheet(this.playerSpriteKey, Level5.PLAYER_SPRITE_PATH);
+        this.load.spritesheet(this.playerSpriteKey, Level6.PLAYER_SPRITE_PATH);
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
 
         // Audio and music
-        this.load.audio(this.levelMusicKey, Level5.LEVEL_MUSIC_PATH);
-        this.load.audio(this.jumpAudioKey, Level5.JUMP_AUDIO_PATH);
-        this.load.audio(this.attackAudioKey, Level5.ATTACK_AUDIO_PATH);
-        this.load.audio(this.explodeAudioKey, Level5.EXPLODE_AUDIO_PATH);
-        this.load.audio(this.grappleAudioKey, Level5.GRAPPLE_AUDIO_PATH);
-        this.load.audio(this.enemyDeathAudioKey, Level5.ENEMY_DEATH_AUDIO_PATH);
-        this.load.audio(this.playerDeathAudioKey, Level5.PLAYER_DEATH_AUDIO_PATH);
+        this.load.audio(this.levelMusicKey, Level6.LEVEL_MUSIC_PATH);
+        this.load.audio(this.jumpAudioKey, Level6.JUMP_AUDIO_PATH);
+        this.load.audio(this.attackAudioKey, Level6.ATTACK_AUDIO_PATH);
+        this.load.audio(this.explodeAudioKey, Level6.EXPLODE_AUDIO_PATH);
+        this.load.audio(this.grappleAudioKey, Level6.GRAPPLE_AUDIO_PATH);
+        this.load.audio(this.enemyDeathAudioKey, Level6.ENEMY_DEATH_AUDIO_PATH);
+        this.load.audio(this.playerDeathAudioKey, Level6.PLAYER_DEATH_AUDIO_PATH);
 
         this.load.image("fireIcon", "hw4_assets/sprites/fire-icon.png");
         this.load.image("tongueIcon", "hw4_assets/sprites/tongue-icon.png");
@@ -172,10 +171,10 @@ export default class Level5 extends AALevel {
     public startScene(): void {
         super.startScene();
         this.tutorialTextTimer.start();
-        // Set the next level to be Level6
-        // temp to main menu until level 6 exists
-        this.nextLevel = Level6;
-        this.nextLevelNum = 6;
+        // Set the next level to be END
+        // Return to main menu on completion
+        this.nextLevel = MainMenu;
+        this.nextLevelNum = 7;
 
         this.initializeNPCs();
     }

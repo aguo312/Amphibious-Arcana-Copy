@@ -301,6 +301,9 @@ export default abstract class AALevel extends Scene {
         }
         this.healthbars.forEach((healthbar) => healthbar.update(deltaT));
 
+        // Player position code to determine monster spawn positions
+        // console.log(this.player.position.x, this.player.position.y);
+
         // Lock player to viewport in boss fights
         if (this.bossFightActive) {
             this.lockPlayer(this.player, this.viewport.getCenter(), this.viewport.getHalfSize());
