@@ -19,6 +19,7 @@ import CheatsManager from "../CheatsManager";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
+import AntBehavior from "../AI/NPC/NPCBehaviors/AntBehavior";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -166,6 +167,9 @@ export default class Level3 extends AALevel {
         // Load in the guide sprite
         this.load.spritesheet("Guide", "hw4_assets/spritesheets/traveler.json");
 
+        // Load in ant sprite
+        this.load.spritesheet("Ant", "hw4_assets/spritesheets/fire_ant.json")
+
         // Audio and music
         this.load.audio(this.levelMusicKey, Level3.LEVEL_MUSIC_PATH);
         this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
@@ -272,6 +276,25 @@ export default class Level3 extends AALevel {
 
         guide.animation.play("IDLE");
         this.allNPCS.set(guide.id, guide);
+
+
+        let ant = this.add.animatedSprite("Ant", AALayers.GUIDE);
+        ant.scale.scale(.25)
+        ant.position.set(this.playerSpawn.x, this.playerSpawn.y - 100)
+        ant.addPhysics(null, null, false)
+        ant.setGroup(AAPhysicsGroups.ENEMY)
+        ant.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
+
+        ant.animation.play("IDLE");
+        ant.addAI(AntBehavior, { player: this.player });
+        ant.health = 3;
+        ant.maxHealth = 3;
+        let healthbar = new HealthbarHUD(this, ant, AALayers.PRIMARY, {
+            size: ant.size.clone().scaled(1.5, 0.125),
+            offset: ant.size.clone().scaled(0, -1 / 5),
+        });
+        this.healthbars.set(ant.id, healthbar);
+        this.allNPCS.set(ant.id, ant);
     }
 
     public updateScene(deltaT: number) {

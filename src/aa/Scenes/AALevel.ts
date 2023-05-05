@@ -617,11 +617,11 @@ export default abstract class AALevel extends Scene {
         }
     }
 
-    protected handleTongueHitEnemy(enemy: AnimatedSprite): void {
-        // TODO maybe use GameNode?
-        let playerPos = this.player.position;
-        let enemyPos = enemy.position;
-    }
+    // protected handleTongueHitEnemy(enemy: AnimatedSprite): void {
+    //     // TODO maybe use GameNode?
+    //     let playerPos = this.player.position;
+    //     let enemyPos = enemy.position;
+    // }
 
     protected spawnTongue(pos: Vec2, dir: Vec2): void {
         // TODO maybe use GameNode?
@@ -1047,7 +1047,7 @@ export default abstract class AALevel extends Scene {
         });
 
         // Guide Textbox
-        this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.PRIMARY, {
+        this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, {
             position: new Vec2(0, 0),
             text: "Hello There!",
         });
