@@ -17,6 +17,8 @@ import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import MainMenu from "./MainMenu";
+import RangedEnemyBehavior from "../AI/NPC/NPCBehaviors/RangedEnemyBehavior";
+import RangedEnemyParticles from "../AI/NPC/RangedEnemyParticles";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -27,7 +29,7 @@ export default class Level6 extends AALevel {
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
     public static readonly TILEMAP_KEY = "LEVEL1";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/AALevel5.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/AALevel6.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
     public static readonly TONGUE_COLLIDABLE_LAYER_KEY = "TongueCollidable";
@@ -59,6 +61,8 @@ export default class Level6 extends AALevel {
     protected tutorialTextTimer: Timer;
 
     protected cheatsManager: CheatsManager;
+
+    protected rangedEnemyParticleSystem: RangedEnemyParticles;
 
     public constructor(
         viewport: Viewport,
@@ -200,6 +204,8 @@ export default class Level6 extends AALevel {
             new Vec2(1556, 256),
         ];
         locations.forEach((l) => {
+            this.rangedEnemyParticleSystem = new RangedEnemyParticles(1, Vec2.ZERO, 1000, 3, 10, 1);
+            this.rangedEnemyParticleSystem.initializePool(this, AALayers.PRIMARY);
             let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
             scabbers.scale.scale(0.25);
             scabbers.position.set(l.x, l.y);
@@ -217,7 +223,10 @@ export default class Level6 extends AALevel {
             });
             this.healthbars.set(scabbers.id, healthbar);
             scabbers.animation.play("IDLE");
-            scabbers.addAI(ScabberBehavior, { player: this.player });
+            scabbers.addAI(RangedEnemyBehavior, {
+                player: this.player,
+                particles: this.rangedEnemyParticleSystem,
+            });
             this.allNPCS.set(scabbers.id, scabbers);
 
             scabbers.tweens.add("DEATH", {
