@@ -11,7 +11,7 @@ import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
  * The particle system used for the player's weapon
  */
 export default class RangedEnemyParticles extends ParticleSystem {
-    private particleVec: Vec2 = Vec2.ZERO;
+    private targetPosition: Vec2 = Vec2.ZERO;
 
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
@@ -44,9 +44,10 @@ export default class RangedEnemyParticles extends ParticleSystem {
      */
     public setParticleAnimation(particle: Particle) {
         // Give the particle a random velocity.
-        particle.vel = new Vec2(0, 450);
+        particle.vel = new Vec2(100, 0);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
+        // particle.vel.rotateCCW(Math.PI - 0.11181977801753654);
         particle.color = Color.YELLOW;
 
         if (!particle.tweens) {
@@ -68,8 +69,8 @@ export default class RangedEnemyParticles extends ParticleSystem {
         });
     }
 
-    public setParticleVector(vec: Vec2): void {
-        this.particleVec = vec.mult(new Vec2(0.2, 0.2));
+    public setTarget(vec: Vec2): void {
+        this.targetPosition = vec;
     }
 
     /**
@@ -85,7 +86,7 @@ export default class RangedEnemyParticles extends ParticleSystem {
         super.initializePool(scene, layer);
         for (let i = 0; i < this.particlePool.length; i++) {
             // Set particle physics group to the player's weapon
-            this.particlePool[i].setGroup(AAPhysicsGroups.ICE_PARTICLE);
+            this.particlePool[i].setGroup(AAPhysicsGroups.BOSS_PARTICLE);
         }
     }
 }

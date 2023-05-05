@@ -46,38 +46,33 @@ export default class RangedEnemyBehavior extends NPCBehavior {
         let playerDir = this.player.position.x > this.owner.position.x ? 1 : -1;
 
         /**
-         * if player is in attack range 20-75 -> run away then shoot
-         * if player is in follow range 100 -> follow
+         * if player is in attack range 70-125 -> run away then shoot
+         * if player is in follow range 150 -> follow
          * if player is out of range -> do normal pace
          */
         if (!this.owner.frozen) {
-            // attacck if done running away and can attack and player is between 20 and 75 units
+            // attacck if done running away and can attack and player is between 70 and 125 units
             if (
-                this.owner.position.distanceTo(this.player.position) > 20 &&
-                this.owner.position.distanceTo(this.player.position) < 75 &&
+                this.owner.position.distanceTo(this.player.position) > 70 &&
+                this.owner.position.distanceTo(this.player.position) < 125 &&
                 this.runTimer.isStopped() &&
                 this.attackCooldownTimer.isStopped()
             ) {
+                let diff = this.player.position.clone().sub(this.owner.position);
+                let rotation = diff.angleToCCW(Vec2.RIGHT);
+                this.weaponSystem.rotation = rotation;
                 if (playerDir > 0) {
-                    this.owner.animation.playIfNotAlready(
-                        "ATTACKING_RIGHT",
-                        false,
-                        AAEvents.PLAYER_HIT
-                    );
+                    this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 } else {
-                    this.owner.animation.playIfNotAlready(
-                        "ATTACKING_LEFT",
-                        false,
-                        AAEvents.PLAYER_HIT
-                    );
+                    this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 }
                 this.attackCooldownTimer.start();
             }
-            // run away for 1 second if can attack and player is within 20 units
+            // run away for 1 second if can attack and player is within 70 units
             else if (
-                this.owner.position.distanceTo(this.player.position) < 20 &&
+                this.owner.position.distanceTo(this.player.position) < 70 &&
                 this.attackCooldownTimer.isStopped()
             ) {
                 if (playerDir > 0) {
@@ -91,8 +86,8 @@ export default class RangedEnemyBehavior extends NPCBehavior {
             }
             // idle if player is within attacking but attack is on cooldown
             else if (
-                this.owner.position.distanceTo(this.player.position) > 20 &&
-                this.owner.position.distanceTo(this.player.position) < 75
+                this.owner.position.distanceTo(this.player.position) > 70 &&
+                this.owner.position.distanceTo(this.player.position) < 125
             ) {
                 if (
                     !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
@@ -100,7 +95,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 ) {
                     this.owner.animation.playIfNotAlready("IDLE", true);
                 }
-            } else if (this.owner.position.distanceTo(this.player.position) < 100) {
+            } else if (this.owner.position.distanceTo(this.player.position) < 150) {
                 if (playerDir > 0) {
                     this.dir = Vec2.RIGHT;
                     this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
