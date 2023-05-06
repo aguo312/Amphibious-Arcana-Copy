@@ -131,8 +131,8 @@ export default class PlayerController extends StateMachineAI {
         // Start the player in the Idle state
         this.initialize(PlayerStates.IDLE);
 
-        // this.selectedSpell = SpellTypes.TONGUE;
-        this.selectedSpell = SpellTypes.FIREBALL;
+        this.selectedSpell = SpellTypes.TONGUE;
+        // this.selectedSpell = SpellTypes.FIREBALL;
 
         this.isInvincible = false;
 

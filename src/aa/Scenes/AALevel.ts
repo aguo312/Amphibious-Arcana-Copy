@@ -208,12 +208,12 @@ export default abstract class AALevel extends Scene {
         });
         this.add = new AAFactoryManager(this, this.tilemaps);
 
-        this.tongueSelectPos = new Vec2(35.3, 25.5);
-        this.fireballSelectPos = new Vec2(13.3, 25.5);
-        this.iceSelectPos = new Vec2(24.3, 25.5);
+        this.tongueSelectPos = new Vec2(13.3, 25.5);
+        this.fireballSelectPos = new Vec2(24.3, 25.5);
+        this.iceSelectPos = new Vec2(35.3, 25.5);
 
-        // this.selectedSpell = SpellTypes.TONGUE;
-        this.selectedSpell = SpellTypes.FIREBALL;
+        this.selectedSpell = SpellTypes.TONGUE;
+        // this.selectedSpell = SpellTypes.FIREBALL;
 
         this.allNPCS = new Map<number, AAAnimatedSprite>();
         this.healthbars = new Map<number, HealthbarHUD>();
@@ -316,7 +316,6 @@ export default abstract class AALevel extends Scene {
         const viewportLeftEdge = viewportCenter.x - viewportHalfSize.x;
         const viewportRightEdge = viewportCenter.x + viewportHalfSize.x;
 
-        // TODO: Player flickering
         if (playerLeftEdge <= viewportLeftEdge) {
             player.position.x = viewportLeftEdge + player.size.x / 4;
         } else if (playerRightEdge >= viewportRightEdge) {
@@ -955,6 +954,14 @@ export default abstract class AALevel extends Scene {
         this.tongueIcon.scale.set(0.7, 0.7);
         this.tongueIcon.position.copy(this.tongueSelectPos);
 
+        const oneText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: this.tongueSelectPos.clone().sub(new Vec2(4, 3)),
+            text: "1",
+        });
+        oneText.size.set(30, 30);
+        oneText.fontSize = 16;
+        oneText.font = "Courier";
+
         // The fire icon sprite
         this.fireIcon =
             MainMenu.CURRENT_LEVEL >= 3
@@ -962,6 +969,14 @@ export default abstract class AALevel extends Scene {
                 : this.add.sprite("lockIcon", AALayers.UI);
         this.fireIcon.scale.set(0.7, 0.7);
         this.fireIcon.position.copy(this.fireballSelectPos);
+
+        const twoText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: this.fireballSelectPos.clone().sub(new Vec2(4, 3)),
+            text: "2",
+        });
+        twoText.size.set(30, 30);
+        twoText.fontSize = 16;
+        twoText.font = "Courier";
 
         // The ice icon sprite
         this.iceIcon =
@@ -971,9 +986,17 @@ export default abstract class AALevel extends Scene {
         this.iceIcon.scale.set(0.7, 0.7);
         this.iceIcon.position.copy(this.iceSelectPos);
 
+        const threeText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
+            position: this.iceSelectPos.clone().sub(new Vec2(4, 3)),
+            text: "3",
+        });
+        threeText.size.set(30, 30);
+        threeText.fontSize = 16;
+        threeText.font = "Courier";
+
         // Spellbar highlighted spell border thing
         this.spellBarSelect = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
-            position: this.fireballSelectPos,
+            position: this.tongueSelectPos,
             text: "",
         });
         this.spellBarSelect.size = new Vec2(45, 45);

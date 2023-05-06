@@ -32,8 +32,8 @@ export default class LevelSelect extends Scene {
         this.addUILayer(MenuLayers.MAIN);
 
         // Center the viewport
-        let size = this.viewport.getHalfSize();
-        let yOffset = 80;
+        const size = this.viewport.getHalfSize();
+        const yOffset = 80;
         const leftColX = size.x - 110;
         const rightColX = size.x + 110;
         this.viewport.setFocus(size);
@@ -47,7 +47,7 @@ export default class LevelSelect extends Scene {
         // Create a back button
         const backBtn = this.createButton("Back", new Vec2(size.x, 2 * size.y - 60));
 
-        let yPos = size.y + 100;
+        const yPos = size.y + 100;
 
         // Create the individual level buttons
         const level1Btn = this.createButton("Level 1", new Vec2(leftColX, yPos));
@@ -135,8 +135,8 @@ export default class LevelSelect extends Scene {
         // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: LevelSelect.MUSIC_KEY, loop: true, holdReference: true});
     }
 
-    private createButton(text: String, pos: Vec2): Button {
-        let btn = <Button>(
+    private createButton(text: string, pos: Vec2): Button {
+        const btn = <Button>(
             this.add.uiElement(UIElementType.BUTTON, MenuLayers.MAIN, { position: pos, text: text })
         );
         btn.backgroundColor = Color.TRANSPARENT;
