@@ -51,7 +51,8 @@ export const AALayers = {
     // The PAUSE layer
     PAUSE: "PAUSE",
     CONTROLS: "CONTROLS",
-    TONGUE: "TONGUE"
+    TONGUE: "TONGUE",
+    BACKGROUND: "BACKGROUND",
 } as const;
 
 // The layers as a type
@@ -167,6 +168,32 @@ export default abstract class AALevel extends Scene {
     protected textLoopTimer: Timer;
 
     protected deathTimer: Timer;
+
+    /** The background sprite */
+    protected bg: Sprite;
+
+    /** The background sprite key */
+    protected backgroundKey: string;
+
+    /** The background view scale */
+    protected bgScale: Vec2;
+
+    /**
+     * The background view offset
+     *
+     * This should roughly be the image size from my testing, scaled by tilemapScale
+     * */
+    protected bgOffset: Vec2;
+
+    /** This scaled scrolling movement for parallax */
+    protected bgMovementScale: number;
+
+    /** Extra Y scroll movement scale for different vertical parallax scrolling value */
+    protected bgMovementScaleY: number;
+
+    /** Prev viewport center for parallax calculation */
+    protected prevViewportCenter: Vec2;
+    protected viewportNormalized: boolean;
 
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
@@ -287,6 +314,11 @@ export default abstract class AALevel extends Scene {
         });
 
         this.bossFightActive = false;
+
+        // Initialize the background
+        if (this.backgroundKey) {
+            this.initBackground();
+        }
     }
 
     /* Update method for the scene */
@@ -295,6 +327,10 @@ export default abstract class AALevel extends Scene {
         // Handle all game events
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
+        }
+
+        if (this.backgroundKey) {
+            this.moveBackground(deltaT);
         }
 
         if (
@@ -500,9 +536,9 @@ export default abstract class AALevel extends Scene {
                 // MainMenu.GAME_PLAYING = false;
                 ParticleSystemManager.getInstance().clearParticleSystems();
                 Input.disableInput();
-                if(this.deathTimer.isStopped() && !this.deathTimer.hasRun()){
+                if (this.deathTimer.isStopped() && !this.deathTimer.hasRun()) {
                     this.player.animation.play(PlayerAnimations.DYING);
-                    
+
                     this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
                         key: this.playerDeathAudioKey,
                         loop: false,
@@ -511,8 +547,8 @@ export default abstract class AALevel extends Scene {
                     this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                         key: this.levelMusicKey,
                     });
-					this.deathTimer.start();
-				}            
+                    this.deathTimer.start();
+                }
 
                 // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: this.levelMusicKey, loop: true, holdReference: true});
                 // this.sceneManager.changeToScene(MainMenu);
@@ -630,7 +666,6 @@ export default abstract class AALevel extends Scene {
             }
         }
     }
-
 
     protected spawnTongue(pos: Vec2, dir: Vec2): void {
         // TODO maybe use GameNode?
@@ -819,14 +854,54 @@ export default abstract class AALevel extends Scene {
         this.addUILayer(AALayers.UI);
 
         // Add a layer for players and enemies
-        this.addLayer(AALayers.PRIMARY, 1);
+        // this.addLayer(AALayers.PRIMARY, 1);
         this.addLayer(AALayers.TONGUE, 1);
         this.addLayer(AALayers.GUIDE, 0);
+        this.addLayer(AALayers.PRIMARY, 5);
+        // this.addLayer(AALayers.GUIDE, 1);
+
+        // For some reason it needs -1 to render behind the tilemap
+        this.addLayer(AALayers.BACKGROUND, -1);
 
         // Add a layer for Pause Menu
         this.addUILayer(AALayers.PAUSE);
         this.addUILayer(AALayers.CONTROLS);
     }
+
+    protected initBackground(): void {
+        this.prevViewportCenter = null;
+        this.bg = this.add.sprite(this.backgroundKey, AALayers.BACKGROUND);
+        this.bg.scale.set(this.bgScale.x, this.bgScale.y);
+        this.bg.position.copy(this.bgOffset);
+    }
+
+    protected moveBackground(deltaT: number): void {
+        if (!this.prevViewportCenter) {
+            this.prevViewportCenter = this.viewport.getView().center.clone();
+        }
+
+        // The viewport is stupid and has a different start value depending on the last scene or something
+        // and then slowly moves to the correct value, so wait for that to happen here
+        if (
+            !this.viewportNormalized &&
+            !this.prevViewportCenter.equals(this.viewport.getView().center)
+        ) {
+            console.log("Viewport not normalized yet, skipping");
+            this.prevViewportCenter = this.viewport.getView().center.clone();
+            return;
+        } else {
+            this.viewportNormalized = true;
+        }
+
+        const diff = this.viewport
+            .getView()
+            .center.clone()
+            .sub(this.prevViewportCenter)
+            .scaled(this.bgMovementScale); // Controls how fast the bg scrolls
+        this.bg.position.add(new Vec2(diff.x, this.bgMovementScaleY * diff.y));
+        this.prevViewportCenter = this.viewport.getView().center.clone();
+    }
+
     /**
      * Initializes the tilemaps
      * @param key the key for the tilemap data
@@ -1394,6 +1469,7 @@ export default abstract class AALevel extends Scene {
         this.viewport.follow(this.player);
         this.viewport.setZoomLevel(4);
         this.viewport.setBounds(0, 0, 512, 512);
+        this.viewport.setCenter(0, 0);
     }
     /**
      * Initializes the level end area

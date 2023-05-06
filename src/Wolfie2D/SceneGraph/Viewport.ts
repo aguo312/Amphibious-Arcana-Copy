@@ -37,7 +37,7 @@ export default class Viewport {
     /** The size of the canvas */
     private canvasSize: Vec2;
 
-    constructor(canvasSize: Vec2, zoomLevel: number){
+    constructor(canvasSize: Vec2, zoomLevel: number) {
         this.view = new AABB(Vec2.ZERO, Vec2.ZERO);
         this.boundary = new AABB(Vec2.ZERO, Vec2.ZERO);
         this.lastPositions = new Queue();
@@ -56,6 +56,7 @@ export default class Viewport {
         // Set the center (and make the viewport stay there)
         this.setCenter(this.view.halfSize.clone());
         this.setFocus(this.view.halfSize.clone());
+        console.log("initing viewport");
     }
 
     /** Enables the viewport to zoom in and out */
@@ -94,7 +95,7 @@ export default class Viewport {
      */
     setCenter(vecOrX: Vec2 | number, y: number = null): void {
         let pos: Vec2;
-		if(vecOrX instanceof Vec2){
+        if (vecOrX instanceof Vec2) {
             pos = vecOrX;
         } else {
             pos = new Vec2(vecOrX, y);
@@ -110,18 +111,18 @@ export default class Viewport {
     getHalfSize(): Vec2 {
         return this.view.getHalfSize();
     }
-    
+
     /**
      * Sets the size of the viewport
      * @param vecOrX The new width of the viewport or the new size as a Vec2
      * @param y The new height of the viewport
      */
     setSize(vecOrX: Vec2 | number, y: number = null): void {
-		if(vecOrX instanceof Vec2){
-			this.view.setHalfSize(vecOrX.scaled(1/2));
-		} else {
-			this.view.setHalfSize(new Vec2(vecOrX/2, y/2));
-		}
+        if (vecOrX instanceof Vec2) {
+            this.view.setHalfSize(vecOrX.scaled(1 / 2));
+        } else {
+            this.view.setHalfSize(new Vec2(vecOrX / 2, y / 2));
+        }
     }
 
     /**
@@ -130,11 +131,11 @@ export default class Viewport {
      * @param y The new height of the viewport
      */
     setHalfSize(vecOrX: Vec2 | number, y: number = null): void {
-		if(vecOrX instanceof Vec2){
-			this.view.setHalfSize(vecOrX.clone());
-		} else {
-			this.view.setHalfSize(new Vec2(vecOrX, y));
-		}
+        if (vecOrX instanceof Vec2) {
+            this.view.setHalfSize(vecOrX.clone());
+        } else {
+            this.view.setHalfSize(new Vec2(vecOrX, y));
+        }
     }
 
     /**
@@ -143,11 +144,11 @@ export default class Viewport {
      * @param y The height of the canvas
      */
     setCanvasSize(vecOrX: Vec2 | number, y: number = null): void {
-		if(vecOrX instanceof Vec2){
-			this.canvasSize = vecOrX.clone();
-		} else {
-			this.canvasSize = new Vec2(vecOrX, y);
-		}
+        if (vecOrX instanceof Vec2) {
+            this.canvasSize = vecOrX.clone();
+        } else {
+            this.canvasSize = new Vec2(vecOrX, y);
+        }
     }
 
     /**
@@ -155,7 +156,7 @@ export default class Viewport {
      * @param zoom The zoom level
      */
     setZoomLevel(zoom: number): void {
-        this.view.halfSize.copy(this.canvasSize.scaled(1/zoom/2));
+        this.view.halfSize.copy(this.canvasSize.scaled(1 / zoom / 2));
     }
 
     /**
@@ -163,7 +164,7 @@ export default class Viewport {
      * @returns The zoom level
      */
     getZoomLevel(): number {
-        return this.canvasSize.x/this.view.hw/2
+        return this.canvasSize.x / this.view.hw / 2;
     }
 
     /**
@@ -171,7 +172,7 @@ export default class Viewport {
      * @param smoothingFactor The smoothing factor for the viewport
      */
     setSmoothingFactor(smoothingFactor: number): void {
-        if(smoothingFactor < 1) smoothingFactor = 1;
+        if (smoothingFactor < 1) smoothingFactor = 1;
         this.smoothingFactor = smoothingFactor;
     }
 
@@ -182,22 +183,25 @@ export default class Viewport {
     setFocus(focus: Vec2): void {
         this.focus.copy(focus);
     }
-    
+
     /**
      * Returns true if the CanvasNode is inside of the viewport
      * @param node The node to check
      * @returns True if the node is currently visible in the viewport, false if not
      */
     includes(node: CanvasNode): boolean {
-        let parallax = node.getLayer() instanceof ParallaxLayer || node.getLayer() instanceof UILayer ? (<ParallaxLayer>node.getLayer()).parallax : new Vec2(1, 1);
+        let parallax =
+            node.getLayer() instanceof ParallaxLayer || node.getLayer() instanceof UILayer
+                ? (<ParallaxLayer>node.getLayer()).parallax
+                : new Vec2(1, 1);
         let center = this.view.center.clone();
         this.view.center.mult(parallax);
         let overlaps = this.view.overlaps(node.boundary);
-        this.view.center = center
+        this.view.center = center;
         return overlaps;
     }
 
-	// TODO: Put some error handling on this for trying to make the bounds too small for the viewport
+    // TODO: Put some error handling on this for trying to make the bounds too small for the viewport
     // TODO: This should probably be done automatically, or should consider the aspect ratio or something
     /**
      * Sets the bounds of the viewport
@@ -207,8 +211,8 @@ export default class Viewport {
      * @param upperY The bottom edge of the viewport
      */
     setBounds(lowerX: number, lowerY: number, upperX: number, upperY: number): void {
-        let hwidth = (upperX - lowerX)/2;
-        let hheight = (upperY - lowerY)/2;
+        let hwidth = (upperX - lowerX) / 2;
+        let hheight = (upperY - lowerY) / 2;
         let x = lowerX + hwidth;
         let y = lowerY + hheight;
         this.boundary.center.set(x, y);
@@ -224,47 +228,55 @@ export default class Viewport {
     }
 
     updateView(): void {
-        if(this.lastPositions.getSize() > this.smoothingFactor){
+        if (this.lastPositions.getSize() > this.smoothingFactor) {
             this.lastPositions.dequeue();
         }
-        
+
         // Get the average of the last 10 positions
         let pos = Vec2.ZERO;
-        this.lastPositions.forEach(position => pos.add(position));
-        pos.scale(1/this.lastPositions.getSize());
+        this.lastPositions.forEach((position) => pos.add(position));
+        pos.scale(1 / this.lastPositions.getSize());
 
         // Set this position either to the object or to its bounds
-        pos.x = MathUtils.clamp(pos.x, this.boundary.left + this.view.hw, this.boundary.right - this.view.hw);
-        pos.y = MathUtils.clamp(pos.y, this.boundary.top + this.view.hh, this.boundary.bottom - this.view.hh);
+        pos.x = MathUtils.clamp(
+            pos.x,
+            this.boundary.left + this.view.hw,
+            this.boundary.right - this.view.hw
+        );
+        pos.y = MathUtils.clamp(
+            pos.y,
+            this.boundary.top + this.view.hh,
+            this.boundary.bottom - this.view.hh
+        );
 
         // Assure there are no lines in the tilemap
         pos.x = Math.floor(pos.x);
         pos.y = Math.floor(pos.y);
-        
+
         this.view.center.copy(pos);
     }
 
     update(deltaT: number): void {
         // If zoom is enabled
-        if(this.scrollZoomEnabled){
-            if(Input.didJustScroll()){
+        if (this.scrollZoomEnabled) {
+            if (Input.didJustScroll()) {
                 let currentSize = this.view.getHalfSize().clone();
-                if(Input.getScrollDirection() < 0){
+                if (Input.getScrollDirection() < 0) {
                     // Zoom in
-                    currentSize.scale(1/this.ZOOM_FACTOR);
+                    currentSize.scale(1 / this.ZOOM_FACTOR);
                 } else {
                     // Zoom out
                     currentSize.scale(this.ZOOM_FACTOR);
                 }
 
-                if(currentSize.x > this.boundary.hw){
-                    let factor = this.boundary.hw/currentSize.x;
+                if (currentSize.x > this.boundary.hw) {
+                    let factor = this.boundary.hw / currentSize.x;
                     currentSize.x = this.boundary.hw;
                     currentSize.y *= factor;
                 }
 
-                if(currentSize.y > this.boundary.hh){
-                    let factor = this.boundary.hh/currentSize.y;
+                if (currentSize.y > this.boundary.hh) {
+                    let factor = this.boundary.hh / currentSize.y;
                     currentSize.y = this.boundary.hh;
                     currentSize.x *= factor;
                 }
@@ -274,7 +286,7 @@ export default class Viewport {
         }
 
         // If viewport is following an object
-        if(this.following){
+        if (this.following) {
             // Update our list of previous positions
             this.lastPositions.enqueue(this.following.position.clone());
         } else {

@@ -9,10 +9,8 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
@@ -20,6 +18,7 @@ import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import AntBehavior from "../AI/NPC/NPCBehaviors/AntBehavior";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -57,6 +56,9 @@ export default class Level3 extends AALevel {
     public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
     public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
 
+    public static readonly BACKGROUND_KEY = "BACKGROUND";
+    public static readonly BACKGROUND_PATH = "hw4_assets/images/test.png";
+
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
     protected tutorialText: Label;
     protected tutorialTextTimer: Timer;
@@ -64,6 +66,8 @@ export default class Level3 extends AALevel {
     protected cheatsManager: CheatsManager;
 
     protected enemyPositions: Array<Vec2>;
+
+    protected prevViewportCenter: Vec2;
 
     public constructor(
         viewport: Viewport,
@@ -94,6 +98,7 @@ export default class Level3 extends AALevel {
         this.grappleAudioKey = Level3.GRAPPLE_AUDIO_KEY;
         this.enemyDeathAudioKey = Level3.ENEMY_DEATH_AUDIO_KEY;
         this.playerDeathAudioKey = Level3.PLAYER_DEATH_AUDIO_KEY;
+        this.backgroundKey = Level3.BACKGROUND_KEY;
 
         // Level end size and position
         //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
@@ -110,12 +115,18 @@ export default class Level3 extends AALevel {
         });
 
         this.currLevel = Level3;
+
+        // Setup bg stuff
+        this.bgScale = new Vec2(8.0, 8.0);
+        this.bgOffset = new Vec2(100, 100).mult(this.tilemapScale);
+        this.bgMovementScale = 0.7;
+        this.bgMovementScaleY = 0.6;
     }
 
     public initializeUI(): void {
         super.initializeUI();
 
-        let size = this.viewport.getHalfSize();
+        const size = this.viewport.getHalfSize();
 
         // // Guide Textbox
         // this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, { position: new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50), text: "I HAVE SO MUCH TO SAY TO YOU" });
@@ -141,9 +152,9 @@ export default class Level3 extends AALevel {
     }
 
     public initializeTutorialBox() {
-        let size = this.viewport.getHalfSize();
+        const size = this.viewport.getHalfSize();
 
-        let tutorialBox = <Rect>this.add.graphic(GraphicType.RECT, AALayers.GUIDE, {
+        const tutorialBox = <Rect>this.add.graphic(GraphicType.RECT, AALayers.GUIDE, {
             position: new Vec2(size.x, size.y),
             size: new Vec2(100, 100),
         });
@@ -168,7 +179,10 @@ export default class Level3 extends AALevel {
         this.load.spritesheet("Guide", "hw4_assets/spritesheets/traveler.json");
 
         // Load in ant sprite
-        this.load.spritesheet("Ant", "hw4_assets/spritesheets/fire_ant.json")
+        this.load.spritesheet("Ant", "hw4_assets/spritesheets/fire_ant.json");
+
+        // Load background image
+        this.load.image(this.backgroundKey, Level3.BACKGROUND_PATH);
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level3.LEVEL_MUSIC_PATH);
@@ -225,8 +239,8 @@ export default class Level3 extends AALevel {
             new Vec2(1150, 400),
         ];
 
-        for (let pos of this.enemyPositions) {
-            let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
+        for (const pos of this.enemyPositions) {
+            const scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
             scabbers.scale.scale(0.25);
             scabbers.position.set(pos.x, pos.y);
             scabbers.addPhysics();
@@ -237,7 +251,7 @@ export default class Level3 extends AALevel {
 
             scabbers.health = 3;
             scabbers.maxHealth = 3;
-            let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
+            const healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
                 size: scabbers.size.clone().scaled(1.5, 0.25),
                 offset: scabbers.size.clone().scaled(0, -1 / 5),
             });
@@ -267,7 +281,7 @@ export default class Level3 extends AALevel {
             });
         }
 
-        let guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
+        const guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
         guide.scale.scale(0.3);
         guide.position.set(this.playerSpawn.x + 90, this.playerSpawn.y - 3);
         guide.addPhysics(null, null, false);
@@ -277,19 +291,18 @@ export default class Level3 extends AALevel {
         guide.animation.play("IDLE");
         this.allNPCS.set(guide.id, guide);
 
-
-        let ant = this.add.animatedSprite("Ant", AALayers.GUIDE);
-        ant.scale.scale(.25)
-        ant.position.set(this.playerSpawn.x, this.playerSpawn.y - 100)
-        ant.addPhysics(null, null, false)
-        ant.setGroup(AAPhysicsGroups.ENEMY)
+        const ant = this.add.animatedSprite("Ant", AALayers.GUIDE);
+        ant.scale.scale(0.25);
+        ant.position.set(this.playerSpawn.x, this.playerSpawn.y - 100);
+        ant.addPhysics(null, null, false);
+        ant.setGroup(AAPhysicsGroups.ENEMY);
         ant.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
 
         ant.animation.play("IDLE");
         ant.addAI(AntBehavior, { player: this.player });
         ant.health = 3;
         ant.maxHealth = 3;
-        let healthbar = new HealthbarHUD(this, ant, AALayers.PRIMARY, {
+        const healthbar = new HealthbarHUD(this, ant, AALayers.PRIMARY, {
             size: ant.size.clone().scaled(1.5, 0.125),
             offset: ant.size.clone().scaled(0, -1 / 5),
         });
