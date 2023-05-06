@@ -51,6 +51,7 @@ export const AALayers = {
     // The PAUSE layer
     PAUSE: "PAUSE",
     CONTROLS: "CONTROLS",
+    TONGUE: "TONGUE"
 } as const;
 
 // The layers as a type
@@ -819,6 +820,7 @@ export default abstract class AALevel extends Scene {
 
         // Add a layer for players and enemies
         this.addLayer(AALayers.PRIMARY, 1);
+        this.addLayer(AALayers.TONGUE, 1);
         this.addLayer(AALayers.GUIDE, 0);
 
         // Add a layer for Pause Menu
@@ -1261,7 +1263,7 @@ export default abstract class AALevel extends Scene {
         this.fireballSystem.initializePool(this, AALayers.PRIMARY);
 
         // init tongue
-        this.tongue = this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
+        this.tongue = this.add.graphic(GraphicType.RECT, AALayers.TONGUE, {
             position: Vec2.ZERO,
             size: Vec2.ZERO,
         });
