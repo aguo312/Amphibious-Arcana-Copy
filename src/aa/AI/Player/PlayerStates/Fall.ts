@@ -12,7 +12,9 @@ export default class Fall extends PlayerState {
         if (this.parent.velocity.y > 0) {
             this.parent.velocity.y = 0;
         }
-        this.owner.animation.playIfNotAlready(PlayerAnimations.FALL);
+        if(!this.owner.animation.isPlaying(PlayerAnimations.TAKING_DAMAGE) && !this.owner.animation.isPlaying(PlayerAnimations.JUMP_ATTACK)){
+            this.owner.animation.playIfNotAlready(PlayerAnimations.FALL)
+        }    
     } 
 
     update(deltaT: number): void {
@@ -33,6 +35,10 @@ export default class Fall extends PlayerState {
         else {
             // Get the movement direction from the player 
             let dir = this.parent.inputDir;
+
+            if(!this.owner.animation.isPlaying(PlayerAnimations.TAKING_DAMAGE) && !this.owner.animation.isPlaying(PlayerAnimations.JUMP_ATTACK)){
+                this.owner.animation.playIfNotAlready(PlayerAnimations.FALL)
+            }
 
             // Update the horizontal velocity of the player
             if (this.parent.isFirejumpActive) {

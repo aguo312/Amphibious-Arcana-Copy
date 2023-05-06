@@ -165,6 +165,8 @@ export default abstract class AALevel extends Scene {
     protected guideTextTimer: Timer;
     protected textLoopTimer: Timer;
 
+    protected deathTimer: Timer;
+
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
     public constructor(
@@ -263,6 +265,11 @@ export default abstract class AALevel extends Scene {
             this.guideText.backgroundColor.a = 0;
             this.guideText.textColor.a = 0;
             this.textLoopTimer.reset();
+        });
+
+        this.deathTimer = new Timer(3000, () => {
+            this.sceneManager.changeToScene(this.currLevel);
+            Input.enableInput();
         });
 
         // Initially disable player movement
@@ -491,20 +498,27 @@ export default abstract class AALevel extends Scene {
             case AAEvents.PLAYER_DEAD: {
                 // MainMenu.GAME_PLAYING = false;
                 ParticleSystemManager.getInstance().clearParticleSystems();
-                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
-                    key: this.playerDeathAudioKey,
-                    loop: false,
-                    holdReference: false,
-                });
-                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
-                    key: this.levelMusicKey,
-                });
+                Input.disableInput();
+                if(this.deathTimer.isStopped() && !this.deathTimer.hasRun()){
+                    this.player.animation.play(PlayerAnimations.DYING);
+                    
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                        key: this.playerDeathAudioKey,
+                        loop: false,
+                        holdReference: false,
+                    });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                        key: this.levelMusicKey,
+                    });
+					this.deathTimer.start();
+				}            
+
                 // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: this.levelMusicKey, loop: true, holdReference: true});
                 // this.sceneManager.changeToScene(MainMenu);
                 // this.iceParticleSystem.stopSystem();
                 // this.fireParticleSystem.stopSystem();
                 // this.tongueParticleSystem.stopSystem();
-                this.sceneManager.changeToScene(this.currLevel);
+                // this.sceneManager.changeToScene(this.currLevel);
                 // this.sceneManager.changeToScene(MainMenu);
                 break;
             }
@@ -616,11 +630,6 @@ export default abstract class AALevel extends Scene {
         }
     }
 
-    // protected handleTongueHitEnemy(enemy: AnimatedSprite): void {
-    //     // TODO maybe use GameNode?
-    //     let playerPos = this.player.position;
-    //     let enemyPos = enemy.position;
-    // }
 
     protected spawnTongue(pos: Vec2, dir: Vec2): void {
         // TODO maybe use GameNode?
