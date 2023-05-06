@@ -185,7 +185,7 @@ export default class Level6 extends AALevel {
 
     protected initializeNPCs(): void {
         let locations = [
-            new Vec2(136, 640),
+            new Vec2(236, 640),
             new Vec2(140, 64),
             new Vec2(184, 288),
             new Vec2(248, 384),
