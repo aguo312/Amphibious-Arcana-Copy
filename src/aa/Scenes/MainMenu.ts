@@ -65,7 +65,7 @@ export default class MainMenu extends Scene {
         playBtn.onClick = () => {
             MainMenu.GAME_PLAYING = true;
             MainMenu.CURRENT_LEVEL = 0;
-            this.sceneManager.changeToScene(Level1);
+            this.sceneManager.changeToScene(Level0);
         };
 
         levelSelectBtn.onClick = () => {
