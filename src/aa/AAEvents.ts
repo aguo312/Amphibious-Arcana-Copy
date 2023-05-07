@@ -61,4 +61,5 @@ export const AAEvents = {
     SPAWN_BOSS: "SPAWN_BOSS",
     PLAYER_TOUCH_ENEMY: "PLAYER_TOUCH_ENEMY",
     BOSS_KILLED: "BOSS_KILLED",
+    GOTO_BOSS: "GOTO_BOSS",
 } as const;

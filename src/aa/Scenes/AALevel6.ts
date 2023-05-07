@@ -121,6 +121,7 @@ export default class Level6 extends AALevel {
             levelMusicKey: this.levelMusicKey,
         });
         this.currLevel = Level6;
+        MainMenu.BOSS_LOCATION = this.bossSpawnTriggerPos;
     }
 
     public initializeUI(): void {

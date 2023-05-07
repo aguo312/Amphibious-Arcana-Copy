@@ -622,6 +622,12 @@ export default abstract class AALevel extends Scene {
                 this.handleTongueHit();
                 break;
             }
+            case AAEvents.GOTO_BOSS: {
+                if (!this.bossFightActive && this.bossSpawnTrigger != null) {
+                    this.player.position = this.bossSpawnTrigger.position;
+                }
+                break;
+            }
             case AAEvents.SPAWN_BOSS: {
                 this.viewport.follow(null);
                 // this.viewport.setSmoothingFactor(4);
@@ -982,6 +988,7 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.ICE_HIT_BOSS);
         this.receiver.subscribe(AAEvents.TONGUE_HIT_BOSS);
         this.receiver.subscribe(AAEvents.SPAWN_BOSS);
+        this.receiver.subscribe(AAEvents.GOTO_BOSS);
         this.receiver.subscribe("GUIDE");
         this.receiver.subscribe("STOP_SHOWING");
     }
