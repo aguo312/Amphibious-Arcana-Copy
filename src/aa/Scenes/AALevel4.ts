@@ -134,6 +134,8 @@ export default class Level4 extends AALevel {
         // initialize boss weapon system
         this.mindFlayerParticleSystem = new MindFlayerParticles(50, Vec2.ZERO, 1000, 3, 10, 50);
         this.mindFlayerParticleSystem.initializePool(this, AALayers.PRIMARY);
+        const particles = this.mindFlayerParticleSystem.getPool();
+        particles.forEach((particle) => this.allNPCS.set(particle.id, particle));
 
         const mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
         mindFlayer.scale.scale(0.25);
@@ -151,6 +153,7 @@ export default class Level4 extends AALevel {
             particles: this.mindFlayerParticleSystem,
         });
         this.allNPCS.set(mindFlayer.id, mindFlayer);
+        // this.allNPCS.set(mindFlayerParticleSystem.id)
 
         mindFlayer.tweens.add("DEATH", {
             startDelay: 0,

@@ -16,7 +16,7 @@ export default class RangedEnemyParticles extends ParticleSystem {
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
      */
-    protected _rotation: number = 0;
+    protected _rotation = 0;
     public get rotation(): number {
         return this._rotation;
     }

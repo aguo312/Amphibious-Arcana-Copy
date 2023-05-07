@@ -3,7 +3,7 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Input from "../../Wolfie2D/Input/Input";
-import { TweenableProperties } from "../../Wolfie2D/Nodes/GameNode";
+import GameNode, { TweenableProperties } from "../../Wolfie2D/Nodes/GameNode";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
@@ -155,7 +155,7 @@ export default abstract class AALevel extends Scene {
     protected enemyDeathAudioKey: string;
     protected playerDeathAudioKey: string;
 
-    protected allNPCS: Map<number, AAAnimatedSprite>;
+    protected allNPCS: Map<number, GameNode>;
     protected healthbars: Map<number, HealthbarHUD>;
     protected freezeOverlays: Map<number, Graphic>;
     protected frozenTimer: Timer;
@@ -438,7 +438,7 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.ICEBALL_HIT_ENEMY: {
-                const enemy = this.allNPCS.get(event.data.get("other"));
+                const enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
 
                 if (!enemy.frozen) {
                     enemy.freeze();
@@ -474,7 +474,7 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.ICE_HIT_BOSS: {
                 if (this.bossIFrameTimer.isStopped()) {
-                    const boss = this.allNPCS.get(event.data.get("other"));
+                    const boss = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     boss.health -= 1;
                     this.handleHealthChange(
                         this.bossHealthBar,
@@ -489,7 +489,7 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.TONGUE_HIT_BOSS: {
                 if (this.bossIFrameTimer.isStopped()) {
-                    const boss = this.allNPCS.get(event.data.get("other"));
+                    const boss = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     boss.health -= 1;
                     this.handleHealthChange(
                         this.bossHealthBar,
@@ -829,7 +829,7 @@ export default abstract class AALevel extends Scene {
         this.allNPCS.forEach((npc) => {
             // npc.setAIActive(false, null)
             npc.freeze();
-            npc.animation.pause();
+            (<AAAnimatedSprite>npc).animation.pause();
         });
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {
             key: this.levelMusicKey,
@@ -851,7 +851,7 @@ export default abstract class AALevel extends Scene {
         this.allNPCS.forEach((npc) => {
             // npc.setAIActive(true, {})
             npc.unfreeze();
-            npc.animation.resume();
+            (<AAAnimatedSprite>npc).animation.resume();
         });
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
             key: this.levelMusicKey,

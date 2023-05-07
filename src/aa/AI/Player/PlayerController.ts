@@ -217,14 +217,17 @@ export default class PlayerController extends StateMachineAI {
                 if (this.iFramesTimer.isStopped()) {
                     this.health -= 1;
                     // TODO push player a bit when taking damage, currently not working
-                    // let enemyId = event.data.get('node');
-                    // let enemy = this.npcs.get(enemyId);
-                    // if (!enemy) {
-                    //     console.log('failed to find enemy');
-                    // }
-                    // let vec = enemy.position.dirTo(this.owner.position).scale(10);
-                    // this.velocity.x += vec.x;
-                    // this.velocity.y += vec.y;
+                    const enemyId = event.data.get("node");
+                    const enemy = this.npcs.get(enemyId);
+                    if (!enemy) {
+                        console.log("failed to find enemy");
+                    }
+                    console.log("enemy", enemy);
+                    console.log("event.data", event.data);
+                    console.log("npcs", this.npcs);
+                    const dir = enemy.position.dirTo(this.owner.position);
+                    this.velocity.x = dir.x >= 0 ? this.velocity.x + 100 : this.velocity.x - 100;
+                    this.velocity.y -= 100;
                     this.iFramesTimer.start();
                 }
                 break;
