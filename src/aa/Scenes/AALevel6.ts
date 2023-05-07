@@ -19,12 +19,15 @@ import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import MainMenu from "./MainMenu";
 import RangedEnemyBehavior from "../AI/NPC/NPCBehaviors/RangedEnemyBehavior";
 import RangedEnemyParticles from "../AI/NPC/RangedEnemyParticles";
+import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
+import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
+import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
  */
 export default class Level6 extends AALevel {
-    public static readonly PLAYER_SPAWN = new Vec2(50, 630);
+    public static readonly PLAYER_SPAWN = new Vec2(1952, 48);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
@@ -56,13 +59,18 @@ export default class Level6 extends AALevel {
     public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
     public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
 
-    public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
+    // public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
     protected tutorialText: Label;
     protected tutorialTextTimer: Timer;
+
+    protected bossSpawnTriggerPos: Vec2;
+    protected bossSpawnTriggerHalfSize: Vec2;
 
     protected cheatsManager: CheatsManager;
 
     protected rangedEnemyParticleSystem: RangedEnemyParticles;
+
+    protected mindFlayerParticleSystem: MindFlayerParticles;
 
     public constructor(
         viewport: Viewport,
@@ -94,11 +102,17 @@ export default class Level6 extends AALevel {
         this.enemyDeathAudioKey = Level6.ENEMY_DEATH_AUDIO_KEY;
         this.playerDeathAudioKey = Level6.PLAYER_DEATH_AUDIO_KEY;
 
-        // Level end size and position
-        this.levelEndPosition = new Vec2(792, 24).mult(this.tilemapScale);
+        // // Level end size and position
+        // this.levelEndPosition = new Vec2(192, 24).mult(this.tilemapScale);
 
-        // made bigger for testing
-        this.levelEndHalfSize = new Vec2(16, 32).mult(this.tilemapScale);
+        // // made bigger for testing
+        // this.levelEndHalfSize = new Vec2(16, 32).mult(this.tilemapScale);
+
+        this.bossSpawnTriggerPos = new Vec2(162, 600).mult(this.tilemapScale);
+        this.bossSpawnTriggerHalfSize = new Vec2(4, 16).mult(this.tilemapScale);
+
+        this.bossFightCenterPoint = new Vec2(84, 583).mult(this.tilemapScale);
+        this.bossName = "Mind Flayer";
 
         // Initialize cheats
         // Have to define and update cheatsManager in each individual level
@@ -181,26 +195,27 @@ export default class Level6 extends AALevel {
         this.nextLevelNum = 7;
 
         this.initializeNPCs();
+        this.initializeTriggers();
     }
 
     protected initializeNPCs(): void {
         let locations = [
-            new Vec2(236, 640),
-            new Vec2(140, 64),
-            new Vec2(184, 288),
-            new Vec2(248, 384),
-            new Vec2(329, 640),
-            new Vec2(1047, 640),
-            new Vec2(625, 640),
-            new Vec2(1416, 640),
-            new Vec2(1335, 368),
-            new Vec2(1120, 368),
-            new Vec2(712, 240),
-            new Vec2(488, 288),
-            new Vec2(860, 512),
-            new Vec2(1090, 640),
-            new Vec2(1442, 640),
-            new Vec2(1556, 432),
+            // new Vec2(236, 640),
+            // new Vec2(140, 64),
+            // new Vec2(184, 288),
+            // new Vec2(248, 384),
+            // new Vec2(329, 640),
+            // new Vec2(1047, 640),
+            // new Vec2(625, 640),
+            // new Vec2(1416, 640),
+            // new Vec2(1335, 368),
+            // new Vec2(1120, 368),
+            // new Vec2(712, 240),
+            // new Vec2(488, 288),
+            // new Vec2(860, 512),
+            // new Vec2(1090, 640),
+            // new Vec2(1442, 640),
+            // new Vec2(1556, 432),
             new Vec2(1556, 256),
         ];
         locations.forEach((l) => {
@@ -252,6 +267,16 @@ export default class Level6 extends AALevel {
         });
     }
 
+    protected initializeTriggers(): void {
+        this.bossSpawnTrigger = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
+            position: this.bossSpawnTriggerPos,
+            size: this.bossSpawnTriggerHalfSize,
+        });
+        this.bossSpawnTrigger.color = Color.TRANSPARENT;
+        this.bossSpawnTrigger.addPhysics(undefined, undefined, false, true);
+        this.bossSpawnTrigger.setTrigger(AAPhysicsGroups.PLAYER, AAEvents.SPAWN_BOSS, null);
+    }
+
     public updateScene(deltaT: number) {
         super.updateScene(deltaT);
 
@@ -268,6 +293,6 @@ export default class Level6 extends AALevel {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 1600, 700);
+        this.viewport.setBounds(16, 16, 2064, 1264);
     }
 }

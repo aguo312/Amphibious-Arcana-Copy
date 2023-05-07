@@ -93,7 +93,7 @@ export default class Level5 extends AALevel {
         this.playerDeathAudioKey = Level5.PLAYER_DEATH_AUDIO_KEY;
 
         // Level end size and position
-        this.levelEndPosition = new Vec2(792, 24).mult(this.tilemapScale);
+        this.levelEndPosition = new Vec2(736, 24).mult(this.tilemapScale);
 
         // made bigger for testing
         this.levelEndHalfSize = new Vec2(16, 32).mult(this.tilemapScale);
