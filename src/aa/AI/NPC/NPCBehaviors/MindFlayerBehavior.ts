@@ -37,7 +37,7 @@ export default class MindFlayerBehavior extends NPCBehavior {
         this.addState(MFStates.DEAD, new MFDead(this, this.owner));
 
         // Set the start state
-        this.initialize(MFStates.IDLE, { dir: -1, weaponSystem: this.weaponSystem });
+        this.initialize(MFStates.IDLE, { dir: 1, weaponSystem: this.weaponSystem });
     }
 
     public override update(deltaT: number): void {

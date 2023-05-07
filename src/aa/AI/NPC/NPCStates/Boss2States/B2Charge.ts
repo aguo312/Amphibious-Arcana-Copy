@@ -2,6 +2,7 @@ import Vec2 from "../../../../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../../../../Wolfie2D/Events/GameEvent";
 import Receiver from "../../../../../Wolfie2D/Events/Receiver";
 import CanvasNode from "../../../../../Wolfie2D/Nodes/CanvasNode";
+import MathUtils from "../../../../../Wolfie2D/Utils/MathUtils";
 import { AAEvents } from "../../../../AAEvents";
 import BossState from "../BossState";
 import { Boss2States } from "../BossStates";
@@ -32,6 +33,10 @@ export default class B2Charge extends BossState {
             this.owner.getScene().getViewport().getCenter(),
             this.owner.getScene().getViewport().getHalfSize()
         );
+
+        if (this.dir !== 0) {
+            this.owner.invertX = MathUtils.sign(this.dir) < 0;
+        }
 
         this.parent.velocity.y += this.gravity * deltaT;
         this.parent.velocity.x = this.dir * this.parent.speed;

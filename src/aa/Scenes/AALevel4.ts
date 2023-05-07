@@ -146,7 +146,7 @@ export default class Level4 extends AALevel {
         // level boss
         const traveler = this.add.animatedSprite("Traveler", AALayers.PRIMARY);
         traveler.scale.scale(0.25);
-        traveler.position.set(690, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
+        traveler.position.set(690, Level4.PLAYER_SPAWN.y + 8).mult(this.tilemapScale);
         traveler.addPhysics(undefined, undefined, false, false);
         traveler.setGroup(AAPhysicsGroups.ENEMY);
         traveler.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);

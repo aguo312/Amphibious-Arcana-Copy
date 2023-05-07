@@ -1,6 +1,7 @@
 import GameEvent from "../../../../../Wolfie2D/Events/GameEvent";
 import Receiver from "../../../../../Wolfie2D/Events/Receiver";
 import Timer from "../../../../../Wolfie2D/Timing/Timer";
+import MathUtils from "../../../../../Wolfie2D/Utils/MathUtils";
 import { AAEvents } from "../../../../AAEvents";
 import { EnemyAnimations } from "../../../../Enemy/EnemyController";
 import BossState from "../BossState";
@@ -52,6 +53,10 @@ export default class B2Idle extends BossState {
 
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
+        }
+
+        if (this.dir !== 0) {
+            this.owner.invertX = MathUtils.sign(this.dir) < 0;
         }
     }
 
