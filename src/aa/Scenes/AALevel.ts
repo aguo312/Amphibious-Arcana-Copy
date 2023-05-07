@@ -1035,7 +1035,7 @@ export default abstract class AALevel extends Scene {
 
         // The tongue icon sprite
         this.tongueIcon =
-            MainMenu.CURRENT_LEVEL >= 1
+            MainMenu.CURRENT_LEVEL >= 0
                 ? this.add.sprite("tongueIcon", AALayers.UI)
                 : this.add.sprite("lockIcon", AALayers.UI);
         this.tongueIcon.scale.set(0.7, 0.7);
