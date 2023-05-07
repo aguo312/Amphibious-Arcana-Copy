@@ -35,7 +35,7 @@ export const PlayerAnimations = {
     ATTACK: "ATTACK",
     TAKING_DAMAGE: "TAKING_DAMAGE",
     DYING: "DYING",
-    JUMP_ATTACK: "JUMP_ATTACK"
+    JUMP_ATTACK: "JUMP_ATTACK",
 } as const;
 
 /**
@@ -229,10 +229,14 @@ export default class PlayerController extends StateMachineAI {
                 break;
             }
             case AAEvents.PLAYER_HEAL: {
-                if (this.iFramesTimer.isStopped()) {
-                    this.health += 1;
-                    this.iFramesTimer.start();
-                }
+                // if (this.iFramesTimer.isStopped()) {
+                //     this.health += 1;
+                //     this.iFramesTimer.start();
+                // }
+                // testing this since you cant regain health from consuming
+                // soon after taking damage with previous code
+                this.health += 1;
+                this.iFramesTimer.start();
                 break;
             }
             default: {
@@ -330,9 +334,9 @@ export default class PlayerController extends StateMachineAI {
                 2 * Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.tongueProjectile.startSystem(1000, 0, this.owner.position);
-            if(this.owner.onGround){
+            if (this.owner.onGround) {
                 this.owner.animation.play(PlayerAnimations.ATTACK);
-            }else{
+            } else {
                 this.owner.animation.play(PlayerAnimations.JUMP_ATTACK);
             }
 
@@ -357,15 +361,15 @@ export default class PlayerController extends StateMachineAI {
             this.fireProjectile.rotation = 2 * Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
             // Start the particle system at the player's current position
             this.fireProjectile.startSystem(500, 0, this.owner.position);
-            if(this.owner.onGround){
+            if (this.owner.onGround) {
                 this.owner.animation.play(PlayerAnimations.ATTACK);
-            }else{
+            } else {
                 this.owner.animation.play(PlayerAnimations.JUMP_ATTACK);
             }
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
-            key: this.owner.getScene().getAttackAudioKey(),
-            loop: false,
-            holdReference: false,
+                key: this.owner.getScene().getAttackAudioKey(),
+                loop: false,
+                holdReference: false,
             });
         }
     }
@@ -375,9 +379,9 @@ export default class PlayerController extends StateMachineAI {
             this.iceParticles.getPool()[0].unfreeze();
             // Update the rotation to apply the particles velocity vector
             this.iceParticles.rotation = 2 * Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
-            if(this.owner.onGround){
+            if (this.owner.onGround) {
                 this.owner.animation.play(PlayerAnimations.ATTACK);
-            }else{
+            } else {
                 this.owner.animation.play(PlayerAnimations.JUMP_ATTACK);
             }
             // Start the particle system at the player's current position
