@@ -23,6 +23,7 @@ import TongueParticle from "./TongueParticle";
 import Graphic from "../../../Wolfie2D/Nodes/Graphic";
 import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 import Timer from "../../../Wolfie2D/Timing/Timer";
+import MainMenu from "../../Scenes/MainMenu";
 
 /**
  * Animation keys for the player spritesheet
@@ -306,16 +307,22 @@ export default class PlayerController extends StateMachineAI {
 
         // Set the selected spell
         if (Input.isJustPressed(AAControls.SELECT_TONGUE)) {
-            this.selectedSpell = SpellTypes.TONGUE;
-            this.emitter.fireEvent(AAEvents.SELECT_TONGUE);
+            if (MainMenu.CURRENT_LEVEL >= 1) {
+                this.selectedSpell = SpellTypes.TONGUE;
+                this.emitter.fireEvent(AAEvents.SELECT_TONGUE);
+            }
         }
         if (Input.isJustPressed(AAControls.SELECT_FIREBALL)) {
-            this.selectedSpell = SpellTypes.FIREBALL;
-            this.emitter.fireEvent(AAEvents.SELECT_FIREBALL);
+            if (MainMenu.CURRENT_LEVEL >= 3) {
+                this.selectedSpell = SpellTypes.FIREBALL;
+                this.emitter.fireEvent(AAEvents.SELECT_FIREBALL);
+            }
         }
         if (Input.isJustPressed(AAControls.SELECT_ICE)) {
-            this.selectedSpell = SpellTypes.ICE;
-            this.emitter.fireEvent(AAEvents.SELECT_ICE);
+            if (MainMenu.CURRENT_LEVEL >= 5) {
+                this.selectedSpell = SpellTypes.ICE;
+                this.emitter.fireEvent(AAEvents.SELECT_ICE);
+            }
         }
 
         // Handles pausing the game
