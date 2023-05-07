@@ -226,6 +226,7 @@ export default class Level6 extends AALevel {
             scabbers.addAI(RangedEnemyBehavior, {
                 player: this.player,
                 particles: this.rangedEnemyParticleSystem,
+                tilemap: "Collidable",
             });
             this.allNPCS.set(scabbers.id, scabbers);
 

@@ -6,6 +6,7 @@ import { AAEvents } from "../../../AAEvents";
 import PlayerController from "../../Player/PlayerController";
 import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 import RangedEnemyParticles from "../RangedEnemyParticles";
+import OrthogonalTilemap from "../../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 
 export const EnemyStates = {
     IDLE: "IDLE",
@@ -27,6 +28,8 @@ export default class RangedEnemyBehavior extends NPCBehavior {
 
     protected weaponSystem: RangedEnemyParticles;
 
+    protected tilemap: OrthogonalTilemap;
+
     protected dir: Vec2;
 
     protected speed: number;
@@ -37,6 +40,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
         this.gravity = 4000;
         this.player = options.player;
         this.weaponSystem = options.particles;
+        this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
 
         this.attackCooldownTimer = new Timer(3000);
         this.moveTimer = new Timer(3000);
@@ -149,6 +153,42 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                     this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
                 }
                 this.moveTimer.start();
+            }
+            // if will fall off then don't move
+            if (this.dir.equals(Vec2.RIGHT)) {
+                if (
+                    this.tilemap.getTileAtRowCol(
+                        new Vec2(
+                            Math.floor(this.owner.position.x / 16) + 1,
+                            Math.floor(this.owner.position.y / 16) + 1
+                        )
+                    ) == 0
+                ) {
+                    this.speed = 0;
+                    if (
+                        !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
+                        !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                    ) {
+                        this.owner.animation.playIfNotAlready("IDLE", true);
+                    }
+                }
+            } else {
+                if (
+                    this.tilemap.getTileAtRowCol(
+                        new Vec2(
+                            Math.floor(this.owner.position.x / 16) - 1,
+                            Math.floor(this.owner.position.y / 16) + 1
+                        )
+                    ) == 0
+                ) {
+                    this.speed = 0;
+                    if (
+                        !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
+                        !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                    ) {
+                        this.owner.animation.playIfNotAlready("IDLE", true);
+                    }
+                }
             }
         }
 

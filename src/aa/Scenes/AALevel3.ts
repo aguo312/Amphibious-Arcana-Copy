@@ -257,7 +257,7 @@ export default class Level3 extends AALevel {
             });
             this.healthbars.set(scabbers.id, healthbar);
             scabbers.animation.play("IDLE");
-            scabbers.addAI(ScabberBehavior, { player: this.player });
+            scabbers.addAI(ScabberBehavior, { player: this.player, tilemap: "Collidable" });
             this.allNPCS.set(scabbers.id, scabbers);
 
             scabbers.tweens.add("DEATH", {
