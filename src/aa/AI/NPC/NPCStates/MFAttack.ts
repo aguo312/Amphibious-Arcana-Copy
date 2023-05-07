@@ -9,7 +9,6 @@ import { GameEventType } from "../../../../Wolfie2D/Events/GameEventType";
 
 export default class MFAttack extends BossState {
     private receiver: Receiver;
-    private idleTimer: Timer;
     private weaponSystem: MindFlayerParticles;
     private dir: number;
 
@@ -24,6 +23,9 @@ export default class MFAttack extends BossState {
 
         this.attack();
         this.finished(MFStates.IDLE);
+
+        this.receiver = new Receiver();
+        this.receiver.subscribe(AAEvents.BOSS_KILLED);
     }
 
     public update(deltaT: number): void {
@@ -50,6 +52,10 @@ export default class MFAttack extends BossState {
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case AAEvents.SPAWN_BOSS: {
+                break;
+            }
+            case AAEvents.BOSS_KILLED: {
+                this.finished(MFStates.DEAD);
                 break;
             }
         }

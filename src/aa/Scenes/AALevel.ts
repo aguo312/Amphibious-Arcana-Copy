@@ -579,6 +579,11 @@ export default abstract class AALevel extends Scene {
                         freeze.visible = false;
                     }
                 }
+
+                if (this.bossFightActive) {
+                    console.log("firing boss killed event");
+                    this.emitter.fireEvent(AAEvents.BOSS_KILLED);
+                }
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
                     key: this.enemyDeathAudioKey,
                     loop: false,

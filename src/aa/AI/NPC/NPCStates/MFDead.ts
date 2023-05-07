@@ -8,7 +8,9 @@ import BossState from "./BossState";
 export default class MFDead extends BossState {
     // Trigger the player's death animation when we enter the dead state
     public onEnter(options: Record<string, any>): void {
+        console.log("ENTERING DEAD");
         // this.owner.tweens.play("DEATH");
+        options.weaponSystem.stopSystem();
     }
 
     // Ignore all events from the rest of the game
