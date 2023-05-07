@@ -10,6 +10,9 @@ import LevelSelect from "./LevelSelect";
 import ControlsScene from "./ControlsScene";
 import HelpScene from "./HelpScene";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
+import Level0 from "./AALevel0";
+import Level1 from "./AALevel1";
+import Level2 from "./AALevel2";
 
 // Layers for the main menu scene
 export const MenuLayers = {
@@ -61,8 +64,8 @@ export default class MainMenu extends Scene {
         // When the play button is clicked, go to the next scene
         playBtn.onClick = () => {
             MainMenu.GAME_PLAYING = true;
-            MainMenu.CURRENT_LEVEL = 3;
-            this.sceneManager.changeToScene(Level3);
+            MainMenu.CURRENT_LEVEL = 0;
+            this.sceneManager.changeToScene(Level1);
         };
 
         levelSelectBtn.onClick = () => {

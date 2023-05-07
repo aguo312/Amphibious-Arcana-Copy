@@ -819,7 +819,7 @@ export default abstract class AALevel extends Scene {
         this.addUILayer(AALayers.UI);
 
         // Add a layer for players and enemies
-        this.addLayer(AALayers.PRIMARY, 1);
+        this.addLayer(AALayers.PRIMARY, 2);
         this.addLayer(AALayers.TONGUE, 1);
         this.addLayer(AALayers.GUIDE, 0);
 
