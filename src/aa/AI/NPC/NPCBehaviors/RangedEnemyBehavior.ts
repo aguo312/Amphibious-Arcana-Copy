@@ -49,8 +49,8 @@ export default class RangedEnemyBehavior extends NPCBehavior {
         let playerDir = this.player.position.x > this.owner.position.x ? 1 : -1;
 
         /**
-         * if player is in attack range 70-125 -> run away then shoot
-         * if player is in follow range 150 -> follow
+         * if player is in attack range 70-125 -> shoot and run away
+         * if player is in follow range 175 -> follow
          * if player is out of range -> do normal pace
          */
         if (!this.owner.frozen) {
@@ -61,8 +61,6 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 this.runTimer.isStopped() &&
                 this.attackCooldownTimer.isStopped()
             ) {
-                // console.log("attack from 70 to 125");
-
                 this.speed = 0;
                 let diff = this.player.position.clone().sub(this.owner.position);
                 let rotation = diff.angleToCCW(Vec2.RIGHT);
@@ -81,8 +79,6 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 this.owner.position.distanceTo(this.player.position) >= 70 &&
                 this.owner.position.distanceTo(this.player.position) <= 125
             ) {
-                // console.log("done attacking from 70 to 125 -> idling");
-
                 if (
                     !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
                     !this.owner.animation.isPlaying("ATTACKING_RIGHT")
@@ -96,8 +92,6 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 this.owner.position.distanceTo(this.player.position) < 70 &&
                 this.attackCooldownTimer.isStopped()
             ) {
-                // console.log("player too close -> attack");
-
                 this.speed = 0;
                 let diff = this.player.position.clone().sub(this.owner.position);
                 let rotation = diff.angleToCCW(Vec2.RIGHT);
@@ -117,8 +111,6 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 this.runTimer.isStopped() &&
                 !this.attackCooldownTimer.isStopped()
             ) {
-                // console.log("player too close but cant attack -> running for 1 sec");
-
                 this.speed = 20;
                 if (playerDir > 0) {
                     this.dir = Vec2.LEFT;
@@ -129,41 +121,11 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 }
                 this.runTimer.start();
             }
-            // idle if done attacking and done running and player is within 70 units
-            // else if (
-            //     this.owner.position.distanceTo(this.player.position) < 70 &&
-            //     !this.runTimer.isStopped() &&
-            //     !this.attackCooldownTimer.isStopped()
-            // ) {
-            //     // console.log("player too close but cant attack or run -> idle");
-
-            //     if (
-            //         !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-            //         !this.owner.animation.isPlaying("ATTACKING_RIGHT")
-            //     ) {
-            //         // this.speed = 0;
-            //         this.owner.animation.playIfNotAlready("IDLE", true);
-            //     }
-            // }
-            // // idle if player is within attacking but attack is on cooldown
-            // else if (
-            //     this.owner.position.distanceTo(this.player.position) > 70 &&
-            //     this.owner.position.distanceTo(this.player.position) < 125
-            // ) {
-            //     if (
-            //         !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-            //         !this.owner.animation.isPlaying("ATTACKING_RIGHT")
-            //     ) {
-            //         this.owner.animation.playIfNotAlready("IDLE", true);
-            //     }
-            // }
-            // chase if player is within 125 - 150 units
+            // chase if player is within 125 - 175 units
             else if (
                 this.owner.position.distanceTo(this.player.position) > 125 &&
-                this.owner.position.distanceTo(this.player.position) <= 150
+                this.owner.position.distanceTo(this.player.position) <= 175
             ) {
-                // console.log("player is within sight -> get in range");
-
                 this.speed = 10;
                 if (playerDir > 0) {
                     this.dir = Vec2.RIGHT;
@@ -175,11 +137,9 @@ export default class RangedEnemyBehavior extends NPCBehavior {
             }
             // normal if player is too far away
             else if (
-                this.owner.position.distanceTo(this.player.position) > 150 &&
+                this.owner.position.distanceTo(this.player.position) > 175 &&
                 this.moveTimer.isStopped()
             ) {
-                // console.log("player is too far away -> normal");
-
                 this.speed = 10;
                 if (this.dir.equals(Vec2.RIGHT)) {
                     this.dir = Vec2.LEFT;
