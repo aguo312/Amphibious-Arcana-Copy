@@ -430,7 +430,9 @@ export default abstract class AALevel extends Scene {
                             enemy.health,
                             enemy.maxHealth
                         );
+                        let current = enemy.animation.currentAnimation;
                         enemy.animation.play("TAKING_DAMAGE");
+                        enemy.animation.queue(current);
                     }
 
                     this.handleFireballHit();
@@ -482,7 +484,9 @@ export default abstract class AALevel extends Scene {
                         boss.health,
                         boss.maxHealth
                     );
+                    let current = boss.animation.currentAnimation;
                     boss.animation.playIfNotAlready("TAKING_DAMAGE");
+                    boss.animation.queue(current);
                     this.bossIFrameTimer.start();
                 }
                 break;
@@ -497,7 +501,9 @@ export default abstract class AALevel extends Scene {
                         boss.health,
                         boss.maxHealth
                     );
+                    let current = boss.animation.currentAnimation;
                     boss.animation.playIfNotAlready("TAKING_DAMAGE");
+                    boss.animation.queue(current);
                     this.bossIFrameTimer.start();
                 }
                 break;

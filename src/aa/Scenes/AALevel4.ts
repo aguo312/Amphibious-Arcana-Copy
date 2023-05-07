@@ -14,10 +14,11 @@ import CheatsManager from "../CheatsManager";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
-import MindFlayerBehavior from "../AI/NPC/NPCBehaviors/MindFlayerBehavior";
-import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
+// import MindFlayerBehavior from "../AI/NPC/NPCBehaviors/MindFlayerBehavior";
+// import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
 import Color from "../../Wolfie2D/Utils/Color";
 import Level5 from "./AALevel5";
+import Boss2Behavior from "../AI/NPC/NPCBehaviors/Boss2Behavior";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
@@ -45,7 +46,7 @@ export default class Level4 extends AALevel {
 
     protected cheatsManager: CheatsManager;
 
-    protected mindFlayerParticleSystem: MindFlayerParticles;
+    // protected mindFlayerParticleSystem: MindFlayerParticles;
 
     public constructor(
         viewport: Viewport,
@@ -83,7 +84,7 @@ export default class Level4 extends AALevel {
         this.bossSpawnTriggerHalfSize = new Vec2(10, 160).mult(this.tilemapScale);
 
         this.bossFightCenterPoint = new Vec2(650, 0).mult(this.tilemapScale);
-        this.bossName = "Mind Flayer";
+        this.bossName = "Traveler";
 
         this.cheatsManager = new CheatsManager(this.sceneManager, {
             levelMusicKey: this.levelMusicKey,
@@ -104,7 +105,8 @@ export default class Level4 extends AALevel {
         this.load.tilemap(this.tilemapKey, Level4.TILEMAP_PATH);
 
         // Load in the enemy sprites
-        this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
+        // this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
+        this.load.spritesheet("Traveler", "hw4_assets/spritesheets/traveler.json");
 
         // Load background image
         this.load.image(this.backgroundKey, Level3.BACKGROUND_PATH);
@@ -141,31 +143,22 @@ export default class Level4 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-        // initialize boss weapon system
-        this.mindFlayerParticleSystem = new MindFlayerParticles(50, Vec2.ZERO, 1000, 3, 10, 50);
-        this.mindFlayerParticleSystem.initializePool(this, AALayers.PRIMARY);
-        const particles = this.mindFlayerParticleSystem.getPool();
-        particles.forEach((particle) => this.allNPCS.set(particle.id, particle));
+        // level boss
+        const traveler = this.add.animatedSprite("Traveler", AALayers.PRIMARY);
+        traveler.scale.scale(0.25);
+        traveler.position.set(690, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
+        traveler.addPhysics(undefined, undefined, false, false);
+        traveler.setGroup(AAPhysicsGroups.ENEMY);
+        traveler.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+        traveler.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
+        traveler.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_BOSS, null);
+        traveler.health = 10;
+        traveler.maxHealth = 10;
 
-        const mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
-        mindFlayer.scale.scale(0.25);
-        mindFlayer.position.set(690, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
-        mindFlayer.addPhysics(undefined, undefined, false, false);
-        mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
-        mindFlayer.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
-        mindFlayer.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
-        mindFlayer.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_BOSS, null);
-        mindFlayer.health = 10;
-        mindFlayer.maxHealth = 10;
+        traveler.addAI(Boss2Behavior, { player: this.player });
+        this.allNPCS.set(traveler.id, traveler);
 
-        mindFlayer.addAI(MindFlayerBehavior, {
-            player: this.player,
-            particles: this.mindFlayerParticleSystem,
-        });
-        this.allNPCS.set(mindFlayer.id, mindFlayer);
-        // this.allNPCS.set(mindFlayerParticleSystem.id)
-
-        mindFlayer.tweens.add("DEATH", {
+        traveler.tweens.add("DEATH", {
             startDelay: 0,
             duration: 500,
             effects: [
@@ -183,8 +176,52 @@ export default class Level4 extends AALevel {
                 },
             ],
             onEnd: [AAEvents.NPC_KILLED, AAEvents.PLAYER_ENTERED_LEVEL_END],
-            // onEnd: [AAEvents.BOSS_KILLED],
         });
+
+        // // initialize boss weapon system
+        // this.mindFlayerParticleSystem = new MindFlayerParticles(50, Vec2.ZERO, 1000, 3, 10, 50);
+        // this.mindFlayerParticleSystem.initializePool(this, AALayers.PRIMARY);
+        // const particles = this.mindFlayerParticleSystem.getPool();
+        // particles.forEach((particle) => this.allNPCS.set(particle.id, particle));
+
+        // const mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
+        // mindFlayer.scale.scale(0.25);
+        // mindFlayer.position.set(690, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
+        // mindFlayer.addPhysics(undefined, undefined, false, false);
+        // mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
+        // mindFlayer.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+        // mindFlayer.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
+        // mindFlayer.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_BOSS, null);
+        // mindFlayer.health = 10;
+        // mindFlayer.maxHealth = 10;
+
+        // mindFlayer.addAI(MindFlayerBehavior, {
+        //     player: this.player,
+        //     particles: this.mindFlayerParticleSystem,
+        // });
+        // this.allNPCS.set(mindFlayer.id, mindFlayer);
+        // // this.allNPCS.set(mindFlayerParticleSystem.id)
+
+        // mindFlayer.tweens.add("DEATH", {
+        //     startDelay: 0,
+        //     duration: 500,
+        //     effects: [
+        //         {
+        //             property: "rotation",
+        //             start: 0,
+        //             end: Math.PI,
+        //             ease: EaseFunctionType.IN_OUT_QUAD,
+        //         },
+        //         {
+        //             property: "alpha",
+        //             start: 1,
+        //             end: 0,
+        //             ease: EaseFunctionType.IN_OUT_QUAD,
+        //         },
+        //     ],
+        //     onEnd: [AAEvents.NPC_KILLED, AAEvents.PLAYER_ENTERED_LEVEL_END],
+        //     // onEnd: [AAEvents.BOSS_KILLED],
+        // });
     }
 
     protected initializeTriggers(): void {

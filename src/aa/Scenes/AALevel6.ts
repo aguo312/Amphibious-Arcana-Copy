@@ -22,6 +22,8 @@ import RangedEnemyParticles from "../AI/NPC/RangedEnemyParticles";
 import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
+import MindFlayerBehavior from "../AI/NPC/NPCBehaviors/MindFlayerBehavior";
+import Boss2Behavior from "../AI/NPC/NPCBehaviors/Boss2Behavior";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -153,6 +155,7 @@ export default class Level6 extends AALevel {
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
+        this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level6.LEVEL_MUSIC_PATH);
@@ -200,6 +203,7 @@ export default class Level6 extends AALevel {
     }
 
     protected initializeNPCs(): void {
+        // regular enemies
         let melee = [
             new Vec2(30, 23).scale(16),
             new Vec2(44, 23).scale(16),
@@ -323,6 +327,49 @@ export default class Level6 extends AALevel {
                 ],
                 onEnd: [AAEvents.NPC_KILLED],
             });
+        });
+
+        // level boss
+        this.mindFlayerParticleSystem = new MindFlayerParticles(50, Vec2.ZERO, 1000, 3, 10, 50);
+        this.mindFlayerParticleSystem.initializePool(this, AALayers.PRIMARY);
+        const particles = this.mindFlayerParticleSystem.getPool();
+        particles.forEach((particle) => this.allNPCS.set(particle.id, particle));
+
+        const mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
+        mindFlayer.scale.scale(0.25);
+        mindFlayer.position.set(48, 592).mult(this.tilemapScale);
+        mindFlayer.addPhysics(undefined, undefined, false, false);
+        mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
+        mindFlayer.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+        mindFlayer.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
+        mindFlayer.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_BOSS, null);
+        mindFlayer.health = 10;
+        mindFlayer.maxHealth = 10;
+
+        mindFlayer.addAI(MindFlayerBehavior, {
+            player: this.player,
+            particles: this.mindFlayerParticleSystem,
+        });
+        this.allNPCS.set(mindFlayer.id, mindFlayer);
+
+        mindFlayer.tweens.add("DEATH", {
+            startDelay: 0,
+            duration: 500,
+            effects: [
+                {
+                    property: "rotation",
+                    start: 0,
+                    end: Math.PI,
+                    ease: EaseFunctionType.IN_OUT_QUAD,
+                },
+                {
+                    property: "alpha",
+                    start: 1,
+                    end: 0,
+                    ease: EaseFunctionType.IN_OUT_QUAD,
+                },
+            ],
+            onEnd: [AAEvents.NPC_KILLED, AAEvents.PLAYER_ENTERED_LEVEL_END],
         });
     }
 

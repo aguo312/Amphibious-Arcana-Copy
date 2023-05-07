@@ -1,3 +1,9 @@
+export const Boss2States = {
+    IDLE: "IDLE",
+    CHARGE: "CHARGE",
+    DEAD: "DEAD",
+};
+
 export const MFStates = {
     DEAD: "DEAD",
     RUN_LEFT: "RUN_LEFT",
