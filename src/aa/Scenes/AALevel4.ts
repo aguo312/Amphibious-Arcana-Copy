@@ -178,6 +178,7 @@ export default class Level4 extends AALevel {
                 },
             ],
             onEnd: [AAEvents.NPC_KILLED, AAEvents.PLAYER_ENTERED_LEVEL_END],
+            // onEnd: [AAEvents.BOSS_KILLED],
         });
     }
 

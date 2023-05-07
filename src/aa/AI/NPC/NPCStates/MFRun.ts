@@ -2,15 +2,18 @@ import BossState from "./BossState";
 import { MFStates } from "./BossStates";
 import CanvasNode from "../../../../Wolfie2D/Nodes/CanvasNode";
 import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
+import MindFlayerParticles from "../MindFlayerParticles";
 
 export default class Run extends BossState {
     protected dir: number;
+    protected weaponSystem: MindFlayerParticles;
 
     public onEnter(options: Record<string, any>): void {
         console.log("ENTERING RUN");
         this.owner.animation.play("MOVING_LEFT");
         this.parent.speed = this.parent.MAX_SPEED;
         this.dir = options.dir;
+        this.weaponSystem = options.weaponSystem;
     }
 
     public update(deltaT: number): void {
@@ -48,6 +51,8 @@ export default class Run extends BossState {
         return {
             dir: this.dir,
             started: true,
+            weaponSystem: this.weaponSystem,
+            prevState: MFStates.RUN,
         };
     }
 }

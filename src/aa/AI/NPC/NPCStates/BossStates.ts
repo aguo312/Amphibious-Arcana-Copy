@@ -3,6 +3,6 @@ export const MFStates = {
     RUN_LEFT: "RUN_LEFT",
     RUN_RIGHT: "RUN_RIGHT",
     RUN: "RUN",
-    ATTACKING: "ATTACKING",
+    ATTACK: "ATTACK",
     IDLE: "IDLE",
 } as const;
