@@ -1,4 +1,3 @@
-import { EnemyAnimations } from "../../../Enemy/EnemyController";
 import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
 import { AAEvents } from "../../../AAEvents";
 import { MFStates } from "./BossStates";
@@ -6,16 +5,16 @@ import Receiver from "../../../../Wolfie2D/Events/Receiver";
 import BossState from "./BossState";
 import Timer from "../../../../Wolfie2D/Timing/Timer";
 import MindFlayerParticles from "../MindFlayerParticles";
+import { GameEventType } from "../../../../Wolfie2D/Events/GameEventType";
 
-export default class MFIdle extends BossState {
+export default class MFAttack extends BossState {
     private receiver: Receiver;
     private idleTimer: Timer;
     private weaponSystem: MindFlayerParticles;
     private dir: number;
 
     public onEnter(options: Record<string, any>): void {
-        console.log("ENTERING IDLE");
-        this.owner.animation.play(EnemyAnimations.IDLE);
+        console.log("ENTERING ATTACK");
         this.parent.speed = this.parent.MIN_SPEED;
 
         this.parent.velocity.x = 0;
@@ -23,30 +22,8 @@ export default class MFIdle extends BossState {
         this.dir = options.dir;
         this.weaponSystem = options.weaponSystem;
 
-        if (options.prevState === MFStates.ATTACK) {
-            this.idleTimer = new Timer(
-                2000,
-                () => {
-                    this.finished(MFStates.RUN);
-                },
-                false
-            );
-        } else {
-            this.idleTimer = new Timer(
-                2000,
-                () => {
-                    this.finished(MFStates.ATTACK);
-                },
-                false
-            );
-        }
-
-        if (options.started) {
-            this.idleTimer.start();
-        }
-
-        this.receiver = new Receiver();
-        this.receiver.subscribe(AAEvents.SPAWN_BOSS);
+        this.attack();
+        this.finished(MFStates.IDLE);
     }
 
     public update(deltaT: number): void {
@@ -57,10 +34,22 @@ export default class MFIdle extends BossState {
         }
     }
 
+    private attack(): void {
+        this.owner.invertX = this.dir === 1 ? true : false;
+        this.owner.animation.playIfNotAlready("CASTING_LEFT", false);
+
+        this.weaponSystem.setDir(this.dir);
+        this.weaponSystem.startSystem(1000, 0, this.owner.position);
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+            key: this.owner.getScene().getAttackAudioKey(),
+            loop: false,
+            holdReference: false,
+        });
+    }
+
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case AAEvents.SPAWN_BOSS: {
-                this.idleTimer.start();
                 break;
             }
         }
@@ -71,7 +60,7 @@ export default class MFIdle extends BossState {
             dir: this.dir,
             started: true,
             weaponSystem: this.weaponSystem,
-            prevState: MFStates.IDLE,
+            prevState: MFStates.ATTACK,
         };
     }
 }

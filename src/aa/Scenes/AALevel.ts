@@ -636,6 +636,9 @@ export default abstract class AALevel extends Scene {
 
                 break;
             }
+            case AAEvents.BOSS_KILLED: {
+                break;
+            }
             case "GUIDE": {
                 const texts = [
                     "You've unlocked your fireball! It deals damage to enemies",
