@@ -276,7 +276,10 @@ export default class Level6 extends AALevel {
         ranged.forEach((l) => {
             this.rangedEnemyParticleSystem = new RangedEnemyParticles(1, Vec2.ZERO, 1000, 3, 10, 1);
             this.rangedEnemyParticleSystem.initializePool(this, AALayers.PRIMARY);
-            let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
+            const particles = this.rangedEnemyParticleSystem.getPool();
+            particles.forEach((particle) => this.allNPCS.set(particle.id, particle));
+
+            const scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
             scabbers.scale.scale(0.25);
             scabbers.position.set(l.x, l.y);
             scabbers.addPhysics();
@@ -287,7 +290,8 @@ export default class Level6 extends AALevel {
 
             scabbers.health = 3;
             scabbers.maxHealth = 3;
-            let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
+
+            const healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
                 size: scabbers.size.clone().scaled(1.5, 0.25),
                 offset: scabbers.size.clone().scaled(0, -1 / 5),
             });
