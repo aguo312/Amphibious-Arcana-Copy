@@ -44,7 +44,7 @@ export default class RangedEnemyParticles extends ParticleSystem {
      */
     public setParticleAnimation(particle: Particle) {
         // Give the particle a random velocity.
-        particle.vel = new Vec2(100, 0);
+        particle.vel = new Vec2(150, 0);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
         // particle.vel.rotateCCW(Math.PI - 0.11181977801753654);
