@@ -66,7 +66,7 @@ export default class Level3 extends AALevel {
 
     protected enemyPositions: Array<Vec2>;
 
-    protected prevViewportCenter: Vec2;
+    // protected prevViewportCenter: Vec2;
 
     public constructor(
         viewport: Viewport,
@@ -211,6 +211,8 @@ export default class Level3 extends AALevel {
         this.load.keepAudio(this.grappleAudioKey);
         this.load.keepAudio(this.enemyDeathAudioKey);
         this.load.keepAudio(this.playerDeathAudioKey);
+
+        this.load.keepImage(this.backgroundKey);
 
         this.load.keepImage("fireIcon");
         this.load.keepImage("tongueIcon");

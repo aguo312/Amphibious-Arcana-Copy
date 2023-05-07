@@ -73,6 +73,7 @@ export default class Level4 extends AALevel {
         this.grappleAudioKey = Level3.GRAPPLE_AUDIO_KEY;
         this.enemyDeathAudioKey = Level3.ENEMY_DEATH_AUDIO_KEY;
         this.playerDeathAudioKey = Level3.PLAYER_DEATH_AUDIO_KEY;
+        this.backgroundKey = Level3.BACKGROUND_KEY;
 
         // Level end size and position
         // this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
@@ -88,6 +89,12 @@ export default class Level4 extends AALevel {
             levelMusicKey: this.levelMusicKey,
         });
         this.currLevel = Level4;
+
+        // Setup bg stuff
+        this.bgScale = new Vec2(8.0, 8.0);
+        this.bgOffset = new Vec2(100, 50).mult(this.tilemapScale);
+        this.bgMovementScale = 0.7;
+        this.bgMovementScaleY = 0.6;
     }
     /**
      * Load in resources for level 2.
@@ -98,6 +105,9 @@ export default class Level4 extends AALevel {
 
         // Load in the enemy sprites
         this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
+
+        // Load background image
+        this.load.image(this.backgroundKey, Level3.BACKGROUND_PATH);
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level4.LEVEL_MUSIC_PATH);
