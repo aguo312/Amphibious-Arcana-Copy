@@ -199,26 +199,80 @@ export default class Level6 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-        let locations = [
-            // new Vec2(236, 640),
-            // new Vec2(140, 64),
-            // new Vec2(184, 288),
-            // new Vec2(248, 384),
-            // new Vec2(329, 640),
-            // new Vec2(1047, 640),
-            // new Vec2(625, 640),
-            // new Vec2(1416, 640),
-            // new Vec2(1335, 368),
-            // new Vec2(1120, 368),
-            // new Vec2(712, 240),
-            // new Vec2(488, 288),
-            // new Vec2(860, 512),
-            // new Vec2(1090, 640),
-            // new Vec2(1442, 640),
-            // new Vec2(1556, 432),
-            new Vec2(1556, 256),
+        let melee = [
+            new Vec2(30, 23).scale(16),
+            new Vec2(44, 23).scale(16),
+            new Vec2(66, 15).scale(16),
+            new Vec2(102, 4).scale(16),
+            new Vec2(66, 44).scale(16),
+            new Vec2(81, 36).scale(16),
+            new Vec2(100, 39).scale(16),
+            new Vec2(120, 39).scale(16),
+            new Vec2(82, 58).scale(16),
+            new Vec2(127, 58).scale(16),
+            new Vec2(35, 75).scale(16),
+            new Vec2(54, 75).scale(16),
+            new Vec2(76, 75).scale(16),
+            new Vec2(110, 75).scale(16),
         ];
-        locations.forEach((l) => {
+        let ranged = [
+            new Vec2(87, 15).scale(16),
+            new Vec2(120, 15).scale(16),
+            new Vec2(9, 48).scale(16),
+            new Vec2(43, 59).scale(16),
+            new Vec2(55, 54).scale(16),
+            new Vec2(92, 39).scale(16),
+            new Vec2(114, 39).scale(16),
+            new Vec2(94, 58).scale(16),
+            new Vec2(105, 58).scale(16),
+            new Vec2(45, 75).scale(16),
+            new Vec2(65, 75).scale(16),
+            new Vec2(87, 75).scale(16),
+            new Vec2(8, 65).scale(16),
+            new Vec2(16, 65).scale(16),
+        ];
+        melee.forEach((l) => {
+            let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
+            scabbers.scale.scale(0.25);
+            scabbers.position.set(l.x, l.y);
+            scabbers.addPhysics();
+            scabbers.setGroup(AAPhysicsGroups.ENEMY);
+            scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+            scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
+            scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
+
+            scabbers.health = 3;
+            scabbers.maxHealth = 3;
+            let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
+                size: scabbers.size.clone().scaled(1.5, 0.25),
+                offset: scabbers.size.clone().scaled(0, -1 / 5),
+            });
+            this.healthbars.set(scabbers.id, healthbar);
+            scabbers.animation.play("IDLE");
+            scabbers.addAI(ScabberBehavior, { player: this.player, tilemap: "Collidable" }); // add particles here
+            this.allNPCS.set(scabbers.id, scabbers);
+
+            scabbers.tweens.add("DEATH", {
+                startDelay: 0,
+                duration: 500,
+                effects: [
+                    {
+                        property: "rotation",
+                        start: 0,
+                        end: Math.PI,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                    {
+                        property: "alpha",
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                ],
+                onEnd: [AAEvents.NPC_KILLED],
+            });
+        });
+        ranged.forEach((l) => {
             this.rangedEnemyParticleSystem = new RangedEnemyParticles(1, Vec2.ZERO, 1000, 3, 10, 1);
             this.rangedEnemyParticleSystem.initializePool(this, AALayers.PRIMARY);
             let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
