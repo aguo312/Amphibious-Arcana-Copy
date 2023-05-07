@@ -52,7 +52,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
 
     public override update(deltaT: number): void {
         let playerDir = this.player.position.x > this.owner.position.x ? 1 : -1;
-
+        let yRange = Math.abs(this.player.position.y - this.owner.position.y);
         /**
          * if player is in attack range 70-125 -> shoot and run away
          * if player is in follow range 175 -> follow
@@ -61,6 +61,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
         if (!this.owner.frozen) {
             // attack if done running away and can attack and player is between 70 and 125 units
             if (
+                yRange <= 50 &&
                 this.owner.position.distanceTo(this.player.position) >= 70 &&
                 this.owner.position.distanceTo(this.player.position) <= 125 &&
                 this.runTimer.isStopped() &&
@@ -86,6 +87,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
             }
             // idle if done attacking and player is between 70 and 125 units
             else if (
+                yRange <= 50 &&
                 this.owner.position.distanceTo(this.player.position) >= 70 &&
                 this.owner.position.distanceTo(this.player.position) <= 125
             ) {
@@ -99,6 +101,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
             }
             // attack if can attack and player is within 70 units
             else if (
+                yRange <= 50 &&
                 this.owner.position.distanceTo(this.player.position) < 70 &&
                 this.attackCooldownTimer.isStopped()
             ) {
