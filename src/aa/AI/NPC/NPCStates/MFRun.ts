@@ -3,8 +3,12 @@ import { MFStates } from "./BossStates";
 import CanvasNode from "../../../../Wolfie2D/Nodes/CanvasNode";
 import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 import MindFlayerParticles from "../MindFlayerParticles";
+import GameEvent from "../../../../Wolfie2D/Events/GameEvent";
+import { AAEvents } from "../../../AAEvents";
+import Receiver from "../../../../Wolfie2D/Events/Receiver";
 
 export default class Run extends BossState {
+    private receiver: Receiver;
     protected dir: number;
     protected weaponSystem: MindFlayerParticles;
 
@@ -14,10 +18,17 @@ export default class Run extends BossState {
         this.parent.speed = this.parent.MAX_SPEED;
         this.dir = options.dir;
         this.weaponSystem = options.weaponSystem;
+
+        this.receiver = new Receiver();
+        this.receiver.subscribe(AAEvents.BOSS_KILLED);
     }
 
     public update(deltaT: number): void {
         super.update(deltaT);
+
+        while (this.receiver.hasNextEvent()) {
+            this.handleEvent(this.receiver.getNextEvent());
+        }
 
         this.lockPlayer(
             this.owner,
@@ -28,6 +39,15 @@ export default class Run extends BossState {
         this.parent.velocity.y += this.gravity * deltaT;
         this.parent.velocity.x = this.dir * this.parent.speed;
         this.owner.move(this.parent.velocity.scaled(deltaT));
+    }
+
+    public handleEvent(event: GameEvent): void {
+        switch (event.type) {
+            case AAEvents.BOSS_KILLED: {
+                this.finished(MFStates.DEAD);
+                break;
+            }
+        }
     }
 
     protected lockPlayer(player: CanvasNode, viewportCenter: Vec2, viewportHalfSize: Vec2): void {

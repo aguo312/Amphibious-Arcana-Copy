@@ -138,7 +138,7 @@ export default class Level4 extends AALevel {
         const mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
         mindFlayer.scale.scale(0.25);
         mindFlayer.position.set(690, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
-        mindFlayer.addPhysics();
+        mindFlayer.addPhysics(undefined, undefined, false, false);
         mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
         mindFlayer.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
         mindFlayer.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
@@ -146,14 +146,6 @@ export default class Level4 extends AALevel {
         mindFlayer.health = 10;
         mindFlayer.maxHealth = 10;
 
-        // const healthbar = new HealthbarHUD(this, mindFlayer, AALayers.UI, {
-        //     size: mindFlayer.size.clone().scaled(1.0, 0.1),
-        //     offset: mindFlayer.size.clone().scaled(0, -0.18),
-        // });
-        // healthbar.visible = false;
-        // this.healthbars.set(mindFlayer.id, healthbar);
-
-        // mindFlayer.animation.play("IDLE");
         mindFlayer.addAI(MindFlayerBehavior, {
             player: this.player,
             particles: this.mindFlayerParticleSystem,

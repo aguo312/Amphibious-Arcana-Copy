@@ -9,6 +9,7 @@ import MFRun from "../NPCStates/MFRun";
 import { MFStates } from "../NPCStates/BossStates";
 import MFIdle from "../NPCStates/MFIdle";
 import MFAttack from "../NPCStates/MFAttack";
+import MFDead from "../NPCStates/MFDead";
 
 export default class MindFlayerBehavior extends NPCBehavior {
     /** The GameNode that owns this NPCGoapAI */
@@ -27,11 +28,13 @@ export default class MindFlayerBehavior extends NPCBehavior {
 
         this.receiver = new Receiver();
         this.receiver.subscribe(AAEvents.SPAWN_BOSS);
+        this.receiver.subscribe(AAEvents.BOSS_KILLED);
 
         // Add all states
         this.addState(MFStates.IDLE, new MFIdle(this, this.owner));
         this.addState(MFStates.RUN, new MFRun(this, this.owner));
         this.addState(MFStates.ATTACK, new MFAttack(this, this.owner));
+        this.addState(MFStates.DEAD, new MFDead(this, this.owner));
 
         // Set the start state
         this.initialize(MFStates.IDLE, { dir: -1, weaponSystem: this.weaponSystem });
@@ -53,6 +56,10 @@ export default class MindFlayerBehavior extends NPCBehavior {
         switch (event.type) {
             case AAEvents.SPAWN_BOSS: {
                 this.started = true;
+                break;
+            }
+            case AAEvents.BOSS_KILLED: {
+                this.weaponSystem.stopSystem();
                 break;
             }
         }
