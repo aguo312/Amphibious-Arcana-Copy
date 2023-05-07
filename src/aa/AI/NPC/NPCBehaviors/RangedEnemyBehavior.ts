@@ -7,6 +7,7 @@ import PlayerController from "../../Player/PlayerController";
 import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 import RangedEnemyParticles from "../RangedEnemyParticles";
 import OrthogonalTilemap from "../../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
+import { GameEventType } from "../../../../Wolfie2D/Events/GameEventType";
 
 export const EnemyStates = {
     IDLE: "IDLE",
@@ -14,7 +15,7 @@ export const EnemyStates = {
 
 export default class RangedEnemyBehavior extends NPCBehavior {
     /** The GameNode that owns this NPCGoapAI */
-    protected override owner: NPCActor;
+    protected override owner: AAAnimatedSprite;
 
     protected player: AAAnimatedSprite;
 
@@ -76,6 +77,11 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                     this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 }
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.owner.getScene().getAttackAudioKey(),
+                    loop: false,
+                    holdReference: false,
+                });
                 this.attackCooldownTimer.start();
             }
             // idle if done attacking and player is between 70 and 125 units
@@ -107,6 +113,11 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                     this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 }
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.owner.getScene().getAttackAudioKey(),
+                    loop: false,
+                    holdReference: false,
+                });
                 this.attackCooldownTimer.start();
             }
             // run away for 1 second if can run and player is within 70 units
