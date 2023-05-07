@@ -11,26 +11,34 @@ import Vec2 from "../../../Wolfie2D/DataTypes/Vec2";
  * The particle system used for the player's weapon
  */
 export default class MindFlayerParticles extends ParticleSystem {
-
     private particleVec: Vec2 = Vec2.ZERO;
-    private dir: number = 1;
+    private dir = 1;
+    // private dir = Vec2.ZERO;
 
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
      */
-    protected _rotation: number = 0;
-    public get rotation(): number { return this._rotation; }
-    public set rotation(rotation: number) { this._rotation = rotation; }
+    protected _rotation = 0;
+    public get rotation(): number {
+        return this._rotation;
+    }
+    public set rotation(rotation: number) {
+        this._rotation = rotation;
+    }
 
     /**
      * @returns true if the particle system is running; false otherwise.
      */
-    public isSystemRunning(): boolean { return this.systemRunning; }
+    public isSystemRunning(): boolean {
+        return this.systemRunning;
+    }
     /**
-     * 
+     *
      * @returns the particles in the pool of particles used in this particles system
      */
-    public getPool(): Array<Particle> { return this.particlePool; }
+    public getPool(): Array<Particle> {
+        return this.particlePool;
+    }
 
     /**
      * Sets the animations for a particle in the player's weapon
@@ -38,7 +46,8 @@ export default class MindFlayerParticles extends ParticleSystem {
      */
     public setParticleAnimation(particle: Particle) {
         // Give the particle a random velocity.
-        particle.vel = RandUtils.randVec(this.dir*100, this.dir*150, -30, 50);
+        particle.vel = RandUtils.randVec(this.dir * 100, this.dir * 150, -30, 50);
+        // particle.vel = RandUtils.randVec(this.dir.x, this.dir.x - 50, this.dir.y, this.dir.y - 80);
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
 
@@ -47,10 +56,9 @@ export default class MindFlayerParticles extends ParticleSystem {
             new Color(60, 227, 18, 1),
             new Color(58, 166, 31, 1),
             new Color(98, 232, 65, 1),
-            new Color(42, 196, 4, 1)
+            new Color(42, 196, 4, 1),
         ];
-        particle.color = colors[RandUtils.randInt(0,4)];
-
+        particle.color = colors[RandUtils.randInt(0, 4)];
 
         if (!particle.tweens) {
             return;
@@ -65,9 +73,9 @@ export default class MindFlayerParticles extends ParticleSystem {
                     property: "alpha",
                     start: 1,
                     end: 0,
-                    ease: EaseFunctionType.IN_OUT_SINE
-                }
-            ]
+                    ease: EaseFunctionType.IN_OUT_SINE,
+                },
+            ],
         });
     }
 
@@ -77,10 +85,10 @@ export default class MindFlayerParticles extends ParticleSystem {
 
     /**
      * Initializes this particle system in the given scene and layer
-     * 
-     * All particles in the particle system should have their physics group set to 
+     *
+     * All particles in the particle system should have their physics group set to
      * the HW4PhysicsGroup.PLAYER_WEAPON.
-     * 
+     *
      * @param scene the scene
      * @param layer the layer in the scene
      */
@@ -91,5 +99,4 @@ export default class MindFlayerParticles extends ParticleSystem {
             this.particlePool[i].setGroup(AAPhysicsGroups.BOSS_PARTICLE);
         }
     }
-
 }

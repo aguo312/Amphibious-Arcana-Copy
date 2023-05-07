@@ -18,6 +18,8 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "prefer-const": "warn"
+        "prefer-const": "warn",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-empty-function": "off"
     }
 }

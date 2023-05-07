@@ -84,31 +84,51 @@
         },
         {
             "name": "TAKING_DAMAGE",
-            "repeat": true,
+            "repeat": false,
             "frames": [
                 {
                     "index": 19,
-                    "duration": 12
+                    "duration": 8
                 },
                 {
                     "index": 20,
-                    "duration": 12
+                    "duration": 8
                 },
                 {
                     "index": 21,
-                    "duration": 12
+                    "duration": 8
                 },
                 {
                     "index": 22,
-                    "duration": 12
+                    "duration": 8
                 },
                 {
                     "index": 23,
-                    "duration": 12
+                    "duration": 8
                 },
                 {
                     "index": 24,
-                    "duration": 12
+                    "duration": 8
+                },
+                {
+                    "index": 23,
+                    "duration": 8
+                },
+                {
+                    "index": 22,
+                    "duration": 8
+                },
+                {
+                    "index": 21,
+                    "duration": 8
+                },
+                {
+                    "index": 20,
+                    "duration": 8
+                },
+                {
+                    "index": 19,
+                    "duration": 8
                 }
             ]
         },

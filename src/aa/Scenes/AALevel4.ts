@@ -137,7 +137,7 @@ export default class Level4 extends AALevel {
 
         const mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
         mindFlayer.scale.scale(0.25);
-        mindFlayer.position.set(700, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
+        mindFlayer.position.set(690, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
         mindFlayer.addPhysics();
         mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
         mindFlayer.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
@@ -153,7 +153,7 @@ export default class Level4 extends AALevel {
         // healthbar.visible = false;
         // this.healthbars.set(mindFlayer.id, healthbar);
 
-        mindFlayer.animation.play("IDLE");
+        // mindFlayer.animation.play("IDLE");
         mindFlayer.addAI(MindFlayerBehavior, {
             player: this.player,
             particles: this.mindFlayerParticleSystem,
@@ -182,13 +182,13 @@ export default class Level4 extends AALevel {
     }
 
     protected initializeTriggers(): void {
-        const bossSpawnTrigger = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
+        this.bossSpawnTrigger = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
             position: this.bossSpawnTriggerPos,
             size: this.bossSpawnTriggerHalfSize,
         });
-        bossSpawnTrigger.color = Color.TRANSPARENT;
-        bossSpawnTrigger.addPhysics(undefined, undefined, false, true);
-        bossSpawnTrigger.setTrigger(AAPhysicsGroups.PLAYER, AAEvents.SPAWN_BOSS, null);
+        this.bossSpawnTrigger.color = Color.TRANSPARENT;
+        this.bossSpawnTrigger.addPhysics(undefined, undefined, false, true);
+        this.bossSpawnTrigger.setTrigger(AAPhysicsGroups.PLAYER, AAEvents.SPAWN_BOSS, null);
     }
 
     public startScene(): void {

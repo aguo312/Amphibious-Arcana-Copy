@@ -7,19 +7,18 @@ import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import PlayerController from "../PlayerController";
 
 /**
- * An abstract state for the PlayerController 
+ * An abstract state for the PlayerController
  */
 export default abstract class PlayerState extends State {
-
     protected parent: PlayerController;
-	protected owner: AAAnimatedSprite;
-	protected gravity: number;
+    protected owner: AAAnimatedSprite;
+    protected gravity: number;
 
-	public constructor(parent: PlayerController, owner: AAAnimatedSprite){
-		super(parent);
-		this.owner = owner;
+    public constructor(parent: PlayerController, owner: AAAnimatedSprite) {
+        super(parent);
+        this.owner = owner;
         this.gravity = 500;
-	}
+    }
 
     public abstract onEnter(options: Record<string, any>): void;
 
@@ -27,23 +26,23 @@ export default abstract class PlayerState extends State {
      * Handle game events from the parent.
      * @param event the game event
      */
-	public handleInput(event: GameEvent): void {
-        switch(event.type) {
+    public handleInput(event: GameEvent): void {
+        switch (event.type) {
             // Default - throw an error
             default: {
                 throw new Error(`Unhandled event in PlayerState of type ${event.type}`);
             }
         }
-	}
+    }
 
-	public update(deltaT: number): void {
-        let direction = this.parent.inputDir;
-        let mousePos = this.parent.faceDir;
+    public update(deltaT: number): void {
+        const direction = this.parent.inputDir;
+        const mousePos = this.parent.faceDir;
 
-		if(direction.x !== 0){
-			this.owner.invertX = MathUtils.sign(direction.x) < 0;
-		}
-        if(mousePos.x !== 0 && Input.isMouseJustPressed()){
+        if (direction.x !== 0) {
+            this.owner.invertX = MathUtils.sign(direction.x) < 0;
+        }
+        if (mousePos.x !== 0 && Input.isMouseJustPressed()) {
             this.owner.invertX = MathUtils.sign(mousePos.x) < 0;
         }
     }

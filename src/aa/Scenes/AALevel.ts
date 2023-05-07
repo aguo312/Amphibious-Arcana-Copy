@@ -169,6 +169,8 @@ export default abstract class AALevel extends Scene {
 
     protected deathTimer: Timer;
 
+    protected bossSpawnTrigger: Rect;
+
     /** The background sprite */
     protected bg: Sprite;
 
@@ -428,6 +430,7 @@ export default abstract class AALevel extends Scene {
                             enemy.health,
                             enemy.maxHealth
                         );
+                        enemy.animation.play("TAKING_DAMAGE");
                     }
 
                     this.handleFireballHit();
@@ -479,6 +482,7 @@ export default abstract class AALevel extends Scene {
                         boss.health,
                         boss.maxHealth
                     );
+                    boss.animation.playIfNotAlready("TAKING_DAMAGE");
                     this.bossIFrameTimer.start();
                 }
                 break;
@@ -493,6 +497,7 @@ export default abstract class AALevel extends Scene {
                         boss.health,
                         boss.maxHealth
                     );
+                    boss.animation.playIfNotAlready("TAKING_DAMAGE");
                     this.bossIFrameTimer.start();
                 }
                 break;
@@ -625,7 +630,10 @@ export default abstract class AALevel extends Scene {
                 this.bossHealthBar.visible = true;
                 this.bossHealthBarBg.visible = true;
                 this.bossNameLabel.visible = true;
-                // TODO also need to restrict player/boss to not move outside of this zone
+
+                // Destroy the spawn trigger so we don't call this again
+                this.bossSpawnTrigger.destroy();
+
                 break;
             }
             case "GUIDE": {

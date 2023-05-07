@@ -18,7 +18,6 @@ import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import AntBehavior from "../AI/NPC/NPCBehaviors/AntBehavior";
-import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
