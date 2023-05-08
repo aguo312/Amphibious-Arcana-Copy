@@ -446,7 +446,7 @@ export default abstract class AALevel extends Scene {
                     MainMenu.LEVEL_COUNTER = this.nextLevelNum;
                 }
                 MainMenu.CURRENT_LEVEL = this.nextLevelNum;
-                if (MainMenu.CURRENT_LEVEL >= 6) {
+                if (this.nextLevelNum >= 7) {
                     this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {
                         key: MainMenu.MUSIC_KEY,
                         loop: true,
