@@ -143,27 +143,8 @@ export default class Level2 extends AALevel {
 
         const size = this.viewport.getHalfSize();
 
-        // // Guide Textbox
-        // this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, { position: new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50), text: "I HAVE SO MUCH TO SAY TO YOU" });
-        // this.guideText.size.set(550, 180);
-        // this.guideText.borderRadius = 25;
-        // this.guideText.backgroundColor = new Color(34, 32, 52, 0);
-        // this.guideText.textColor = Color.WHITE;
-        // this.guideText.textColor.a = 0;
-        // this.guideText.fontSize = 24;
-        // this.guideText.font = "MyFont";
+        this.guideText.position = new Vec2(233, 981);
 
-        // this.guideText.position = new Vec2(233, 981);
-
-        // // add random tutorial text
-        // this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
-        //     position: new Vec2(size.x, 180),
-        //     text: "Try shooting fire at your feet to jump!",
-        // });
-        // this.tutorialText.size = new Vec2(300, 25);
-        // // this.tutorialText.backgroundColor = Color.BLACK;
-        // // this.tutorialText.backgroundColor.a = 10;
-        // this.tutorialTextTimer = new Timer(10000, () => (this.tutorialText.visible = false), false);
     }
 
 
@@ -234,7 +215,7 @@ export default class Level2 extends AALevel {
         super.startScene();
         this.guideText.tweens.play("fadeIn");
 
-        // Set the next level to be Level3
+        // Set the next level to be Level4
         this.nextLevel = Level3;
         this.nextLevelNum = 3;
         this.initializeTriggers();

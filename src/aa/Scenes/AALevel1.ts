@@ -140,6 +140,8 @@ export default class Level1 extends AALevel {
         // this.guideText.fontSize = 24;
         // this.guideText.font = "MyFont";
 
+        this.guideText.position = new Vec2(471, 891);
+        //this.guideText.size.set(655, 150);
     }
 
     /**
@@ -206,7 +208,7 @@ export default class Level1 extends AALevel {
         super.startScene();
         this.guideText.tweens.play("fadeIn");
 
-        // Set the next level to be Level2
+        // Set the next level to be Level4
         this.nextLevel = Level2;
         this.nextLevelNum = 2;
 
