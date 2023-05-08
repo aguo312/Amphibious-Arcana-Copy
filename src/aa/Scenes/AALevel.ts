@@ -953,7 +953,9 @@ export default abstract class AALevel extends Scene {
         this.allNPCS.forEach((npc) => {
             // npc.setAIActive(false, null)
             npc.freeze();
-            (<AAAnimatedSprite>npc).animation.pause();
+            if ((<AAAnimatedSprite>npc).animation) {
+                (<AAAnimatedSprite>npc).animation.pause();
+            }
         });
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {
             key: this.levelMusicKey,
@@ -975,7 +977,9 @@ export default abstract class AALevel extends Scene {
         this.allNPCS.forEach((npc) => {
             // npc.setAIActive(true, {})
             npc.unfreeze();
-            (<AAAnimatedSprite>npc).animation.resume();
+            if ((<AAAnimatedSprite>npc).animation) {
+                (<AAAnimatedSprite>npc).animation.resume();
+            }
         });
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
             key: this.levelMusicKey,
