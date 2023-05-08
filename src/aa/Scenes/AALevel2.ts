@@ -26,8 +26,7 @@ import AntQueenBehavior from "../AI/NPC/NPCBehaviors/AntQueenBehavior";
 import Level0 from "./AALevel0";
 
 export default class Level2 extends AALevel {
-    // public static readonly PLAYER_SPAWN = new Vec2(50, 1100);
-    public static readonly PLAYER_SPAWN = new Vec2(1000, 1104);
+    public static readonly PLAYER_SPAWN = new Vec2(50, 1100);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
@@ -235,7 +234,7 @@ export default class Level2 extends AALevel {
         const antQueen = this.add.animatedSprite("Ant", AALayers.PRIMARY);
         antQueen.scale.scale(1.25);
         antQueen.position.set(1405, 1010);
-        antQueen.addPhysics();
+        antQueen.addPhysics(null, null, false)
         antQueen.setGroup(AAPhysicsGroups.ENEMY);
         antQueen.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
         antQueen.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
@@ -343,8 +342,8 @@ export default class Level2 extends AALevel {
             new Vec2(1101, 1000),
             new Vec2(1000, 1000),
             new Vec2(1158, 640),
-            // new Vec2(1300, 1110),
-            // new Vec2(1500, 1110),
+            new Vec2(1300, 1110),
+            new Vec2(1500, 1110),
         ];
 
         for(const pos of this.antPositions){

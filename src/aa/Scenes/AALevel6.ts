@@ -148,7 +148,7 @@ export default class Level6 extends AALevel {
         // add random tutorial text
         this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
             position: new Vec2(size.x, 180),
-            text: "Try shooting ice to freeze enemies!\nClick again while its flying to create an ice platform.",
+            text: "",
         });
         this.tutorialText.size = new Vec2(300, 25);
         // this.tutorialText.backgroundColor = Color.BLACK;

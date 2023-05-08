@@ -131,10 +131,14 @@ export default class Level5 extends AALevel {
 
         let size = this.viewport.getHalfSize();
 
+        this.guideText.position = new Vec2(100, 587);
+        this.guideText.size.set(655, 150);
+
+        
         // add random tutorial text
         this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
             position: new Vec2(size.x, 180),
-            text: "Try shooting ice to freeze enemies!\nClick again while its flying to create an ice platform.",
+            text: "",
         });
         this.tutorialText.size = new Vec2(300, 25);
         // this.tutorialText.backgroundColor = Color.BLACK;
@@ -156,6 +160,8 @@ export default class Level5 extends AALevel {
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
         this.load.spritesheet("Ultroloth", "hw4_assets/spritesheets/ultroloth.json");
+
+        this.load.spritesheet("Guide", "hw4_assets/spritesheets/traveler.json");
 
         this.load.image(this.backgroundKey, Level5.BACKGROUND_PATH);
 
@@ -208,7 +214,7 @@ export default class Level5 extends AALevel {
 
     protected initializeNPCs(): void {
         let melee = [
-            new Vec2(136, 640),
+            // new Vec2(136, 640),
             new Vec2(184, 288),
             new Vec2(248, 384),
             new Vec2(1120, 368),
@@ -268,6 +274,18 @@ export default class Level5 extends AALevel {
                 ],
                 onEnd: [AAEvents.NPC_KILLED],
             });
+
+            const guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
+            guide.scale.scale(0.3);
+            guide.position.set(100, 637);
+            guide.addPhysics(null, null, false);
+            guide.setGroup(AAPhysicsGroups.TUTORIAL);
+            guide.setTrigger(AAPhysicsGroups.PLAYER, "GUIDE", null);
+    
+            guide.animation.play("IDLE");
+            this.allNPCS.set(guide.id, guide);
+            
+
         });
         ranged.forEach((l) => {
             this.rangedEnemyParticleSystem = new RangedEnemyParticles(1, Vec2.ZERO, 1000, 3, 10, 1);
