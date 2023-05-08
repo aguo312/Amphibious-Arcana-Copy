@@ -299,12 +299,14 @@ export default class Level2 extends AALevel {
         ];
 
         for (const pos of this.antPositions) {
-            const ant = this.add.animatedSprite("Ant", AALayers.GUIDE);
+            const ant = this.add.animatedSprite("Ant", AALayers.TONGUE);
             ant.scale.scale(0.25);
             ant.position.set(pos.x, pos.y);
             ant.addPhysics(null, null, false);
             ant.setGroup(AAPhysicsGroups.ENEMY);
             ant.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
+            ant.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+            ant.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
 
             ant.animation.play("IDLE");
             ant.addAI(AntBehavior, { player: this.player });
@@ -316,6 +318,26 @@ export default class Level2 extends AALevel {
             });
             this.healthbars.set(ant.id, healthbar);
             this.allNPCS.set(ant.id, ant);
+
+            ant.tweens.add("DEATH", {
+                startDelay: 0,
+                duration: 500,
+                effects: [
+                    {
+                        property: "rotation",
+                        start: 0,
+                        end: Math.PI,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                    {
+                        property: "alpha",
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                ],
+                onEnd: [AAEvents.NPC_KILLED],
+            });
         }
     }
 

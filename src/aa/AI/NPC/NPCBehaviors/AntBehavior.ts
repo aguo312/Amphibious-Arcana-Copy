@@ -42,54 +42,58 @@ export default class AntBehavior extends NPCBehavior {
 
         const distanceToPlayer = this.owner.position.distanceTo(this.player.position);
 
-        if (distanceToPlayer < attackRange && this.attackCooldownTimer.isStopped()) {
-            this.owner.animation.play("ATTACKING", false, AAEvents.PLAYER_HIT);
-
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
-                key: this.owner.getScene().getAttackAudioKey(),
-                loop: false,
-                holdReference: false,
-            });
-            this.attackCooldownTimer.start();
-        } else if (distanceToPlayer < followRange) {
-            const playerDir = this.player.position.clone().sub(this.owner.position);
-            const speed = 20;
-            if (playerDir.x < -5) {
-                this.owner._velocity.x = -speed;
-            } else if (playerDir.x > 5) {
-                this.owner._velocity.x = speed;
-            } else {
-                this.owner._velocity.x = 0;
+        if(!this.owner.frozen){
+            if (distanceToPlayer < attackRange && this.attackCooldownTimer.isStopped()) {
+                this.owner.animation.play("ATTACKING", false, AAEvents.PLAYER_HIT);
+    
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.owner.getScene().getAttackAudioKey(),
+                    loop: false,
+                    holdReference: false,
+                });
+                this.attackCooldownTimer.start();
+            } else if (distanceToPlayer < followRange) {
+                const playerDir = this.player.position.clone().sub(this.owner.position);
+                const speed = 20;
+                if (playerDir.x < -5) {
+                    this.owner._velocity.x = -speed;
+                } else if (playerDir.x > 5) {
+                    this.owner._velocity.x = speed;
+                } else {
+                    this.owner._velocity.x = 0;
+                }
+                if (playerDir.y < -5) {
+                    this.owner._velocity.y = -speed;
+                } else if (playerDir.y > 5) {
+                    this.owner._velocity.y = speed;
+                } else {
+                    this.owner._velocity.y = 0;
+                }
+                if (
+                    !this.owner.animation.isPlaying("ATTACKING") &&
+                    !this.owner.animation.isPlaying("TAKING_DAMAGE")
+                ) {
+                    this.owner.animation.playIfNotAlready("RUNNING", true);
+                }
+                this.owner.rotation = -playerDir.angleToCCW(Vec2.UP);
+                
+            } else if (this.moveTimer.isStopped()) {
+                if (
+                    !this.owner.animation.isPlaying("ATTACKING") &&
+                    !this.owner.animation.isPlaying("TAKING_DAMAGE")
+                ) {
+                    this.owner.animation.playIfNotAlready("RUNNING", true);
+                }
+                if (this.dir.equals(Vec2.RIGHT)) {
+                    this.dir = Vec2.LEFT;
+                } else {
+                    this.dir = Vec2.RIGHT;
+                }
+                this.moveTimer.start();
             }
-            if (playerDir.y < -5) {
-                this.owner._velocity.y = -speed;
-            } else if (playerDir.y > 5) {
-                this.owner._velocity.y = speed;
-            } else {
-                this.owner._velocity.y = 0;
-            }
-            if (
-                !this.owner.animation.isPlaying("ATTACKING") &&
-                !this.owner.animation.isPlaying("TAKING_DAMAGE")
-            ) {
-                this.owner.animation.playIfNotAlready("RUNNING", true);
-            }
-            this.owner.rotation = -playerDir.angleToCCW(Vec2.UP);
-        } else if (this.moveTimer.isStopped()) {
-            if (
-                !this.owner.animation.isPlaying("ATTACKING") &&
-                !this.owner.animation.isPlaying("TAKING_DAMAGE")
-            ) {
-                this.owner.animation.playIfNotAlready("RUNNING", true);
-            }
-            if (this.dir.equals(Vec2.RIGHT)) {
-                this.dir = Vec2.LEFT;
-            } else {
-                this.dir = Vec2.RIGHT;
-            }
-            this.moveTimer.start();
+    
+            this.owner.move(this.owner._velocity.scaled(deltaT));
         }
-
-        this.owner.move(this.owner._velocity.scaled(deltaT));
+       
     }
 }

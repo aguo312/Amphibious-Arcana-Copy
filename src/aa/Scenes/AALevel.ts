@@ -500,7 +500,7 @@ export default abstract class AALevel extends Scene {
 
                     frozenOverlay.color = Color.CYAN; // Cyan color
                     frozenOverlay.alpha = 0.5; // Set transparency
-                    frozenOverlay.size = enemy.size.clone().scale(0.25);
+                    frozenOverlay.size = enemy.size.clone().scale(0.35, .25);
                     frozenOverlay.position = enemy.position.clone();
                     frozenOverlay.visible = true;
                     this.freezeOverlays.set(enemy.id, frozenOverlay);
@@ -573,10 +573,12 @@ export default abstract class AALevel extends Scene {
                     enemy: enemy,
                     overlay: overlay,
                 });
+       
                 let current = enemy.animation.currentAnimation;
                 const prev = enemy.animation.getPending();
                 enemy.animation.play("TAKING_DAMAGE");
-                if (!this.ignoredAnimations.includes(current)) {
+
+                if (!this.ignoredAnimations.includes(current) && !enemy.frozen) {
                     enemy.animation.queue(current, true);
                 } else {
                     enemy.animation.queue(prev, true);
