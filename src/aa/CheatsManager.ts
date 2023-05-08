@@ -10,6 +10,9 @@ import { AAEvents } from "./AAEvents";
 import { GameEventType } from "../Wolfie2D/Events/GameEventType";
 import ParticleSystemManager from "../Wolfie2D/Rendering/Animations/ParticleSystemManager";
 import MainMenu from "./Scenes/MainMenu";
+import Level1 from "./Scenes/AALevel1";
+import Level2 from "./Scenes/AALevel2";
+import Level0 from "./Scenes/AALevel0";
 
 export default class CheatsManager {
     protected emitter: Emitter;
@@ -23,17 +26,23 @@ export default class CheatsManager {
     }
 
     public update(deltaT: number): void {
+        if (Input.isJustPressed(AAControls.GOTO_LEVEL_0)) {
+            ParticleSystemManager.getInstance().clearParticleSystems();
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
+            MainMenu.CURRENT_LEVEL = 0;
+            this.sceneManager.changeToScene(Level0);
+        }
         if (Input.isJustPressed(AAControls.GOTO_LEVEL_1)) {
             ParticleSystemManager.getInstance().clearParticleSystems();
             this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
             MainMenu.CURRENT_LEVEL = 1;
-            this.sceneManager.changeToScene(Level3);
+            this.sceneManager.changeToScene(Level1);
         }
         if (Input.isJustPressed(AAControls.GOTO_LEVEL_2)) {
             ParticleSystemManager.getInstance().clearParticleSystems();
             this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
             MainMenu.CURRENT_LEVEL = 2;
-            this.sceneManager.changeToScene(Level4);
+            this.sceneManager.changeToScene(Level2);
         }
         if (Input.isJustPressed(AAControls.GOTO_LEVEL_3)) {
             ParticleSystemManager.getInstance().clearParticleSystems();
@@ -59,11 +68,17 @@ export default class CheatsManager {
             MainMenu.CURRENT_LEVEL = 6;
             this.sceneManager.changeToScene(Level6);
         }
+        if (Input.isJustPressed(AAControls.GOTO_BOSS)) {
+            this.emitter.fireEvent(AAEvents.GOTO_BOSS);
+        }
         if (Input.isJustPressed(AAControls.TOGGLE_INVINCIBILITY)) {
             this.emitter.fireEvent(AAEvents.TOGGLE_INVINCIBILITY);
         }
         if (Input.isJustPressed(AAControls.PLAYER_KILL)) {
             this.emitter.fireEvent(AAEvents.KILL_PLAYER);
+        }
+        if (Input.isJustPressed(AAControls.UNLOCK_SPELLS)) {
+            MainMenu.CURRENT_LEVEL = 6;
         }
     }
 }

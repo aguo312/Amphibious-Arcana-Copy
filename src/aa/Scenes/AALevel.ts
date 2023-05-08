@@ -3,7 +3,7 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Input from "../../Wolfie2D/Input/Input";
-import { TweenableProperties } from "../../Wolfie2D/Nodes/GameNode";
+import GameNode, { TweenableProperties } from "../../Wolfie2D/Nodes/GameNode";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
@@ -151,14 +151,17 @@ export default abstract class AALevel extends Scene {
 
     /** Sound and music */
     protected levelMusicKey: string;
+    protected bossMusicKey: string;
     protected jumpAudioKey: string;
     protected attackAudioKey: string;
+    protected healAudioKey: string;
+    protected hurtAudioKey: string;
     protected explodeAudioKey: string;
     protected grappleAudioKey: string;
     protected enemyDeathAudioKey: string;
     protected playerDeathAudioKey: string;
 
-    protected allNPCS: Map<number, AAAnimatedSprite>;
+    protected allNPCS: Map<number, GameNode>;
     protected healthbars: Map<number, HealthbarHUD>;
     protected freezeOverlays: Map<number, Graphic>;
     protected frozenTimer: Timer;
@@ -225,21 +228,23 @@ export default abstract class AALevel extends Scene {
                     AAPhysicsGroups.BOSS_PARTICLE,
                     AAPhysicsGroups.TUTORIAL,
                     AAPhysicsGroups.ANT_PARTICLE,
+                    AAPhysicsGroups.ENEMY_PARTICLE,
                 ],
                 collisions: [
-                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
-                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
+                    [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
                 ],
             },
         });
@@ -352,6 +357,17 @@ export default abstract class AALevel extends Scene {
                 pos: iceParticle.position,
             });
         }
+
+        // update if cheats unlock spells
+        if (MainMenu.CURRENT_LEVEL >= 0 && this.fireIcon.imageId != "tongueIcon") {
+            this.tongueIcon.setImageId("tongueIcon");
+        }
+        if (MainMenu.CURRENT_LEVEL >= 3 && this.fireIcon.imageId != "fireIcon") {
+            this.fireIcon.setImageId("fireIcon");
+        }
+        if (MainMenu.CURRENT_LEVEL >= 5 && this.iceIcon.imageId != "iceIcon") {
+            this.iceIcon.setImageId("iceIcon");
+        }
         this.healthbars.forEach((healthbar) => healthbar.update(deltaT));
 
         // Player position code to determine monster spawn positions
@@ -437,7 +453,9 @@ export default abstract class AALevel extends Scene {
                             enemy.health,
                             enemy.maxHealth
                         );
+                        let current = enemy.animation.currentAnimation;
                         enemy.animation.play("TAKING_DAMAGE");
+                        enemy.animation.queue(current);
                     }
 
                     this.handleFireballHit();
@@ -445,7 +463,7 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.ICEBALL_HIT_ENEMY: {
-                const enemy = this.allNPCS.get(event.data.get("other"));
+                const enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
 
                 if (!enemy.frozen) {
                     enemy.freeze();
@@ -481,7 +499,7 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.ICE_HIT_BOSS: {
                 if (this.bossIFrameTimer.isStopped()) {
-                    const boss = this.allNPCS.get(event.data.get("other"));
+                    const boss = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     boss.health -= 1;
                     this.handleHealthChange(
                         this.bossHealthBar,
@@ -489,14 +507,16 @@ export default abstract class AALevel extends Scene {
                         boss.health,
                         boss.maxHealth
                     );
+                    let current = boss.animation.currentAnimation;
                     boss.animation.playIfNotAlready("TAKING_DAMAGE");
+                    boss.animation.queue(current);
                     this.bossIFrameTimer.start();
                 }
                 break;
             }
             case AAEvents.TONGUE_HIT_BOSS: {
                 if (this.bossIFrameTimer.isStopped()) {
-                    const boss = this.allNPCS.get(event.data.get("other"));
+                    const boss = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                     boss.health -= 1;
                     this.handleHealthChange(
                         this.bossHealthBar,
@@ -504,7 +524,9 @@ export default abstract class AALevel extends Scene {
                         boss.health,
                         boss.maxHealth
                     );
+                    let current = boss.animation.currentAnimation;
                     boss.animation.playIfNotAlready("TAKING_DAMAGE");
+                    boss.animation.queue(current);
                     this.bossIFrameTimer.start();
                 }
                 break;
@@ -593,6 +615,11 @@ export default abstract class AALevel extends Scene {
                         freeze.visible = false;
                     }
                 }
+
+                if (this.bossFightActive) {
+                    console.log("firing boss killed event");
+                    this.emitter.fireEvent(AAEvents.BOSS_KILLED);
+                }
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
                     key: this.enemyDeathAudioKey,
                     loop: false,
@@ -636,6 +663,12 @@ export default abstract class AALevel extends Scene {
                 this.handleTongueHit();
                 break;
             }
+            case AAEvents.GOTO_BOSS: {
+                if (!this.bossFightActive && this.bossSpawnTrigger != null) {
+                    this.player.position = this.bossSpawnTrigger.position;
+                }
+                break;
+            }
             case AAEvents.SPAWN_BOSS: {
                 this.viewport.follow(null);
                 // this.viewport.setSmoothingFactor(4);
@@ -644,35 +677,21 @@ export default abstract class AALevel extends Scene {
                 this.bossHealthBar.visible = true;
                 this.bossHealthBarBg.visible = true;
                 this.bossNameLabel.visible = true;
-
+                // change music
+                if (this.bossMusicKey) {
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                        key: this.levelMusicKey,
+                        holdReference: true,
+                    });
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                        key: this.bossMusicKey,
+                        loop: true,
+                        holdReference: false,
+                    });
+                }
                 // Destroy the spawn trigger so we don't call this again
                 this.bossSpawnTrigger.destroy();
 
-                break;
-            }
-            case AAEvents.BOSS_KILLED: {
-
-                const id: number = event.data.get("node");
-                const enemy = this.allNPCS.get(id);
-
-                enemy.animation.playIfNotAlready("DYING");
-
-                if (enemy) {
-                    enemy.destroy();
-                    const healthbar = this.healthbars.get(id);
-                    if (healthbar) {
-                        healthbar.visible = false;
-                    }
-                    const freeze = this.freezeOverlays.get(id);
-                    if (freeze) {
-                        freeze.visible = false;
-                    }
-                }
-                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
-                    key: this.enemyDeathAudioKey,
-                    loop: false,
-                    holdReference: false,
-                });
                 break;
             }
             case "GUIDE": {
@@ -927,7 +946,7 @@ export default abstract class AALevel extends Scene {
         this.allNPCS.forEach((npc) => {
             // npc.setAIActive(false, null)
             npc.freeze();
-            npc.animation.pause();
+            (<AAAnimatedSprite>npc).animation.pause();
         });
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {
             key: this.levelMusicKey,
@@ -949,7 +968,7 @@ export default abstract class AALevel extends Scene {
         this.allNPCS.forEach((npc) => {
             // npc.setAIActive(true, {})
             npc.unfreeze();
-            npc.animation.resume();
+            (<AAAnimatedSprite>npc).animation.resume();
         });
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
             key: this.levelMusicKey,
@@ -1098,6 +1117,7 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.ICE_HIT_BOSS);
         this.receiver.subscribe(AAEvents.TONGUE_HIT_BOSS);
         this.receiver.subscribe(AAEvents.SPAWN_BOSS);
+        this.receiver.subscribe(AAEvents.GOTO_BOSS);
         this.receiver.subscribe("GUIDE");
         this.receiver.subscribe("STOP_SHOWING");
     }
@@ -1532,9 +1552,13 @@ export default abstract class AALevel extends Scene {
         );
         this.player.setGroup(AAPhysicsGroups.PLAYER);
         this.player.setTrigger(AAPhysicsGroups.BOSS_PARTICLE, AAEvents.PLAYER_HIT, null);
+<<<<<<< HEAD
 
         this.player.setTrigger(AAPhysicsGroups.ANT_PARTICLE, AAEvents.ANT_FIRE_HIT, null);
 
+=======
+        this.player.setTrigger(AAPhysicsGroups.ENEMY_PARTICLE, AAEvents.PLAYER_HIT, null);
+>>>>>>> 4710bc029466aa69bea503df58a0bfa9253f74f5
         this.player.setTrigger(AAPhysicsGroups.ENEMY, AAEvents.PLAYER_HIT, null);
 
         // Give the player a flip animation
@@ -1638,5 +1662,13 @@ export default abstract class AALevel extends Scene {
 
     public getAttackAudioKey(): string {
         return this.attackAudioKey;
+    }
+
+    public getHealAudioKey(): string {
+        return this.healAudioKey;
+    }
+
+    public getHurtAudioKey(): string {
+        return this.hurtAudioKey;
     }
 }

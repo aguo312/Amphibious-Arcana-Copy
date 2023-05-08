@@ -219,15 +219,21 @@ export default class PlayerController extends StateMachineAI {
             case AAEvents.PLAYER_HIT: {
                 if (this.iFramesTimer.isStopped()) {
                     this.health -= 1;
-                    // TODO push player a bit when taking damage, currently not working
-                    // let enemyId = event.data.get('node');
-                    // let enemy = this.npcs.get(enemyId);
-                    // if (!enemy) {
-                    //     console.log('failed to find enemy');
-                    // }
-                    // let vec = enemy.position.dirTo(this.owner.position).scale(10);
-                    // this.velocity.x += vec.x;
-                    // this.velocity.y += vec.y;
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                        key: this.owner.getScene().getHurtAudioKey(),
+                        loop: false,
+                        holdReference: false,
+                    });
+                    const enemyId = event.data.get("node") || event.data.get("owner");
+                    const enemy = this.npcs.get(enemyId);
+                    if (!enemy) {
+                        console.log("failed to find enemy");
+                    }
+
+                    // Push the player a bit in the direction they were hit
+                    const dir = enemy.position.dirTo(this.owner.position);
+                    this.velocity.x = dir.x >= 0 ? this.velocity.x + 100 : this.velocity.x - 100;
+                    this.velocity.y -= 100;
                     this.iFramesTimer.start();
                 }
                 break;
@@ -240,6 +246,11 @@ export default class PlayerController extends StateMachineAI {
                 // testing this since you cant regain health from consuming
                 // soon after taking damage with previous code
                 this.health += 1;
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.owner.getScene().getHealAudioKey(),
+                    loop: false,
+                    holdReference: false,
+                });
                 this.iFramesTimer.start();
                 break;
             }

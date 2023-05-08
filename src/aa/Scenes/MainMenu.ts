@@ -26,6 +26,7 @@ export default class MainMenu extends Scene {
     // if not current level then boss flag
     public static CURRENT_LEVEL = 0;
     public static GAME_PLAYING = false;
+    public static BOSS_LOCATION: Vec2 = null;
     protected gameLogo: Sprite;
 
     public loadScene(): void {

@@ -47,6 +47,7 @@ export default class MFIdle extends BossState {
 
         this.receiver = new Receiver();
         this.receiver.subscribe(AAEvents.SPAWN_BOSS);
+        this.receiver.subscribe(AAEvents.BOSS_KILLED);
     }
 
     public update(deltaT: number): void {
@@ -55,6 +56,13 @@ export default class MFIdle extends BossState {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
+
+        if (this.owner.onGround) {
+            return;
+        }
+
+        // this.parent.velocity.y += this.gravity * deltaT;
+        // this.owner.move(this.parent.velocity.scaled(deltaT));
     }
 
     public handleEvent(event: GameEvent): void {
@@ -63,10 +71,16 @@ export default class MFIdle extends BossState {
                 this.idleTimer.start();
                 break;
             }
+            case AAEvents.BOSS_KILLED: {
+                console.log("handling boss killed");
+                this.finished(MFStates.DEAD);
+                break;
+            }
         }
     }
 
     public onExit(): Record<string, any> {
+        this.idleTimer.reset();
         return {
             dir: this.dir,
             started: true,

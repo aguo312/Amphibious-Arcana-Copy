@@ -18,6 +18,7 @@ import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import AntBehavior from "../AI/NPC/NPCBehaviors/AntBehavior";
+import Level0 from "./AALevel0";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -35,38 +36,39 @@ export default class Level3 extends AALevel {
     public static readonly WALLS_LAYER_KEY = "Main";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
-    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
+    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
-    public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
-    public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
+    // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
+    // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
 
-    public static readonly ATTACK_AUDIO_KEY = "PLAYER_ATTACK";
-    public static readonly ATTACK_AUDIO_PATH = "hw4_assets/sounds/attack.wav";
+    // public static readonly ATTACK_AUDIO_KEY = "PLAYER_ATTACK";
+    // public static readonly ATTACK_AUDIO_PATH = "hw4_assets/sounds/attack.wav";
 
-    public static readonly EXPLODE_AUDIO_KEY = "EXPLODE";
-    public static readonly EXPLODE_AUDIO_PATH = "hw4_assets/sounds/explode.wav";
+    // public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
+    // public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
 
-    public static readonly GRAPPLE_AUDIO_KEY = "GRAPPLE";
-    public static readonly GRAPPLE_AUDIO_PATH = "hw4_assets/sounds/grapple.wav";
+    // public static readonly EXPLODE_AUDIO_KEY = "EXPLODE";
+    // public static readonly EXPLODE_AUDIO_PATH = "hw4_assets/sounds/explode.wav";
 
-    public static readonly ENEMY_DEATH_AUDIO_KEY = "ENEMY_DEATH";
-    public static readonly ENEMY_DEATH_AUDIO_PATH = "hw4_assets/sounds/dying_quieter.wav";
+    // public static readonly GRAPPLE_AUDIO_KEY = "GRAPPLE";
+    // public static readonly GRAPPLE_AUDIO_PATH = "hw4_assets/sounds/grapple.wav";
 
-    public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
-    public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
+    // public static readonly ENEMY_DEATH_AUDIO_KEY = "ENEMY_DEATH";
+    // public static readonly ENEMY_DEATH_AUDIO_PATH = "hw4_assets/sounds/dying_quieter.wav";
+
+    // public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
+    // public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
 
     public static readonly BACKGROUND_KEY = "BACKGROUND";
-    public static readonly BACKGROUND_PATH = "hw4_assets/images/test.png";
+    public static readonly BACKGROUND_PATH = "hw4_assets/images/DesertBack.png";
 
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
-    protected tutorialText: Label;
-    protected tutorialTextTimer: Timer;
 
     protected cheatsManager: CheatsManager;
 
     protected enemyPositions: Array<Vec2>;
 
-    protected prevViewportCenter: Vec2;
+    // protected prevViewportCenter: Vec2;
 
     public constructor(
         viewport: Viewport,
@@ -84,19 +86,21 @@ export default class Level3 extends AALevel {
         this.wallsLayerKey = Level3.WALLS_LAYER_KEY;
 
         // Set the key for the player's sprite
-        this.playerSpriteKey = Level3.PLAYER_SPRITE_KEY;
+        this.playerSpriteKey = Level0.PLAYER_SPRITE_KEY;
         // Set the player's spawn
         this.playerSpawn = Level3.PLAYER_SPAWN;
         // Set the key for the spells sprite
 
         // Music and sound
         this.levelMusicKey = Level3.LEVEL_MUSIC_KEY;
-        this.jumpAudioKey = Level3.JUMP_AUDIO_KEY;
-        this.attackAudioKey = Level3.ATTACK_AUDIO_KEY;
-        this.explodeAudioKey = Level3.EXPLODE_AUDIO_KEY;
-        this.grappleAudioKey = Level3.GRAPPLE_AUDIO_KEY;
-        this.enemyDeathAudioKey = Level3.ENEMY_DEATH_AUDIO_KEY;
-        this.playerDeathAudioKey = Level3.PLAYER_DEATH_AUDIO_KEY;
+        this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
+        this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
+        this.healAudioKey = Level0.HEAL_AUDIO_KEY;
+        this.hurtAudioKey = Level0.HURT_AUDIO_KEY;
+        this.explodeAudioKey = Level0.EXPLODE_AUDIO_KEY;
+        this.grappleAudioKey = Level0.GRAPPLE_AUDIO_KEY;
+        this.enemyDeathAudioKey = Level0.ENEMY_DEATH_AUDIO_KEY;
+        this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
         this.backgroundKey = Level3.BACKGROUND_KEY;
 
         // Level end size and position
@@ -116,7 +120,7 @@ export default class Level3 extends AALevel {
         this.currLevel = Level3;
 
         // Setup bg stuff
-        this.bgScale = new Vec2(8.0, 8.0);
+        this.bgScale = new Vec2(6.0, 6.0);
         this.bgOffset = new Vec2(100, 100).mult(this.tilemapScale);
         this.bgMovementScale = 0.7;
         this.bgMovementScaleY = 0.6;
@@ -138,16 +142,6 @@ export default class Level3 extends AALevel {
         // this.guideText.font = "MyFont";
 
         this.guideText.position = new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50);
-
-        // add random tutorial text
-        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
-            position: new Vec2(size.x, 180),
-            text: "Try shooting fire at your feet to jump!",
-        });
-        this.tutorialText.size = new Vec2(300, 25);
-        // this.tutorialText.backgroundColor = Color.BLACK;
-        // this.tutorialText.backgroundColor.a = 10;
-        this.tutorialTextTimer = new Timer(10000, () => (this.tutorialText.visible = false), false);
     }
 
     public initializeTutorialBox() {
@@ -185,17 +179,18 @@ export default class Level3 extends AALevel {
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level3.LEVEL_MUSIC_PATH);
-        this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
-        this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
-        this.load.audio(this.explodeAudioKey, Level3.EXPLODE_AUDIO_PATH);
-        this.load.audio(this.grappleAudioKey, Level3.GRAPPLE_AUDIO_PATH);
-        this.load.audio(this.enemyDeathAudioKey, Level3.ENEMY_DEATH_AUDIO_PATH);
-        this.load.audio(this.playerDeathAudioKey, Level3.PLAYER_DEATH_AUDIO_PATH);
+        // this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
+        // this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
+        // this.load.audio(this.healAudioKey, Level3.HEAL_AUDIO_PATH);
+        // this.load.audio(this.explodeAudioKey, Level3.EXPLODE_AUDIO_PATH);
+        // this.load.audio(this.grappleAudioKey, Level3.GRAPPLE_AUDIO_PATH);
+        // this.load.audio(this.enemyDeathAudioKey, Level3.ENEMY_DEATH_AUDIO_PATH);
+        // this.load.audio(this.playerDeathAudioKey, Level3.PLAYER_DEATH_AUDIO_PATH);
 
-        this.load.image("fireIcon", "hw4_assets/sprites/fire-icon.png");
-        this.load.image("tongueIcon", "hw4_assets/sprites/tongue-icon.png");
-        this.load.image("iceIcon", "hw4_assets/sprites/ice-icon.png");
-        this.load.image("lockIcon", "hw4_assets/sprites/lock-icon.png");
+        // this.load.image("fireIcon", "hw4_assets/sprites/fire-icon.png");
+        // this.load.image("tongueIcon", "hw4_assets/sprites/tongue-icon.png");
+        // this.load.image("iceIcon", "hw4_assets/sprites/ice-icon.png");
+        // this.load.image("lockIcon", "hw4_assets/sprites/lock-icon.png");
     }
 
     /**
@@ -204,13 +199,17 @@ export default class Level3 extends AALevel {
     public unloadScene(): void {
         this.load.keepSpritesheet(this.playerSpriteKey);
 
-        this.load.keepAudio(this.levelMusicKey);
+        // this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.attackAudioKey);
+        this.load.keepAudio(this.healAudioKey);
+        this.load.keepAudio(this.hurtAudioKey);
         this.load.keepAudio(this.explodeAudioKey);
         this.load.keepAudio(this.grappleAudioKey);
         this.load.keepAudio(this.enemyDeathAudioKey);
         this.load.keepAudio(this.playerDeathAudioKey);
+
+        this.load.keepImage(this.backgroundKey);
 
         this.load.keepImage("fireIcon");
         this.load.keepImage("tongueIcon");
@@ -220,7 +219,6 @@ export default class Level3 extends AALevel {
 
     public startScene(): void {
         super.startScene();
-        this.tutorialTextTimer.start();
         this.guideText.tweens.play("fadeIn");
 
         // Set the next level to be Level4
@@ -325,6 +323,6 @@ export default class Level3 extends AALevel {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 1600, 700);
+        this.viewport.setBounds(16, 16, 1584, 700);
     }
 }

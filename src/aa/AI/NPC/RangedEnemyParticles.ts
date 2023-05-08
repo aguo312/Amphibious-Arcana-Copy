@@ -16,7 +16,7 @@ export default class RangedEnemyParticles extends ParticleSystem {
     /**
      * The rotation (in radians) to apply to the velocity vector of the particles
      */
-    protected _rotation: number = 0;
+    protected _rotation = 0;
     public get rotation(): number {
         return this._rotation;
     }
@@ -86,7 +86,7 @@ export default class RangedEnemyParticles extends ParticleSystem {
         super.initializePool(scene, layer);
         for (let i = 0; i < this.particlePool.length; i++) {
             // Set particle physics group to the player's weapon
-            this.particlePool[i].setGroup(AAPhysicsGroups.BOSS_PARTICLE);
+            this.particlePool[i].setGroup(AAPhysicsGroups.ENEMY_PARTICLE);
         }
     }
 }

@@ -4,6 +4,9 @@ import AAAnimatedSprite from "../../../Nodes/AAAnimatedSprite";
 import NPCBehavior from "../NPCBehavior";
 import CanvasNode from "../../../../Wolfie2D/Nodes/CanvasNode";
 import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
+import { AAEvents } from "../../../AAEvents";
+import Receiver from "../../../../Wolfie2D/Events/Receiver";
+import { MFStates } from "./BossStates";
 
 /**
  * An abstract state for the PlayerController
@@ -12,11 +15,14 @@ export default abstract class BossState extends State {
     protected parent: NPCBehavior;
     protected owner: AAAnimatedSprite;
     protected gravity: number;
+    // protected receiver: Receiver;
 
     public constructor(parent: NPCBehavior, owner: AAAnimatedSprite) {
         super(parent);
         this.owner = owner;
         this.gravity = 500;
+
+        // this.receiver = new Receiver();
     }
 
     public abstract onEnter(options: Record<string, any>): void;
@@ -27,7 +33,6 @@ export default abstract class BossState extends State {
      */
     public handleInput(event: GameEvent): void {
         switch (event.type) {
-            // Default - throw an error
             default: {
                 throw new Error(`Unhandled event in PlayerState of type ${event.type}`);
             }
@@ -35,6 +40,9 @@ export default abstract class BossState extends State {
     }
 
     public update(deltaT: number): void {
+        // while (this.receiver.hasNextEvent()) {
+        //     this.handleInput(this.receiver.getNextEvent());
+        // }
         // this.lockPlayer(
         //     this.owner,
         //     this.owner.getScene().getViewport().getCenter(),

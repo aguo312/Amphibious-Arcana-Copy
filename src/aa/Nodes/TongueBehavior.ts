@@ -10,6 +10,7 @@ import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import AAAnimatedSprite from "./AAAnimatedSprite";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 enum TongueState {
     EXTENDING,

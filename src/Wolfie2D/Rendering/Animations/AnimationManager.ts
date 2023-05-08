@@ -6,18 +6,18 @@ import { AnimationData, AnimationState } from "./AnimationTypes";
 /**
  * An animation manager class for an animated CanvasNode.
  * This class keeps track of the possible animations, as well as the current animation state,
- * and abstracts all interactions with playing, pausing, and stopping animations as well as 
+ * and abstracts all interactions with playing, pausing, and stopping animations as well as
  * creating new animations from the CanvasNode.
  */
 export default class AnimationManager {
     /** The owner of this animation manager */
     protected owner: CanvasNode;
-    
+
     /** The current animation state of this sprite */
     protected animationState: AnimationState;
 
     /** The name of the current animation of this sprite */
-    protected currentAnimation: string;
+    public currentAnimation: string;
 
     /** The current frame of this animation */
     protected currentFrame: number;
@@ -50,7 +50,7 @@ export default class AnimationManager {
      * Creates a new AnimationManager
      * @param owner The owner of the AnimationManager
      */
-    constructor(owner: CanvasNode){
+    constructor(owner: CanvasNode) {
         this.owner = owner;
         this.animationState = AnimationState.STOPPED;
         this.currentAnimation = "";
@@ -76,11 +76,13 @@ export default class AnimationManager {
      * @returns The index in the current animation
      */
     getIndex(): number {
-        if(this.animations.has(this.currentAnimation)){
+        if (this.animations.has(this.currentAnimation)) {
             return this.animations.get(this.currentAnimation).frames[this.currentFrame].index;
         } else {
             // No current animation, warn the user
-            console.warn(`Animation index was requested, but the current animation: ${this.currentAnimation} was invalid`);
+            console.warn(
+                `Animation index was requested, but the current animation: ${this.currentAnimation} was invalid`
+            );
             return 0;
         }
     }
@@ -100,24 +102,24 @@ export default class AnimationManager {
      */
     getIndexAndAdvanceAnimation(): number {
         // If we aren't playing, we won't be advancing the animation
-        if(!(this.animationState === AnimationState.PLAYING)){
+        if (!(this.animationState === AnimationState.PLAYING)) {
             return this.getIndex();
         }
 
-        if(this.animations.has(this.currentAnimation)){
+        if (this.animations.has(this.currentAnimation)) {
             let currentAnimation = this.animations.get(this.currentAnimation);
             let index = currentAnimation.frames[this.currentFrame].index;
 
             // Advance the animation
             this.frameProgress += 1;
-            if(this.frameProgress >= currentAnimation.frames[this.currentFrame].duration){
+            if (this.frameProgress >= currentAnimation.frames[this.currentFrame].duration) {
                 // We have been on this frame for its whole duration, go to the next one
                 this.frameProgress = 0;
                 this.currentFrame += 1;
 
-                if(this.currentFrame >= currentAnimation.frames.length){
+                if (this.currentFrame >= currentAnimation.frames.length) {
                     // We have reached the end of this animation
-                    if(this.loop){
+                    if (this.loop) {
                         this.currentFrame = 0;
                         this.frameProgress = 0;
                     } else {
@@ -130,7 +132,9 @@ export default class AnimationManager {
             return index;
         } else {
             // No current animation, can't advance. Warn the user
-            console.warn(`Animation index and advance was requested, but the current animation (${this.currentAnimation}) in node with id: ${this.owner.id} was invalid`);
+            console.warn(
+                `Animation index and advance was requested, but the current animation (${this.currentAnimation}) in node with id: ${this.owner.id} was invalid`
+            );
             return 0;
         }
     }
@@ -140,12 +144,15 @@ export default class AnimationManager {
         this.currentFrame = 0;
         this.animationState = AnimationState.STOPPED;
 
-        if(this.onEndEvent !== null){
-            this.emitter.fireEvent(this.onEndEvent, {owner: this.owner.id, animation: this.currentAnimation});
+        if (this.onEndEvent !== null) {
+            this.emitter.fireEvent(this.onEndEvent, {
+                owner: this.owner.id,
+                animation: this.currentAnimation,
+            });
         }
 
         // If there is a pending animation, play it
-        if(this.pendingAnimation !== null){
+        if (this.pendingAnimation !== null) {
             this.play(this.pendingAnimation, this.pendingLoop, this.pendingOnEnd);
         }
     }
@@ -157,7 +164,7 @@ export default class AnimationManager {
      * @param onEnd The name of an event to send when this animation naturally stops playing. This only matters if loop is false.
      */
     playIfNotAlready(animation: string, loop?: boolean, onEnd?: string): void {
-        if(this.currentAnimation !== animation){
+        if (this.currentAnimation !== animation) {
             this.play(animation, loop, onEnd);
         }
     }
@@ -175,14 +182,14 @@ export default class AnimationManager {
         this.animationState = AnimationState.PLAYING;
 
         // If loop arg was provided, use that
-        if(loop !== undefined){
+        if (loop !== undefined) {
             this.loop = loop;
         } else {
             // Otherwise, use what the json file specified
             this.loop = this.animations.get(animation).repeat;
         }
 
-        if(onEnd !== undefined){
+        if (onEnd !== undefined) {
             this.onEndEvent = onEnd;
         } else {
             this.onEndEvent = null;
@@ -202,7 +209,7 @@ export default class AnimationManager {
     queue(animation: string, loop: boolean = false, onEnd?: string): void {
         this.pendingAnimation = animation;
         this.pendingLoop = loop;
-        if(onEnd !== undefined){
+        if (onEnd !== undefined) {
             this.pendingOnEnd = onEnd;
         } else {
             this.pendingOnEnd = null;
@@ -216,7 +223,7 @@ export default class AnimationManager {
 
     /** Resumes the current animation if possible */
     resume(): void {
-        if(this.animationState === AnimationState.PAUSED){
+        if (this.animationState === AnimationState.PAUSED) {
             this.animationState = AnimationState.PLAYING;
         }
     }
@@ -224,5 +231,9 @@ export default class AnimationManager {
     /** Stops the current animation. The animation cannot be resumed after this. */
     stop(): void {
         this.animationState = AnimationState.STOPPED;
+    }
+
+    getCurrent(): string {
+        return this.currentAnimation;
     }
 }
