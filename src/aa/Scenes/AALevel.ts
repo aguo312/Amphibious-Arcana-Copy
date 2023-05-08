@@ -150,6 +150,7 @@ export default abstract class AALevel extends Scene {
     protected levelMusicKey: string;
     protected jumpAudioKey: string;
     protected attackAudioKey: string;
+    protected healAudioKey: string;
     protected explodeAudioKey: string;
     protected grappleAudioKey: string;
     protected enemyDeathAudioKey: string;
@@ -1537,5 +1538,9 @@ export default abstract class AALevel extends Scene {
 
     public getAttackAudioKey(): string {
         return this.attackAudioKey;
+    }
+
+    public getHealAudioKey(): string {
+        return this.healAudioKey;
     }
 }

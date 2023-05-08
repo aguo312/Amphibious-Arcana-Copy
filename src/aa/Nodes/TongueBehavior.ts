@@ -10,6 +10,7 @@ import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import AAAnimatedSprite from "./AAAnimatedSprite";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 enum TongueState {
     EXTENDING,
@@ -274,6 +275,12 @@ export default class TongueBehavior implements AI {
                             node: this.attachedEnemy.id,
                         });
                         this.emitter.fireEvent(AAEvents.PLAYER_HEAL);
+                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                            // key: this.playerDeathAudioKey,
+                            key: this.player.getScene().getHealAudioKey(),
+                            loop: false,
+                            holdReference: false,
+                        });
                     }
                     this.attachedEnemy = null;
                     this.frozenOverlay = null;
