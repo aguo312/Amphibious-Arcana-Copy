@@ -141,6 +141,8 @@ export default class Level1 extends AALevel {
         // this.guideText.font = "MyFont";
 
         this.guideText.position = new Vec2(471, 891);
+        this.guideText.size.set(655, 150);
+
         //this.guideText.size.set(655, 150);
     }
 

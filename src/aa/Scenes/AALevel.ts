@@ -607,6 +607,33 @@ export default abstract class AALevel extends Scene {
                 // this.sceneManager.changeToScene(MainMenu);
                 break;
             }
+            case "NPC_BOSS_KILLED":{
+                const id: number = event.data.get("node");
+                const enemy = this.allNPCS.get(id);
+
+                if (enemy) {
+                    enemy.destroy();
+                    const healthbar = this.healthbars.get(id);
+                    if (healthbar) {
+                        healthbar.visible = false;
+                    }
+                    const freeze = this.freezeOverlays.get(id);
+                    if (freeze) {
+                        freeze.visible = false;
+                    }
+                }
+
+                this.emitter.fireEvent(AAEvents.BOSS_KILLED);
+                
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.enemyDeathAudioKey,
+                    loop: false,
+                    holdReference: false,
+                });
+                break;
+
+                break;
+            }
             case AAEvents.NPC_KILLED: {
                 const id: number = event.data.get("node");
                 const enemy = this.allNPCS.get(id);
@@ -715,7 +742,7 @@ export default abstract class AALevel extends Scene {
                     texts = [
                         "Seems like you'll need to get through this mountain.",
                         "Climb the tree with your tongue spell to reach the top!",
-                        "You can use your tongue spell on enemies to damage them and gain health."
+                        "Use your tongue spell on enemies to damage them and gain health."
                     ];
                 }else if(MainMenu.CURRENT_LEVEL === 2){
                     texts = [
@@ -739,7 +766,7 @@ export default abstract class AALevel extends Scene {
                     texts = [
                         "You were able to get me out of his control. Thank you!",
                         "I passed down my Ice Spell to you. You can freeze enemies with it",
-                        "You can create an ice platform by clicking again when its in the air.",
+                        "You can create an ice platform by clicking again while its in the air.",
                     ];
                 }else if(MainMenu.CURRENT_LEVEL === 6){
                     texts = [
@@ -1109,6 +1136,8 @@ export default abstract class AALevel extends Scene {
      * Handles all subscriptions to events
      */
     protected subscribeToEvents(): void {
+        this.receiver.subscribe("NPC_BOSS_KILLED");
+
         this.receiver.subscribe(AAEvents.ANT_FIRE_HIT);
         this.receiver.subscribe(AAEvents.PLAYER_ENTERED_LEVEL_END);
         this.receiver.subscribe(AAEvents.LEVEL_START);
