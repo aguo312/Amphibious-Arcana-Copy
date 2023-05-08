@@ -37,6 +37,9 @@ export default class MFAttack extends BossState {
     }
 
     private attack(): void {
+        if (this.owner.getScene().bossDead) {
+            return;
+        }
         this.owner.invertX = this.dir === 1 ? true : false;
         this.owner.animation.playIfNotAlready("CASTING_LEFT", false);
 

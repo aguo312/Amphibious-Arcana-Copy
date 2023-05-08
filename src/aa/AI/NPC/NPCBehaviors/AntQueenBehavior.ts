@@ -34,17 +34,25 @@ export default class AntQueenBehavior extends NPCBehavior {
         this.addState(AQStates.ATTACK, new AQAttack(this, this.owner));
 
         // Set the start state
-        this.initialize(AQStates.IDLE, { dir: -1, weaponSystem: this.weaponSystem, player: this.player });
+        this.initialize(AQStates.IDLE, {
+            dir: -1,
+            weaponSystem: this.weaponSystem,
+            player: this.player,
+        });
     }
 
     public override update(deltaT: number): void {
         super.update(deltaT);
-        
+
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
         const playerDir = this.player.position.clone().sub(this.owner.position);
         this.owner.rotation = -playerDir.angleToCCW(Vec2.UP);
+
+        if (this.owner.getScene().bossDead) {
+            this.setActive(false);
+        }
 
         if (!this.started) {
             return;

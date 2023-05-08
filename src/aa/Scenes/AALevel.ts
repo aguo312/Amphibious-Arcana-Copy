@@ -168,6 +168,7 @@ export default abstract class AALevel extends Scene {
     protected bossIFrameTimer: Timer;
     protected bossFightCenterPoint: Vec2;
     protected bossFightActive: boolean;
+    public bossDead: boolean;
 
     protected guideText: Label;
     protected guideTextTimer: Timer;
@@ -269,6 +270,7 @@ export default abstract class AALevel extends Scene {
         this.allNPCS = new Map<number, AAAnimatedSprite>();
         this.healthbars = new Map<number, HealthbarHUD>();
         this.freezeOverlays = new Map<number, Graphic>();
+        this.bossDead = false;
     }
 
     public loadScene() {
@@ -476,9 +478,12 @@ export default abstract class AALevel extends Scene {
                         );
                     }
                     let current = enemy.animation.currentAnimation;
+                    const prev = enemy.animation.getPending();
+                    enemy.animation.playIfNotAlready("TAKING_DAMAGE");
                     if (!this.ignoredAnimations.includes(current)) {
-                        enemy.animation.play("TAKING_DAMAGE");
                         enemy.animation.queue(current, true);
+                    } else {
+                        enemy.animation.queue(prev, true);
                     }
 
                     this.handleFireballHit();
@@ -531,9 +536,12 @@ export default abstract class AALevel extends Scene {
                         boss.maxHealth
                     );
                     let current = boss.animation.currentAnimation;
+                    const prev = boss.animation.getPending();
+                    boss.animation.playIfNotAlready("TAKING_DAMAGE");
                     if (!this.ignoredAnimations.includes(current)) {
-                        boss.animation.playIfNotAlready("TAKING_DAMAGE");
                         boss.animation.queue(current, true);
+                    } else {
+                        boss.animation.queue(prev, true);
                     }
                     this.bossIFrameTimer.start();
                 }
@@ -682,7 +690,6 @@ export default abstract class AALevel extends Scene {
                 }
 
                 if (this.bossFightActive) {
-                    console.log("firing boss killed event");
                     this.emitter.fireEvent(AAEvents.BOSS_KILLED);
                 }
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
@@ -735,6 +742,7 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.SPAWN_BOSS: {
+                this.bossDead = false;
                 this.viewport.follow(null);
                 // this.viewport.setSmoothingFactor(4);
                 this.viewport.setFocus(this.bossFightCenterPoint);
@@ -755,7 +763,7 @@ export default abstract class AALevel extends Scene {
                         "You're finally awake! The Mind Flayer really got us all...",
                         "It seems like you lost most of your magic. But you can get it back.",
                         "Use your tongue as a grapple on concrete surfaces to get around.",
-                        "You can also hold the JUMP button to glide with your hat!"
+                        "You can also hold the JUMP button to glide with your hat!",
                     ];
                 } else if (MainMenu.CURRENT_LEVEL === 1) {
                     texts = [
@@ -953,6 +961,7 @@ export default abstract class AALevel extends Scene {
      * Handle the event when the player enters the level end area.
      */
     protected handleEnteredLevelEnd(): void {
+        this.bossDead = true;
         // If the timer hasn't run yet, start the end level animation
         if (!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()) {
             this.levelEndTimer.start();
