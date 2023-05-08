@@ -232,4 +232,8 @@ export default class AnimationManager {
     stop(): void {
         this.animationState = AnimationState.STOPPED;
     }
+
+    getCurrent(): string {
+        return this.currentAnimation;
+    }
 }

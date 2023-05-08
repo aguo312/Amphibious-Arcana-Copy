@@ -1,4 +1,3 @@
-import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import AALevel from "./AALevel";
 import { AALayers } from "./AALevel";
@@ -13,24 +12,25 @@ import Level3 from "./AALevel3";
 import CheatsManager from "../CheatsManager";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
-import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
-// import MindFlayerBehavior from "../AI/NPC/NPCBehaviors/MindFlayerBehavior";
-// import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
-import Color from "../../Wolfie2D/Utils/Color";
-import Level5 from "./AALevel5";
 import Boss2Behavior from "../AI/NPC/NPCBehaviors/Boss2Behavior";
 import Level0 from "./AALevel0";
+import Color from "../../Wolfie2D/Utils/Color";
+import Level5 from "./AALevel5";
+import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
+import XvartBehavior from "../AI/NPC/NPCBehaviors/XvartBehavior";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
  */
 export default class Level4 extends AALevel {
-    public static readonly PLAYER_SPAWN = new Vec2(32, 64);
+    public static readonly PLAYER_SPAWN = new Vec2(32, 1750);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
+    public static readonly BOSS_SPAWN = new Vec2(1500, 670);
+
     public static readonly TILEMAP_KEY = "LEVEL2";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/boss_desert.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/boss_desert_new.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
 
@@ -43,7 +43,7 @@ export default class Level4 extends AALevel {
     // public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
     // public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
 
-    public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
+    // public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
 
     protected bossSpawnTriggerPos: Vec2;
     protected bossSpawnTriggerHalfSize: Vec2;
@@ -85,11 +85,13 @@ export default class Level4 extends AALevel {
         // this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
         // this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
 
-        this.bossSpawnTriggerPos = new Vec2(600, 0).mult(this.tilemapScale);
+        // this.bossSpawnTriggerPos = new Vec2(1321, 672).mult(this.tilemapScale);
+        this.bossSpawnTriggerPos = new Vec2(1321, 660);
         this.bossSpawnTriggerHalfSize = new Vec2(10, 160).mult(this.tilemapScale);
 
-        this.bossFightCenterPoint = new Vec2(650, 0).mult(this.tilemapScale);
+        this.bossFightCenterPoint = new Vec2(1433, 620);
         this.bossName = "Traveler";
+        // this.bossFightCenterPoint = new Vec2(1433, 672).mult(this.tilemapScale);
 
         this.cheatsManager = new CheatsManager(this.sceneManager, {
             levelMusicKey: this.levelMusicKey,
@@ -98,9 +100,9 @@ export default class Level4 extends AALevel {
 
         // Setup bg stuff
         this.bgScale = new Vec2(8.0, 8.0);
-        this.bgOffset = new Vec2(100, 50).mult(this.tilemapScale);
+        this.bgOffset = new Vec2(100, 120).mult(this.tilemapScale);
         this.bgMovementScale = 0.7;
-        this.bgMovementScaleY = 0.6;
+        this.bgMovementScaleY = 1.1;
     }
     /**
      * Load in resources for level 2.
@@ -112,6 +114,8 @@ export default class Level4 extends AALevel {
         // Load in the enemy sprites
         // this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
         this.load.spritesheet("Traveler", "hw4_assets/spritesheets/traveler.json");
+        // this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
+        this.load.spritesheet("Xvart", "hw4_assets/spritesheets/xvart.json");
 
         // Load background image
         this.load.image(this.backgroundKey, Level3.BACKGROUND_PATH);
@@ -152,7 +156,7 @@ export default class Level4 extends AALevel {
         // level boss
         const traveler = this.add.animatedSprite("Traveler", AALayers.PRIMARY);
         traveler.scale.scale(0.25);
-        traveler.position.set(690, Level4.PLAYER_SPAWN.y + 8).mult(this.tilemapScale);
+        traveler.position.set(Level4.BOSS_SPAWN.x, Level4.BOSS_SPAWN.y);
         traveler.addPhysics(undefined, undefined, false, false);
         traveler.setGroup(AAPhysicsGroups.ENEMY);
         traveler.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
@@ -184,50 +188,48 @@ export default class Level4 extends AALevel {
             onEnd: [AAEvents.NPC_KILLED, AAEvents.PLAYER_ENTERED_LEVEL_END],
         });
 
-        // // initialize boss weapon system
-        // this.mindFlayerParticleSystem = new MindFlayerParticles(50, Vec2.ZERO, 1000, 3, 10, 50);
-        // this.mindFlayerParticleSystem.initializePool(this, AALayers.PRIMARY);
-        // const particles = this.mindFlayerParticleSystem.getPool();
-        // particles.forEach((particle) => this.allNPCS.set(particle.id, particle));
+        const locations = [new Vec2(320, 1632), new Vec2(640, 1312), new Vec2(960, 991)];
+        locations.forEach((l) => {
+            const xvart = this.add.animatedSprite("Xvart", AALayers.PRIMARY);
+            xvart.scale.scale(0.25);
+            xvart.position.set(l.x, l.y);
+            xvart.addPhysics();
+            xvart.setGroup(AAPhysicsGroups.ENEMY);
+            xvart.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+            xvart.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
+            xvart.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
 
-        // const mindFlayer = this.add.animatedSprite("Mind Flayer", AALayers.PRIMARY);
-        // mindFlayer.scale.scale(0.25);
-        // mindFlayer.position.set(690, Level4.PLAYER_SPAWN.y).mult(this.tilemapScale);
-        // mindFlayer.addPhysics(undefined, undefined, false, false);
-        // mindFlayer.setGroup(AAPhysicsGroups.ENEMY);
-        // mindFlayer.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
-        // mindFlayer.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
-        // mindFlayer.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_BOSS, null);
-        // mindFlayer.health = 10;
-        // mindFlayer.maxHealth = 10;
+            xvart.health = 3;
+            xvart.maxHealth = 3;
+            const healthbar = new HealthbarHUD(this, xvart, AALayers.PRIMARY, {
+                size: xvart.size.clone().scaled(1.2, 0.15),
+                offset: xvart.size.clone().scaled(0, -1 / 5),
+            });
+            this.healthbars.set(xvart.id, healthbar);
+            xvart.animation.play("IDLE");
+            xvart.addAI(XvartBehavior, { player: this.player, tilemap: "Collidable" }); // add particles here
+            this.allNPCS.set(xvart.id, xvart);
 
-        // mindFlayer.addAI(MindFlayerBehavior, {
-        //     player: this.player,
-        //     particles: this.mindFlayerParticleSystem,
-        // });
-        // this.allNPCS.set(mindFlayer.id, mindFlayer);
-        // // this.allNPCS.set(mindFlayerParticleSystem.id)
-
-        // mindFlayer.tweens.add("DEATH", {
-        //     startDelay: 0,
-        //     duration: 500,
-        //     effects: [
-        //         {
-        //             property: "rotation",
-        //             start: 0,
-        //             end: Math.PI,
-        //             ease: EaseFunctionType.IN_OUT_QUAD,
-        //         },
-        //         {
-        //             property: "alpha",
-        //             start: 1,
-        //             end: 0,
-        //             ease: EaseFunctionType.IN_OUT_QUAD,
-        //         },
-        //     ],
-        //     onEnd: [AAEvents.NPC_KILLED, AAEvents.PLAYER_ENTERED_LEVEL_END],
-        //     // onEnd: [AAEvents.BOSS_KILLED],
-        // });
+            xvart.tweens.add("DEATH", {
+                startDelay: 0,
+                duration: 500,
+                effects: [
+                    {
+                        property: "rotation",
+                        start: 0,
+                        end: Math.PI,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                    {
+                        property: "alpha",
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                ],
+                onEnd: [AAEvents.NPC_KILLED],
+            });
+        });
     }
 
     protected initializeTriggers(): void {
@@ -252,10 +254,13 @@ export default class Level4 extends AALevel {
     public updateScene(deltaT: number) {
         super.updateScene(deltaT);
         this.cheatsManager.update(deltaT);
+
+        // console.log("player position: " + this.player.position);
     }
 
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 1600, 700);
+        this.viewport.setBounds(16, 16, 1584, 2600);
+        // this.viewport.setZoomLevel(1);
     }
 }

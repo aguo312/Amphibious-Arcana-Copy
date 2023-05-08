@@ -56,6 +56,13 @@ export default class MFIdle extends BossState {
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
         }
+
+        if (this.owner.onGround) {
+            return;
+        }
+
+        // this.parent.velocity.y += this.gravity * deltaT;
+        // this.owner.move(this.parent.velocity.scaled(deltaT));
     }
 
     public handleEvent(event: GameEvent): void {

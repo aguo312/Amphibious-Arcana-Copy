@@ -217,7 +217,7 @@ export default class PlayerController extends StateMachineAI {
                 if (this.iFramesTimer.isStopped()) {
                     this.health -= 1;
 
-                    const enemyId = event.data.get("node");
+                    const enemyId = event.data.get("node") || event.data.get("owner");
                     const enemy = this.npcs.get(enemyId);
                     if (!enemy) {
                         console.log("failed to find enemy");

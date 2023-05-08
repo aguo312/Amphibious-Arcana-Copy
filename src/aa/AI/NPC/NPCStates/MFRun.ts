@@ -30,15 +30,15 @@ export default class Run extends BossState {
             this.handleEvent(this.receiver.getNextEvent());
         }
 
+        this.parent.velocity.y += this.gravity * deltaT;
+        this.parent.velocity.x = this.dir * this.parent.speed;
+        this.owner.move(this.parent.velocity.scaled(deltaT));
+
         this.lockPlayer(
             this.owner,
             this.owner.getScene().getViewport().getCenter(),
             this.owner.getScene().getViewport().getHalfSize()
         );
-
-        this.parent.velocity.y += this.gravity * deltaT;
-        this.parent.velocity.x = this.dir * this.parent.speed;
-        this.owner.move(this.parent.velocity.scaled(deltaT));
     }
 
     public handleEvent(event: GameEvent): void {
@@ -57,11 +57,11 @@ export default class Run extends BossState {
         const viewportRightEdge = viewportCenter.x + viewportHalfSize.x;
 
         if (playerLeftEdge <= viewportLeftEdge) {
-            player.position.x = viewportLeftEdge + player.size.x / 4;
+            player.position.x = viewportLeftEdge + player.size.x / 4 + 10;
             this.dir = 1;
             this.finished(MFStates.IDLE);
         } else if (playerRightEdge >= viewportRightEdge) {
-            player.position.x = viewportRightEdge - player.size.x / 4;
+            player.position.x = viewportRightEdge - player.size.x / 4 - 10;
             this.dir = -1;
             this.finished(MFStates.IDLE);
         }
