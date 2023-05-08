@@ -223,20 +223,22 @@ export default abstract class AALevel extends Scene {
                     AAPhysicsGroups.ICE_PLATFORM,
                     AAPhysicsGroups.BOSS_PARTICLE,
                     AAPhysicsGroups.TUTORIAL,
+                    AAPhysicsGroups.ENEMY_PARTICLE,
                 ],
                 collisions: [
-                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
-                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
                 ],
             },
         });
@@ -1447,6 +1449,7 @@ export default abstract class AALevel extends Scene {
         );
         this.player.setGroup(AAPhysicsGroups.PLAYER);
         this.player.setTrigger(AAPhysicsGroups.BOSS_PARTICLE, AAEvents.PLAYER_HIT, null);
+        this.player.setTrigger(AAPhysicsGroups.ENEMY_PARTICLE, AAEvents.PLAYER_HIT, null);
         this.player.setTrigger(AAPhysicsGroups.ENEMY, AAEvents.PLAYER_HIT, null);
 
         // Give the player a flip animation
