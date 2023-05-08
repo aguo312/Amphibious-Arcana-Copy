@@ -26,8 +26,7 @@ import AntQueenBehavior from "../AI/NPC/NPCBehaviors/AntQueenBehavior";
 import Level0 from "./AALevel0";
 
 export default class Level2 extends AALevel {
-    // public static readonly PLAYER_SPAWN = new Vec2(50, 1100);
-    public static readonly PLAYER_SPAWN = new Vec2(1000, 1104);
+    public static readonly PLAYER_SPAWN = new Vec2(50, 1100);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
