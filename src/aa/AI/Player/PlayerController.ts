@@ -99,6 +99,8 @@ export default class PlayerController extends StateMachineAI {
 
     protected iFramesTimer: Timer;
 
+    protected tongueCooldown: Timer;
+
     protected npcs: Map<number, AAAnimatedSprite>;
 
     public initializeAI(owner: AAAnimatedSprite, options: Record<string, any>) {
@@ -140,6 +142,7 @@ export default class PlayerController extends StateMachineAI {
         this.isInvincible = false;
 
         this.iFramesTimer = new Timer(2000, null, false);
+        this.tongueCooldown = new Timer(2000, null, false);
 
         this.receiver = new Receiver();
         this.receiver.subscribe(AAEvents.PLAYER_FIRE_JUMP);
@@ -345,28 +348,32 @@ export default class PlayerController extends StateMachineAI {
     }
 
     protected tongueAttack(): void {
-        if (!this.tongueProjectile.isSystemRunning() && !this.tongueGraphic.visible) {
-            this.tongueProjectile.getPool()[0].unfreeze();
-            // Update the rotation to apply the particles velocity vector
-            this.tongueProjectile.rotation =
-                2 * Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
-            // Start the particle system at the player's current position
-            this.tongueProjectile.startSystem(1000, 0, this.owner.position);
-            if (this.owner.onGround) {
-                this.owner.animation.play(PlayerAnimations.ATTACK);
-            } else {
-                this.owner.animation.play(PlayerAnimations.JUMP_ATTACK);
-            }
 
-            this.emitter.fireEvent(AAEvents.SHOOT_TONGUE, {
-                pos: this.owner.position,
-                dir: this.faceDir,
-            });
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
-                key: this.owner.getScene().getAttackAudioKey(),
-                loop: false,
-                holdReference: false,
-            });
+        if(this.tongueCooldown.isStopped()){
+            this.tongueCooldown.start();
+            if (!this.tongueProjectile.isSystemRunning() && !this.tongueGraphic.visible) {
+                this.tongueProjectile.getPool()[0].unfreeze();
+                // Update the rotation to apply the particles velocity vector
+                this.tongueProjectile.rotation =
+                    2 * Math.PI - Vec2.UP.angleToCCW(this.faceDir) + Math.PI;
+                // Start the particle system at the player's current position
+                this.tongueProjectile.startSystem(1000, 0, this.owner.position);
+                if (this.owner.onGround) {
+                    this.owner.animation.play(PlayerAnimations.ATTACK);
+                } else {
+                    this.owner.animation.play(PlayerAnimations.JUMP_ATTACK);
+                }
+    
+                this.emitter.fireEvent(AAEvents.SHOOT_TONGUE, {
+                    pos: this.owner.position,
+                    dir: this.faceDir,
+                });
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.owner.getScene().getAttackAudioKey(),
+                    loop: false,
+                    holdReference: false,
+                });
+            }
         }
     }
 
