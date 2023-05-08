@@ -8,6 +8,7 @@ import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 import RangedEnemyParticles from "../RangedEnemyParticles";
 import OrthogonalTilemap from "../../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import { GameEventType } from "../../../../Wolfie2D/Events/GameEventType";
+import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 
 export const EnemyStates = {
     IDLE: "IDLE",
@@ -201,6 +202,9 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                         this.owner.animation.playIfNotAlready("IDLE", true);
                     }
                 }
+            }
+            if (this.dir !== Vec2.ZERO) {
+                this.owner.invertX = MathUtils.sign(this.dir.x) > 0;
             }
         }
 

@@ -169,6 +169,7 @@ export default class Level6 extends AALevel {
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
+        this.load.spritesheet("Ultroloth", "hw4_assets/spritesheets/ultroloth.json");
         this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
 
         this.load.image(this.backgroundKey, Level5.BACKGROUND_PATH);
@@ -304,32 +305,32 @@ export default class Level6 extends AALevel {
             const particles = this.rangedEnemyParticleSystem.getPool();
             particles.forEach((particle) => this.allNPCS.set(particle.id, particle));
 
-            const scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
-            scabbers.scale.scale(0.25);
-            scabbers.position.set(l.x, l.y);
-            scabbers.addPhysics();
-            scabbers.setGroup(AAPhysicsGroups.ENEMY);
-            scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
-            scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
-            scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
+            const ultroloth = this.add.animatedSprite("Ultroloth", AALayers.PRIMARY);
+            ultroloth.scale.scale(0.25);
+            ultroloth.position.set(l.x, l.y);
+            ultroloth.addPhysics();
+            ultroloth.setGroup(AAPhysicsGroups.ENEMY);
+            ultroloth.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+            ultroloth.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
+            ultroloth.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
 
-            scabbers.health = 3;
-            scabbers.maxHealth = 3;
+            ultroloth.health = 3;
+            ultroloth.maxHealth = 3;
 
-            const healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
-                size: scabbers.size.clone().scaled(1.5, 0.25),
-                offset: scabbers.size.clone().scaled(0, -1 / 5),
+            const healthbar = new HealthbarHUD(this, ultroloth, AALayers.PRIMARY, {
+                size: ultroloth.size.clone().scaled(1, 0.15),
+                offset: ultroloth.size.clone().scaled(0, -1 / 5),
             });
-            this.healthbars.set(scabbers.id, healthbar);
-            scabbers.animation.play("IDLE");
-            scabbers.addAI(RangedEnemyBehavior, {
+            this.healthbars.set(ultroloth.id, healthbar);
+            ultroloth.animation.play("IDLE");
+            ultroloth.addAI(RangedEnemyBehavior, {
                 player: this.player,
                 particles: this.rangedEnemyParticleSystem,
                 tilemap: "Collidable",
             });
-            this.allNPCS.set(scabbers.id, scabbers);
+            this.allNPCS.set(ultroloth.id, ultroloth);
 
-            scabbers.tweens.add("DEATH", {
+            ultroloth.tweens.add("DEATH", {
                 startDelay: 0,
                 duration: 500,
                 effects: [
