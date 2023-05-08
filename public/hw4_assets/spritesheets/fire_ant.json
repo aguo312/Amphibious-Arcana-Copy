@@ -1,0 +1,175 @@
+{
+	"name": "fire_ant",
+	"spriteSheetImage": "fire_ant.png",
+	"spriteWidth": 64,
+	"spriteHeight": 100,
+	"leftBuffer": 0,
+	"rightBuffer": 0,
+	"topBuffer": 0,
+	"bottomBuffer": 0,
+	"columns": 6,
+	"rows": 6,
+	"animations": [
+		{
+			"name": "IDLE",
+			"repeat": true,
+			"frames": [
+				{
+					"index": 0,
+					"duration": 17
+				},
+				{
+					"index": 1,
+					"duration": 17
+				},
+				{
+					"index": 2,
+					"duration": 17
+				}
+			]
+		},
+		{
+			"name": "RUNNING",
+			"repeat": true,
+			"frames": [
+				{
+					"index": 12,
+					"duration": 8
+				},
+				{
+					"index": 13,
+					"duration": 8
+				},
+				{
+					"index": 14,
+					"duration": 8
+				},
+				{
+					"index": 15,
+					"duration": 8
+				},
+				{
+					"index": 16,
+					"duration": 8
+				},
+				{
+					"index": 17,
+					"duration": 8
+				},
+				{
+					"index": 18,
+					"duration": 8
+				}
+			]
+		},
+		{
+			"name": "ATTACKING",
+			"repeat": true,
+			"frames": [
+				{
+					"index": 3,
+					"duration": 10
+				},
+				{
+					"index": 4,
+					"duration": 10
+				},
+				{
+					"index": 5,
+					"duration": 10
+				},
+				{
+					"index": 6,
+					"duration": 10
+				},
+				{
+					"index": 7,
+					"duration": 10
+				},
+				{
+					"index": 8,
+					"duration": 10
+				},
+				{
+					"index": 9,
+					"duration": 10
+				},
+				{
+					"index": 10,
+					"duration": 10
+				},
+				{
+					"index": 11,
+					"duration": 10
+				},
+				{
+					"index": 12,
+					"duration": 3
+				}
+			]
+		},
+		{
+			"name": "TAKING_DAMAGE",
+			"repeat": false,
+			"frames": [
+				{
+					"index": 21,
+					"duration": 7
+				},
+				{
+					"index": 22,
+					"duration": 7
+				},
+				{
+					"index": 23,
+					"duration": 7
+				},
+				{
+					"index": 24,
+					"duration": 7
+				}
+			]
+		},
+		{
+			"name": "DYING",
+			"repeat": false,
+			"next": "DEAD",
+			"frames": [
+				{
+					"index": 25,
+					"duration": 5
+				},
+				{
+					"index": 26,
+					"duration": 5
+				},
+				{
+					"index": 27,
+					"duration": 5
+				},
+				{
+					"index": 28,
+					"duration": 5
+				},
+				{
+					"index": 29,
+					"duration": 5
+				},
+				{
+					"index": 30,
+					"duration": 5
+				}
+			]
+		},
+		{
+			"name": "DEAD",
+			"repeat": true,
+			"frames": [
+				{
+					"index": 31,
+					"duration": 5
+				}
+			]
+		}
+	]
+}
