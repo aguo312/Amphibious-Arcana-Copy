@@ -226,14 +226,14 @@ export default class PlayerController extends StateMachineAI {
                     });
                     const enemyId = event.data.get("node") || event.data.get("owner");
                     const enemy = this.npcs.get(enemyId);
-                    if (!enemy) {
-                        console.log("failed to find enemy");
+                    if (enemy) {
+                        // Push the player a bit in the direction they were hit
+                        const dir = enemy.position.dirTo(this.owner.position);
+                        this.velocity.x = dir.x >= 0 ? this.velocity.x + 100 : this.velocity.x - 100;
+                        this.velocity.y -= 100;
                     }
 
-                    // Push the player a bit in the direction they were hit
-                    const dir = enemy.position.dirTo(this.owner.position);
-                    this.velocity.x = dir.x >= 0 ? this.velocity.x + 100 : this.velocity.x - 100;
-                    this.velocity.y -= 100;
+                  
                     this.iFramesTimer.start();
                 }
                 break;
