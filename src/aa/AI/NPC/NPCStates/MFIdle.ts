@@ -15,7 +15,11 @@ export default class MFIdle extends BossState {
 
     public onEnter(options: Record<string, any>): void {
         console.log("ENTERING IDLE");
-        this.owner.animation.play(EnemyAnimations.IDLE);
+        if (this.owner.animation.isPlaying("CASTING_LEFT")) {
+            this.owner.animation.queue(EnemyAnimations.IDLE, true);
+        } else {
+            this.owner.animation.play(EnemyAnimations.IDLE, true);
+        }
         this.parent.speed = this.parent.MIN_SPEED;
 
         this.parent.velocity.x = 0;
