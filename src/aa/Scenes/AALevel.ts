@@ -467,8 +467,10 @@ export default abstract class AALevel extends Scene {
                         );
                     }
                     let current = enemy.animation.currentAnimation;
-                    enemy.animation.play("TAKING_DAMAGE");
-                    enemy.animation.queue(current, true);
+                    if (current !== "TAKING_DAMAGE") {
+                        enemy.animation.play("TAKING_DAMAGE");
+                        enemy.animation.queue(current, true);
+                    }
 
                     this.handleFireballHit();
                 }
@@ -520,8 +522,10 @@ export default abstract class AALevel extends Scene {
                         boss.maxHealth
                     );
                     let current = boss.animation.currentAnimation;
-                    boss.animation.playIfNotAlready("TAKING_DAMAGE");
-                    boss.animation.queue(current, true);
+                    if (current !== "TAKING_DAMAGE") {
+                        boss.animation.playIfNotAlready("TAKING_DAMAGE");
+                        boss.animation.queue(current, true);
+                    }
                     this.bossIFrameTimer.start();
                 }
                 break;
@@ -537,8 +541,10 @@ export default abstract class AALevel extends Scene {
                         boss.maxHealth
                     );
                     let current = boss.animation.currentAnimation;
-                    boss.animation.playIfNotAlready("TAKING_DAMAGE");
-                    boss.animation.queue(current, true);
+                    if (current !== "TAKING_DAMAGE") {
+                        boss.animation.playIfNotAlready("TAKING_DAMAGE");
+                        boss.animation.queue(current, true);
+                    }
                     this.bossIFrameTimer.start();
                 }
                 break;
@@ -556,8 +562,10 @@ export default abstract class AALevel extends Scene {
                     overlay: overlay,
                 });
                 let current = enemy.animation.currentAnimation;
-                enemy.animation.play("TAKING_DAMAGE");
-                enemy.animation.queue(current, true);
+                if (current !== "TAKING_DAMAGE") {
+                    enemy.animation.play("TAKING_DAMAGE");
+                    enemy.animation.queue(current, true);
+                }
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
