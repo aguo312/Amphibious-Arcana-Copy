@@ -27,7 +27,7 @@ export default class MFIdle extends BossState {
             this.idleTimer = new Timer(
                 2000,
                 () => {
-                    this.finished(MFStates.IDLE);
+                    this.finished(MFStates.RUN);
                 },
                 false
             );
