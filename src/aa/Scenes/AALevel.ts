@@ -1105,7 +1105,6 @@ export default abstract class AALevel extends Scene {
      * Handles all subscriptions to events
      */
     protected subscribeToEvents(): void {
-        this.receiver.subscribe(AAEvents.BOSS_KILLED);
         this.receiver.subscribe(AAEvents.ANT_FIRE_HIT);
         this.receiver.subscribe(AAEvents.PLAYER_ENTERED_LEVEL_END);
         this.receiver.subscribe(AAEvents.LEVEL_START);
