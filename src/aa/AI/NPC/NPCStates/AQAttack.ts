@@ -24,7 +24,7 @@ export default class AQAttack extends BossState {
         this.parent.velocity.y = 0;
         this.dir = options.dir;
         this.weaponSystem = options.weaponSystem;
-        this.player = options.player
+        this.player = options.player;
         this.attack();
         this.finished(AQStates.IDLE);
     }
@@ -37,23 +37,27 @@ export default class AQAttack extends BossState {
         }
     }
 
-    private attack(): void {        
+    private attack(): void {
+        if (this.owner.getScene().bossDead) {
+            console.log("boss dead");
+            return;
+        }
 
         let diff = this.player.position.clone().sub(this.owner.position);
         let rotation = diff.angleToCCW(Vec2.DOWN);
 
         this.weaponSystem.rotation = rotation;
- 
+
         this.owner.animation.playIfNotAlready("ATTACKING", false);
         this.weaponSystem.startSystem(1000, 0, this.owner.position);
-    
+
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
             key: this.owner.getScene().getAttackAudioKey(),
             loop: false,
             holdReference: false,
         });
     }
-    
+
     public handleEvent(event: GameEvent): void {
         switch (event.type) {
             case AAEvents.SPAWN_BOSS: {
