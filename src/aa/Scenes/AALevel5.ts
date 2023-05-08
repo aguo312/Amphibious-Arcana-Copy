@@ -60,6 +60,9 @@ export default class Level5 extends AALevel {
     // public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
     // public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
 
+    public static readonly BACKGROUND_KEY = "BACKGROUND";
+    public static readonly BACKGROUND_PATH = "hw4_assets/images/Castle.png";
+
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
     protected tutorialText: Label;
     protected tutorialTextTimer: Timer;
@@ -97,6 +100,7 @@ export default class Level5 extends AALevel {
         this.grappleAudioKey = Level0.GRAPPLE_AUDIO_KEY;
         this.enemyDeathAudioKey = Level0.ENEMY_DEATH_AUDIO_KEY;
         this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
+        this.backgroundKey = Level5.BACKGROUND_KEY;
 
         // Level end size and position
         this.levelEndPosition = new Vec2(736, 24).mult(this.tilemapScale);
@@ -111,6 +115,12 @@ export default class Level5 extends AALevel {
             levelMusicKey: this.levelMusicKey,
         });
         this.currLevel = Level5;
+
+        // Setup bg stuff
+        this.bgScale = new Vec2(7.0, 7.0);
+        this.bgOffset = new Vec2(120, 80).mult(this.tilemapScale);
+        this.bgMovementScale = 0.7;
+        this.bgMovementScaleY = 0.7;
     }
 
     public initializeUI(): void {
@@ -142,6 +152,8 @@ export default class Level5 extends AALevel {
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
+
+        this.load.image(this.backgroundKey, Level5.BACKGROUND_PATH);
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level5.LEVEL_MUSIC_PATH);
@@ -269,6 +281,6 @@ export default class Level5 extends AALevel {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 1600, 700);
+        this.viewport.setBounds(16, 16, 1584, 700);
     }
 }

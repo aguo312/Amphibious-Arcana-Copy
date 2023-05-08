@@ -110,6 +110,7 @@ export default class Level6 extends AALevel {
         this.grappleAudioKey = Level0.GRAPPLE_AUDIO_KEY;
         this.enemyDeathAudioKey = Level0.ENEMY_DEATH_AUDIO_KEY;
         this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
+        this.backgroundKey = Level5.BACKGROUND_KEY;
 
         // // Level end size and position
         // this.levelEndPosition = new Vec2(192, 24).mult(this.tilemapScale);
@@ -131,6 +132,12 @@ export default class Level6 extends AALevel {
         });
         this.currLevel = Level6;
         MainMenu.BOSS_LOCATION = this.bossSpawnTriggerPos;
+
+        // Setup bg stuff
+        this.bgScale = new Vec2(10.0, 10.0);
+        this.bgOffset = new Vec2(150, 180).mult(this.tilemapScale);
+        this.bgMovementScale = 0.7;
+        this.bgMovementScaleY = 0.7;
     }
 
     public initializeUI(): void {
@@ -163,6 +170,8 @@ export default class Level6 extends AALevel {
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
         this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
+
+        this.load.image(this.backgroundKey, Level5.BACKGROUND_PATH);
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level6.LEVEL_MUSIC_PATH);
