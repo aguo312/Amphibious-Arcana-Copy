@@ -20,6 +20,7 @@ import MainMenu from "./MainMenu";
 import Level6 from "./AALevel6";
 import RangedEnemyBehavior from "../AI/NPC/NPCBehaviors/RangedEnemyBehavior";
 import Level0 from "./AALevel0";
+import RangedEnemyParticles from "../AI/NPC/RangedEnemyParticles";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -66,6 +67,8 @@ export default class Level5 extends AALevel {
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
     protected tutorialText: Label;
     protected tutorialTextTimer: Timer;
+
+    protected rangedEnemyParticleSystem: RangedEnemyParticles;
 
     protected cheatsManager: CheatsManager;
 
@@ -152,6 +155,7 @@ export default class Level5 extends AALevel {
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
+        this.load.spritesheet("Ultroloth", "hw4_assets/spritesheets/ultroloth.json");
 
         this.load.image(this.backgroundKey, Level5.BACKGROUND_PATH);
 
@@ -203,26 +207,28 @@ export default class Level5 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-        let locations = [
+        let melee = [
             new Vec2(136, 640),
-            new Vec2(140, 64),
             new Vec2(184, 288),
             new Vec2(248, 384),
-            new Vec2(329, 640),
-            new Vec2(1047, 640),
-            new Vec2(625, 640),
-            new Vec2(1416, 640),
-            new Vec2(1335, 368),
             new Vec2(1120, 368),
-            new Vec2(712, 240),
             new Vec2(488, 288),
             new Vec2(860, 512),
-            new Vec2(1090, 640),
             new Vec2(1442, 640),
             new Vec2(1556, 432),
             new Vec2(1556, 256),
         ];
-        locations.forEach((l) => {
+        let ranged = [
+            new Vec2(140, 64),
+            new Vec2(329, 640),
+            new Vec2(1024, 640),
+            new Vec2(625, 640),
+            new Vec2(1416, 640),
+            new Vec2(1335, 368),
+            new Vec2(712, 240),
+            new Vec2(1090, 640),
+        ];
+        melee.forEach((l) => {
             let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
             scabbers.scale.scale(0.25);
             scabbers.position.set(l.x, l.y);
@@ -244,6 +250,57 @@ export default class Level5 extends AALevel {
             this.allNPCS.set(scabbers.id, scabbers);
 
             scabbers.tweens.add("DEATH", {
+                startDelay: 0,
+                duration: 500,
+                effects: [
+                    {
+                        property: "rotation",
+                        start: 0,
+                        end: Math.PI,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                    {
+                        property: "alpha",
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                ],
+                onEnd: [AAEvents.NPC_KILLED],
+            });
+        });
+        ranged.forEach((l) => {
+            this.rangedEnemyParticleSystem = new RangedEnemyParticles(1, Vec2.ZERO, 1000, 3, 10, 1);
+            this.rangedEnemyParticleSystem.initializePool(this, AALayers.PRIMARY);
+            const particles = this.rangedEnemyParticleSystem.getPool();
+            particles.forEach((particle) => this.allNPCS.set(particle.id, particle));
+
+            const ultroloth = this.add.animatedSprite("Ultroloth", AALayers.PRIMARY);
+            ultroloth.scale.scale(0.25);
+            ultroloth.position.set(l.x, l.y);
+            ultroloth.addPhysics();
+            ultroloth.setGroup(AAPhysicsGroups.ENEMY);
+            ultroloth.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+            ultroloth.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
+            ultroloth.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
+
+            ultroloth.health = 3;
+            ultroloth.maxHealth = 3;
+
+            const healthbar = new HealthbarHUD(this, ultroloth, AALayers.PRIMARY, {
+                size: ultroloth.size.clone().scaled(1, 0.15),
+                offset: ultroloth.size.clone().scaled(0, -1 / 5),
+            });
+            this.healthbars.set(ultroloth.id, healthbar);
+            ultroloth.animation.play("IDLE");
+            ultroloth.addAI(RangedEnemyBehavior, {
+                player: this.player,
+                particles: this.rangedEnemyParticleSystem,
+                tilemap: "Collidable",
+            });
+            this.allNPCS.set(ultroloth.id, ultroloth);
+
+            ultroloth.tweens.add("DEATH", {
                 startDelay: 0,
                 duration: 500,
                 effects: [

@@ -339,7 +339,7 @@ export default abstract class AALevel extends Scene {
     /* Update method for the scene */
 
     public updateScene(deltaT: number) {
-        console.log(this.player.position.x + " " + this.player.position.y);
+        // console.log(this.player.position.x + " " + this.player.position.y);
         // Handle all game events
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
