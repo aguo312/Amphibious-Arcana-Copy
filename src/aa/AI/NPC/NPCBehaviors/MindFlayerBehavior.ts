@@ -47,7 +47,6 @@ export default class MindFlayerBehavior extends NPCBehavior {
             this.handleEvent(this.receiver.getNextEvent());
         }
 
-        console.log("yo");
         if (this.owner.getScene().bossDead) {
             this.setActive(false);
         }
