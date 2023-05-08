@@ -261,7 +261,6 @@ export default abstract class AALevel extends Scene {
         this.allNPCS = new Map<number, AAAnimatedSprite>();
         this.healthbars = new Map<number, HealthbarHUD>();
         this.freezeOverlays = new Map<number, Graphic>();
-
     }
 
     public loadScene() {
@@ -340,7 +339,7 @@ export default abstract class AALevel extends Scene {
     /* Update method for the scene */
 
     public updateScene(deltaT: number) {
-        console.log(this.player.position.x + " " + this.player.position.y)
+        // console.log(this.player.position.x + " " + this.player.position.y);
         // Handle all game events
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
@@ -561,8 +560,8 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.ANT_FIRE_HIT: {
                 this.handleAntFireballHit();
-                if(event.data.get("other") === this.player.id){
-                    this.emitter.fireEvent(AAEvents.PLAYER_HIT)
+                if (event.data.get("other") === this.player.id) {
+                    this.emitter.fireEvent(AAEvents.PLAYER_HIT);
                 }
                 break;
             }
@@ -731,51 +730,49 @@ export default abstract class AALevel extends Scene {
             case "GUIDE": {
                 let texts = [""];
 
-                
-                if(MainMenu.CURRENT_LEVEL === 0){
+                if (MainMenu.CURRENT_LEVEL === 0) {
                     texts = [
                         "You're finally awake! The Mind Flayer really got us all...",
                         "It seems like you lost most of your magic. But you can get it back.",
                         "Use your tongue as a grapple on concrete surfaces to get around.",
                     ];
-                }else if(MainMenu.CURRENT_LEVEL === 1){
+                } else if (MainMenu.CURRENT_LEVEL === 1) {
                     texts = [
                         "Seems like you'll need to get through this mountain.",
                         "Climb the tree with your tongue spell to reach the top!",
                         "Use your tongue spell on enemies to damage them and gain health."
                     ];
-                }else if(MainMenu.CURRENT_LEVEL === 2){
+                } else if (MainMenu.CURRENT_LEVEL === 2) {
                     texts = [
                         "Creepy.. This is the cave of the fire ants.",
                         "The exit is at the bottom right of the cave.",
                         "Be careful, the Ant-Queen might be guarding it...",
                     ];
-                }else if(MainMenu.CURRENT_LEVEL === 3){
+                } else if (MainMenu.CURRENT_LEVEL === 3) {
                     texts = [
                         "You've unlocked your fireball! It deals damage to enemies.",
                         "You can also shoot it by your feet for a boost!",
                         "It will allow you to make higher jumps and reach platforms.",
                     ];
-                }else if(MainMenu.CURRENT_LEVEL === 4){
+                } else if (MainMenu.CURRENT_LEVEL === 4) {
                     texts = [
                         "We made it through! We are getting closer to the castle.",
                         "I'm starting to feel the Mind Flayer's presence.",
                         "There is a chance that I could be controlled by him. I'm Sorry",
                     ];
-                }else if(MainMenu.CURRENT_LEVEL === 5){
+                } else if (MainMenu.CURRENT_LEVEL === 5) {
                     texts = [
                         "You were able to get me out of his control. Thank you!",
                         "I passed down my Ice Spell to you. You can freeze enemies with it",
                         "You can create an ice platform by clicking again while its in the air.",
                     ];
-                }else if(MainMenu.CURRENT_LEVEL === 6){
+                } else if (MainMenu.CURRENT_LEVEL === 6) {
                     texts = [
                         "This is it! Use all your spells to reach the Mind Flayer!",
                         "The future of this world is in your hands.",
                         "Good Luck!.",
                     ];
                 }
-
 
                 if (this.guideTextTimer.isStopped()) {
                     let currentIndex = 0;
@@ -884,7 +881,7 @@ export default abstract class AALevel extends Scene {
 
         // Rocket jump direction
         // TODO should be less effective when fireball lands farther away
-        const dir = new Vec2(-.1 * particle.vel.x, -.1* particle.vel.y);
+        const dir = new Vec2(-0.1 * particle.vel.x, -0.1 * particle.vel.y);
 
         this.antParticleSystem.stopSystem();
 
@@ -1119,11 +1116,7 @@ export default abstract class AALevel extends Scene {
                 AAEvents.PARTICLE_HIT_DESTRUCTIBLE,
                 null
             );
-            this.collidable.setTrigger(
-                AAPhysicsGroups.ANT_PARTICLE,
-                AAEvents.ANT_FIRE_HIT,
-                null
-            );
+            this.collidable.setTrigger(AAPhysicsGroups.ANT_PARTICLE, AAEvents.ANT_FIRE_HIT, null);
             this.collidable.setTrigger(
                 AAPhysicsGroups.TONGUE,
                 AAEvents.TONGUE_WALL_COLLISION,

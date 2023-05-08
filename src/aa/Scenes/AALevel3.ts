@@ -24,12 +24,12 @@ import Level0 from "./AALevel0";
  * The first level for HW4 - should be the one with the grass and the clouds.
  */
 export default class Level3 extends AALevel {
-    public static readonly PLAYER_SPAWN = new Vec2(50, 528);
+    public static readonly PLAYER_SPAWN = new Vec2(50, 830);
     public static readonly PLAYER_SPRITE_KEY = "PLAYER_SPRITE_KEY";
     public static readonly PLAYER_SPRITE_PATH = "hw4_assets/spritesheets/Frog.json";
 
     public static readonly TILEMAP_KEY = "LEVEL1";
-    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/desert_level_1.json";
+    public static readonly TILEMAP_PATH = "hw4_assets/tilemaps/level3.json";
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
     public static readonly TONGUE_COLLIDABLE_LAYER_KEY = "TongueCollidable";
@@ -105,7 +105,7 @@ export default class Level3 extends AALevel {
 
         // Level end size and position
         //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
-        this.levelEndPosition = new Vec2(790, 180).mult(this.tilemapScale);
+        this.levelEndPosition = new Vec2(1543, 96);
 
         // made bigger for testing
         this.levelEndHalfSize = new Vec2(32, 30).mult(this.tilemapScale);
@@ -120,10 +120,10 @@ export default class Level3 extends AALevel {
         this.currLevel = Level3;
 
         // Setup bg stuff
-        this.bgScale = new Vec2(6.0, 6.0);
+        this.bgScale = new Vec2(6.0, 7.0);
         this.bgOffset = new Vec2(100, 100).mult(this.tilemapScale);
         this.bgMovementScale = 0.7;
-        this.bgMovementScaleY = 0.6;
+        this.bgMovementScaleY = 0.8;
     }
 
     public initializeUI(): void {
@@ -141,7 +141,7 @@ export default class Level3 extends AALevel {
         // this.guideText.fontSize = 24;
         // this.guideText.font = "MyFont";
 
-        this.guideText.position = new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50);
+        this.guideText.position = new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 30);
     }
 
     public initializeTutorialBox() {
@@ -230,10 +230,10 @@ export default class Level3 extends AALevel {
 
     protected initializeNPCs(): void {
         this.enemyPositions = [
-            new Vec2(200, 600),
-            new Vec2(500, 600),
-            new Vec2(800, 600),
-            new Vec2(1150, 400),
+            new Vec2(200, 950),
+            new Vec2(500, 950),
+            new Vec2(800, 950),
+            new Vec2(1150, 750),
         ];
 
         for (const pos of this.enemyPositions) {
@@ -280,31 +280,13 @@ export default class Level3 extends AALevel {
 
         const guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
         guide.scale.scale(0.3);
-        guide.position.set(this.playerSpawn.x + 90, this.playerSpawn.y - 3);
+        guide.position.set(this.playerSpawn.x + 90, this.playerSpawn.y + 15);
         guide.addPhysics(null, null, false);
         guide.setGroup(AAPhysicsGroups.TUTORIAL);
         guide.setTrigger(AAPhysicsGroups.PLAYER, "GUIDE", null);
 
         guide.animation.play("IDLE");
         this.allNPCS.set(guide.id, guide);
-
-        const ant = this.add.animatedSprite("Ant", AALayers.GUIDE);
-        ant.scale.scale(0.25);
-        ant.position.set(this.playerSpawn.x, this.playerSpawn.y - 100);
-        ant.addPhysics(null, null, false);
-        ant.setGroup(AAPhysicsGroups.ENEMY);
-        ant.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
-
-        ant.animation.play("IDLE");
-        ant.addAI(AntBehavior, { player: this.player });
-        ant.health = 3;
-        ant.maxHealth = 3;
-        const healthbar = new HealthbarHUD(this, ant, AALayers.PRIMARY, {
-            size: ant.size.clone().scaled(1.5, 0.125),
-            offset: ant.size.clone().scaled(0, -1 / 5),
-        });
-        this.healthbars.set(ant.id, healthbar);
-        this.allNPCS.set(ant.id, ant);
     }
 
     public updateScene(deltaT: number) {
@@ -323,6 +305,6 @@ export default class Level3 extends AALevel {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 1584, 700);
+        this.viewport.setBounds(16, 16, 1584, 980);
     }
 }
