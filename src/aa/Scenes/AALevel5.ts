@@ -92,6 +92,7 @@ export default class Level5 extends AALevel {
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
+        this.hurtAudioKey = Level0.HURT_AUDIO_KEY;
         this.explodeAudioKey = Level0.EXPLODE_AUDIO_KEY;
         this.grappleAudioKey = Level0.GRAPPLE_AUDIO_KEY;
         this.enemyDeathAudioKey = Level0.ENEMY_DEATH_AUDIO_KEY;
@@ -167,6 +168,7 @@ export default class Level5 extends AALevel {
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.attackAudioKey);
         this.load.keepAudio(this.healAudioKey);
+        this.load.keepAudio(this.hurtAudioKey);
         this.load.keepAudio(this.explodeAudioKey);
         this.load.keepAudio(this.grappleAudioKey);
         this.load.keepAudio(this.enemyDeathAudioKey);

@@ -275,12 +275,6 @@ export default class TongueBehavior implements AI {
                             node: this.attachedEnemy.id,
                         });
                         this.emitter.fireEvent(AAEvents.PLAYER_HEAL);
-                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
-                            // key: this.playerDeathAudioKey,
-                            key: this.player.getScene().getHealAudioKey(),
-                            loop: false,
-                            holdReference: false,
-                        });
                     }
                     this.attachedEnemy = null;
                     this.frozenOverlay = null;

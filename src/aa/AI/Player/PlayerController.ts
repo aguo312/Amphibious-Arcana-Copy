@@ -216,7 +216,11 @@ export default class PlayerController extends StateMachineAI {
             case AAEvents.PLAYER_HIT: {
                 if (this.iFramesTimer.isStopped()) {
                     this.health -= 1;
-
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                        key: this.owner.getScene().getHurtAudioKey(),
+                        loop: false,
+                        holdReference: false,
+                    });
                     const enemyId = event.data.get("node") || event.data.get("owner");
                     const enemy = this.npcs.get(enemyId);
                     if (!enemy) {
@@ -239,6 +243,11 @@ export default class PlayerController extends StateMachineAI {
                 // testing this since you cant regain health from consuming
                 // soon after taking damage with previous code
                 this.health += 1;
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.owner.getScene().getHealAudioKey(),
+                    loop: false,
+                    holdReference: false,
+                });
                 this.iFramesTimer.start();
                 break;
             }

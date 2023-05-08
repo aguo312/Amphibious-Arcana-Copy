@@ -45,8 +45,11 @@ export default class Level0 extends AALevel {
     public static readonly ATTACK_AUDIO_KEY = "PLAYER_ATTACK";
     public static readonly ATTACK_AUDIO_PATH = "hw4_assets/sounds/attack.wav";
 
-    public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
-    public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
+    public static readonly HEAL_AUDIO_KEY = "PLAYER_HEAL";
+    public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/heal.wav";
+
+    public static readonly HURT_AUDIO_KEY = "PLAYER_HURT";
+    public static readonly HURT_AUDIO_PATH = "hw4_assets/sounds/hurt.wav";
 
     public static readonly EXPLODE_AUDIO_KEY = "EXPLODE";
     public static readonly EXPLODE_AUDIO_PATH = "hw4_assets/sounds/explode.wav";
@@ -94,6 +97,7 @@ export default class Level0 extends AALevel {
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
+        this.hurtAudioKey = Level0.HURT_AUDIO_KEY;
         this.explodeAudioKey = Level0.EXPLODE_AUDIO_KEY;
         this.grappleAudioKey = Level0.GRAPPLE_AUDIO_KEY;
         this.enemyDeathAudioKey = Level0.ENEMY_DEATH_AUDIO_KEY;
@@ -179,6 +183,7 @@ export default class Level0 extends AALevel {
         this.load.audio(this.jumpAudioKey, Level0.JUMP_AUDIO_PATH);
         this.load.audio(this.attackAudioKey, Level0.ATTACK_AUDIO_PATH);
         this.load.audio(this.healAudioKey, Level0.HEAL_AUDIO_PATH);
+        this.load.audio(this.hurtAudioKey, Level0.HURT_AUDIO_PATH);
         this.load.audio(this.explodeAudioKey, Level0.EXPLODE_AUDIO_PATH);
         this.load.audio(this.grappleAudioKey, Level0.GRAPPLE_AUDIO_PATH);
         this.load.audio(this.enemyDeathAudioKey, Level0.ENEMY_DEATH_AUDIO_PATH);
@@ -200,6 +205,7 @@ export default class Level0 extends AALevel {
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.attackAudioKey);
         this.load.keepAudio(this.healAudioKey);
+        this.load.keepAudio(this.hurtAudioKey);
         this.load.keepAudio(this.explodeAudioKey);
         this.load.keepAudio(this.grappleAudioKey);
         this.load.keepAudio(this.enemyDeathAudioKey);
