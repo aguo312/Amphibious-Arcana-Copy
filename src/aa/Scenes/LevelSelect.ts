@@ -5,14 +5,15 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
+import Level0 from "./AALevel0";
+import Level1 from "./AALevel1";
+import Level2 from "./AALevel2";
 import Level3 from "./AALevel3";
 import Level4 from "./AALevel4";
 import Level5 from "./AALevel5";
 import Level6 from "./AALevel6";
 import MainMenu from "./MainMenu";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
-import Level1 from "./AALevel1";
-import Level2 from "./AALevel2";
 
 // Layers for the level select scene
 export const MenuLayers = {
@@ -52,11 +53,15 @@ export default class LevelSelect extends Scene {
         const yPos = size.y + 100;
 
         // Create the individual level buttons
-        const level1Btn = this.createButton("Level 1", new Vec2(leftColX, yPos));
+        const level0Btn = this.createButton("Level 0", new Vec2(leftColX - 110, yPos));
+        const level1Btn =
+            MainMenu.LEVEL_COUNTER >= 1
+                ? this.createButton("Level 1", new Vec2(size.x, yPos))
+                : this.createButton("Locked", new Vec2(size.x, yPos));
         const level2Btn =
             MainMenu.LEVEL_COUNTER >= 2
-                ? this.createButton("Level 2", new Vec2(rightColX, yPos))
-                : this.createButton("Locked", new Vec2(rightColX, yPos));
+                ? this.createButton("Level 2", new Vec2(rightColX + 110, yPos))
+                : this.createButton("Locked", new Vec2(rightColX + 110, yPos));
 
         const level3Btn =
             MainMenu.LEVEL_COUNTER >= 3
@@ -81,11 +86,20 @@ export default class LevelSelect extends Scene {
             this.sceneManager.changeToScene(MainMenu);
         };
 
-        level1Btn.onClick = () => {
+        level0Btn.onClick = () => {
             // TODO
             MainMenu.GAME_PLAYING = true;
-            MainMenu.CURRENT_LEVEL = 1;
-            this.sceneManager.changeToScene(Level1);
+            MainMenu.CURRENT_LEVEL = 0;
+            this.sceneManager.changeToScene(Level0);
+        };
+
+        level1Btn.onClick = () => {
+            // TODO
+            if (MainMenu.LEVEL_COUNTER >= 1) {
+                MainMenu.GAME_PLAYING = true;
+                MainMenu.CURRENT_LEVEL = 1;
+                this.sceneManager.changeToScene(Level1);
+            }
         };
 
         level2Btn.onClick = () => {

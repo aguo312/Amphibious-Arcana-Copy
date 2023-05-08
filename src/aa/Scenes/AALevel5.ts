@@ -184,7 +184,6 @@ export default class Level5 extends AALevel {
         super.startScene();
         this.tutorialTextTimer.start();
         // Set the next level to be Level6
-        // temp to main menu until level 6 exists
         this.nextLevel = Level6;
         this.nextLevelNum = 6;
 

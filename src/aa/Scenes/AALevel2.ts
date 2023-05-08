@@ -234,7 +234,7 @@ export default class Level2 extends AALevel {
         super.startScene();
         this.guideText.tweens.play("fadeIn");
 
-        // Set the next level to be Level4
+        // Set the next level to be Level3
         this.nextLevel = Level3;
         this.nextLevelNum = 3;
         this.initializeTriggers();
