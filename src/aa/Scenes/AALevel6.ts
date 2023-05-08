@@ -3,10 +3,7 @@ import AALevel, { AALayers } from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import Label from "../../Wolfie2D/Nodes/UIElements/Label";
-import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
-import Timer from "../../Wolfie2D/Timing/Timer";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
@@ -43,31 +40,6 @@ export default class Level6 extends AALevel {
 
     public static readonly BOSS_MUSIC_KEY = "BOSS_MUSIC";
     public static readonly BOSS_MUSIC_PATH = "hw4_assets/music/dark_level_music_fast.wav";
-
-    // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
-    // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
-
-    // public static readonly ATTACK_AUDIO_KEY = "PLAYER_ATTACK";
-    // public static readonly ATTACK_AUDIO_PATH = "hw4_assets/sounds/attack.wav";
-
-    // public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
-    // public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
-
-    // public static readonly EXPLODE_AUDIO_KEY = "EXPLODE";
-    // public static readonly EXPLODE_AUDIO_PATH = "hw4_assets/sounds/explode.wav";
-
-    // public static readonly GRAPPLE_AUDIO_KEY = "GRAPPLE";
-    // public static readonly GRAPPLE_AUDIO_PATH = "hw4_assets/sounds/grapple.wav";
-
-    // public static readonly ENEMY_DEATH_AUDIO_KEY = "ENEMY_DEATH";
-    // public static readonly ENEMY_DEATH_AUDIO_PATH = "hw4_assets/sounds/dying_quieter.wav";
-
-    // public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
-    // public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
-
-    // public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
-    protected tutorialText: Label;
-    protected tutorialTextTimer: Timer;
 
     protected bossSpawnTriggerPos: Vec2;
     protected bossSpawnTriggerHalfSize: Vec2;
@@ -112,12 +84,6 @@ export default class Level6 extends AALevel {
         this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
         this.backgroundKey = Level5.BACKGROUND_KEY;
 
-        // // Level end size and position
-        // this.levelEndPosition = new Vec2(192, 24).mult(this.tilemapScale);
-
-        // // made bigger for testing
-        // this.levelEndHalfSize = new Vec2(16, 32).mult(this.tilemapScale);
-
         this.bossSpawnTriggerPos = new Vec2(162, 600).mult(this.tilemapScale);
         this.bossSpawnTriggerHalfSize = new Vec2(4, 16).mult(this.tilemapScale);
 
@@ -143,17 +109,7 @@ export default class Level6 extends AALevel {
     public initializeUI(): void {
         super.initializeUI();
 
-        let size = this.viewport.getHalfSize();
-
-        // add random tutorial text
-        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
-            position: new Vec2(size.x, 180),
-            text: "",
-        });
-        this.tutorialText.size = new Vec2(300, 25);
-        // this.tutorialText.backgroundColor = Color.BLACK;
-        // this.tutorialText.backgroundColor.a = 10;
-        this.tutorialTextTimer = new Timer(10000, () => (this.tutorialText.visible = false), false);
+        const size = this.viewport.getHalfSize();
     }
 
     /**
@@ -214,7 +170,6 @@ export default class Level6 extends AALevel {
 
     public startScene(): void {
         super.startScene();
-        this.tutorialTextTimer.start();
         // Set the next level to be END
         // Return to main menu on completion
         this.nextLevel = MainMenu;
@@ -226,7 +181,7 @@ export default class Level6 extends AALevel {
 
     protected initializeNPCs(): void {
         // regular enemies
-        let melee = [
+        const melee = [
             new Vec2(30, 23).scale(16),
             new Vec2(44, 23).scale(16),
             new Vec2(66, 15).scale(16),
@@ -242,7 +197,7 @@ export default class Level6 extends AALevel {
             new Vec2(76, 75).scale(16),
             new Vec2(110, 75).scale(16),
         ];
-        let ranged = [
+        const ranged = [
             new Vec2(87, 15).scale(16),
             new Vec2(120, 15).scale(16),
             new Vec2(9, 48).scale(16),
@@ -259,7 +214,7 @@ export default class Level6 extends AALevel {
             new Vec2(16, 65).scale(16),
         ];
         melee.forEach((l) => {
-            let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
+            const scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
             scabbers.scale.scale(0.25);
             scabbers.position.set(l.x, l.y);
             scabbers.addPhysics();
@@ -270,7 +225,7 @@ export default class Level6 extends AALevel {
 
             scabbers.health = 3;
             scabbers.maxHealth = 3;
-            let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
+            const healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
                 size: scabbers.size.clone().scaled(1.5, 0.25),
                 offset: scabbers.size.clone().scaled(0, -1 / 5),
             });

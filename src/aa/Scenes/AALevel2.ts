@@ -4,14 +4,9 @@ import AALevel, { AALayers } from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import Label from "../../Wolfie2D/Nodes/UIElements/Label";
-import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
-import Timer from "../../Wolfie2D/Timing/Timer";
-import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
@@ -43,27 +38,6 @@ export default class Level2 extends AALevel {
     public static readonly BACKGROUND_KEY = "BACKGROUND";
     public static readonly BACKGROUND_PATH = "hw4_assets/images/Cave2.png";
 
-    // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
-    // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
-
-    // public static readonly ATTACK_AUDIO_KEY = "PLAYER_ATTACK";
-    // public static readonly ATTACK_AUDIO_PATH = "hw4_assets/sounds/attack.wav";
-
-    // public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
-    // public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
-
-    // public static readonly EXPLODE_AUDIO_KEY = "EXPLODE";
-    // public static readonly EXPLODE_AUDIO_PATH = "hw4_assets/sounds/explode.wav";
-
-    // public static readonly GRAPPLE_AUDIO_KEY = "GRAPPLE";
-    // public static readonly GRAPPLE_AUDIO_PATH = "hw4_assets/sounds/grapple.wav";
-
-    // public static readonly ENEMY_DEATH_AUDIO_KEY = "ENEMY_DEATH";
-    // public static readonly ENEMY_DEATH_AUDIO_PATH = "hw4_assets/sounds/dying_quieter.wav";
-
-    // public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
-    // public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
-
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
 
     protected cheatsManager: CheatsManager;
@@ -73,7 +47,7 @@ export default class Level2 extends AALevel {
 
     protected bossSpawnTriggerPos: Vec2;
     protected bossSpawnTriggerHalfSize: Vec2;
-    
+
     public constructor(
         viewport: Viewport,
         sceneManager: SceneManager,
@@ -107,13 +81,8 @@ export default class Level2 extends AALevel {
         this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
         this.backgroundKey = Level2.BACKGROUND_KEY;
 
-        // Level end size and position
-        //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
-        //this.levelEndPosition = new Vec2(1600, 1100)
-
         // made bigger for testing
         this.levelEndHalfSize = new Vec2(32, 30).mult(this.tilemapScale);
-
 
         this.bossSpawnTriggerPos = new Vec2(1260, 1104);
         this.bossSpawnTriggerHalfSize = new Vec2(10, 160).mult(this.tilemapScale);
@@ -143,9 +112,7 @@ export default class Level2 extends AALevel {
         const size = this.viewport.getHalfSize();
 
         this.guideText.position = new Vec2(233, 981);
-
     }
-
 
     /**
      * Load in our resources for level 1
@@ -155,8 +122,6 @@ export default class Level2 extends AALevel {
         super.loadScene();
         // Load in the tilemap
         this.load.tilemap(this.tilemapKey, Level2.TILEMAP_PATH);
-        // Load in the player's sprite
-        // this.load.spritesheet(this.playerSpriteKey, Level2.PLAYER_SPRITE_PATH);
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
@@ -174,18 +139,6 @@ export default class Level2 extends AALevel {
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level2.LEVEL_MUSIC_PATH);
-        // this.load.audio(this.jumpAudioKey, Level2.JUMP_AUDIO_PATH);
-        // this.load.audio(this.attackAudioKey, Level2.ATTACK_AUDIO_PATH);
-        // this.load.audio(this.healAudioKey, Level2.HEAL_AUDIO_PATH);
-        // this.load.audio(this.explodeAudioKey, Level2.EXPLODE_AUDIO_PATH);
-        // this.load.audio(this.grappleAudioKey, Level2.GRAPPLE_AUDIO_PATH);
-        // this.load.audio(this.enemyDeathAudioKey, Level2.ENEMY_DEATH_AUDIO_PATH);
-        // this.load.audio(this.playerDeathAudioKey, Level2.PLAYER_DEATH_AUDIO_PATH);
-
-        // this.load.image("fireIcon", "hw4_assets/sprites/fire-icon.png");
-        // this.load.image("tongueIcon", "hw4_assets/sprites/tongue-icon.png");
-        // this.load.image("iceIcon", "hw4_assets/sprites/ice-icon.png");
-        // this.load.image("lockIcon", "hw4_assets/sprites/lock-icon.png");
     }
 
     /**
@@ -223,10 +176,9 @@ export default class Level2 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-
-        this.bossHealthBar.position = new Vec2(150, 195)
-        this.bossHealthBarBg.position = new Vec2(150, 195)
-        this.bossNameLabel.position = new Vec2(95, 187) 
+        this.bossHealthBar.position = new Vec2(150, 195);
+        this.bossHealthBarBg.position = new Vec2(150, 195);
+        this.bossNameLabel.position = new Vec2(95, 187);
         // initialize boss weapon system
         this.antParticleSystem = new AntParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
         this.antParticleSystem.initializePool(this, AALayers.PRIMARY);
@@ -234,7 +186,7 @@ export default class Level2 extends AALevel {
         const antQueen = this.add.animatedSprite("Ant", AALayers.PRIMARY);
         antQueen.scale.scale(1.25);
         antQueen.position.set(1405, 1010);
-        antQueen.addPhysics(null, null, false)
+        antQueen.addPhysics(null, null, false);
         antQueen.setGroup(AAPhysicsGroups.ENEMY);
         antQueen.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
         antQueen.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
@@ -247,7 +199,7 @@ export default class Level2 extends AALevel {
             particles: this.antParticleSystem,
         });
         this.allNPCS.set(antQueen.id, antQueen);
-        
+
         antQueen.tweens.add("DEATH", {
             startDelay: 0,
             duration: 500,
@@ -346,13 +298,12 @@ export default class Level2 extends AALevel {
             new Vec2(1500, 1110),
         ];
 
-        for(const pos of this.antPositions){
-
+        for (const pos of this.antPositions) {
             const ant = this.add.animatedSprite("Ant", AALayers.GUIDE);
-            ant.scale.scale(.25)
-            ant.position.set(pos.x, pos.y)
-            ant.addPhysics(null, null, false)
-            ant.setGroup(AAPhysicsGroups.ENEMY)
+            ant.scale.scale(0.25);
+            ant.position.set(pos.x, pos.y);
+            ant.addPhysics(null, null, false);
+            ant.setGroup(AAPhysicsGroups.ENEMY);
             ant.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
 
             ant.animation.play("IDLE");
@@ -365,11 +316,8 @@ export default class Level2 extends AALevel {
             });
             this.healthbars.set(ant.id, healthbar);
             this.allNPCS.set(ant.id, ant);
-
         }
-      
     }
-
 
     protected initializeTriggers(): void {
         this.bossSpawnTrigger = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {

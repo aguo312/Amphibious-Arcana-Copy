@@ -9,17 +9,10 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
-import { AAEvents } from "../AAEvents";
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
-import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
-import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
-import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
-import AntBehavior from "../AI/NPC/NPCBehaviors/AntBehavior";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -110,7 +103,6 @@ export default class Level0 extends AALevel {
         this.backgroundKey = Level0.BACKGROUND_KEY;
 
         // Level end size and position
-        //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
         this.levelEndPosition = new Vec2(800, 115).mult(this.tilemapScale);
 
         // made bigger for testing
@@ -137,7 +129,6 @@ export default class Level0 extends AALevel {
 
         const size = this.viewport.getHalfSize();
 
-
         this.guideText.position = new Vec2(290, 347);
         this.guideText.size.set(655, 150);
 
@@ -148,8 +139,7 @@ export default class Level0 extends AALevel {
         });
         this.tutorialText.size = new Vec2(300, 25);
 
-
-        this.tutorialText1= <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, {
+        this.tutorialText1 = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, {
             position: new Vec2(55, 445),
             text: "Left Click - Attack",
         });
@@ -244,7 +234,6 @@ export default class Level0 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-
         const guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
         guide.scale.scale(0.3);
         guide.position.set(290, 397);
@@ -254,7 +243,6 @@ export default class Level0 extends AALevel {
 
         guide.animation.play("IDLE");
         this.allNPCS.set(guide.id, guide);
-
     }
 
     public updateScene(deltaT: number) {
