@@ -208,7 +208,7 @@
         },
         {
             "name": "TAKING_DAMAGE",
-            "repeat": true,
+            "repeat": false,
             "frames": [
                 {
                     "index": 48,

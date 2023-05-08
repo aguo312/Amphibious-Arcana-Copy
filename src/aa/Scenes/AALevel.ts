@@ -205,6 +205,15 @@ export default abstract class AALevel extends Scene {
 
     protected static readonly FIRE_ICON_PATH = "hw4_assets/icons/fire-icon.png";
 
+    protected ignoredAnimations = [
+        "ATTACKING",
+        "ATTACKING_LEFT",
+        "ATTACKING_RIGHT",
+        "TAKING_DAMAGE",
+        "TAKING_DAMAGE_LEFT",
+        "TAKING_DAMAGE_RIGHT",
+    ];
+
     public constructor(
         viewport: Viewport,
         sceneManager: SceneManager,
@@ -467,8 +476,10 @@ export default abstract class AALevel extends Scene {
                         );
                     }
                     let current = enemy.animation.currentAnimation;
-                    enemy.animation.play("TAKING_DAMAGE");
-                    enemy.animation.queue(current);
+                    if (!this.ignoredAnimations.includes(current)) {
+                        enemy.animation.play("TAKING_DAMAGE");
+                        enemy.animation.queue(current, true);
+                    }
 
                     this.handleFireballHit();
                 }
@@ -520,8 +531,10 @@ export default abstract class AALevel extends Scene {
                         boss.maxHealth
                     );
                     let current = boss.animation.currentAnimation;
-                    boss.animation.playIfNotAlready("TAKING_DAMAGE");
-                    boss.animation.queue(current);
+                    if (!this.ignoredAnimations.includes(current)) {
+                        boss.animation.playIfNotAlready("TAKING_DAMAGE");
+                        boss.animation.queue(current, true);
+                    }
                     this.bossIFrameTimer.start();
                 }
                 break;
@@ -537,8 +550,13 @@ export default abstract class AALevel extends Scene {
                         boss.maxHealth
                     );
                     let current = boss.animation.currentAnimation;
+                    const prev = boss.animation.getPending();
                     boss.animation.playIfNotAlready("TAKING_DAMAGE");
-                    boss.animation.queue(current);
+                    if (!this.ignoredAnimations.includes(current)) {
+                        boss.animation.queue(current, true);
+                    } else {
+                        boss.animation.queue(prev, true);
+                    }
                     this.bossIFrameTimer.start();
                 }
                 break;
@@ -556,8 +574,13 @@ export default abstract class AALevel extends Scene {
                     overlay: overlay,
                 });
                 let current = enemy.animation.currentAnimation;
+                const prev = enemy.animation.getPending();
                 enemy.animation.play("TAKING_DAMAGE");
-                enemy.animation.queue(current);
+                if (!this.ignoredAnimations.includes(current)) {
+                    enemy.animation.queue(current, true);
+                } else {
+                    enemy.animation.queue(prev, true);
+                }
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
@@ -732,6 +755,7 @@ export default abstract class AALevel extends Scene {
                         "You're finally awake! The Mind Flayer really got us all...",
                         "It seems like you lost most of your magic. But you can get it back.",
                         "Use your tongue as a grapple on concrete surfaces to get around.",
+                        "You can also hold the JUMP button to glide with your hat!"
                     ];
                 } else if (MainMenu.CURRENT_LEVEL === 1) {
                     texts = [
