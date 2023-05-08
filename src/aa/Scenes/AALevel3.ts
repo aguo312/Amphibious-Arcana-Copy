@@ -5,10 +5,7 @@ import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
 import Level4 from "./AALevel4";
-import Label from "../../Wolfie2D/Nodes/UIElements/Label";
-import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
-import Timer from "../../Wolfie2D/Timing/Timer";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
 import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
@@ -17,7 +14,6 @@ import CheatsManager from "../CheatsManager";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
-import AntBehavior from "../AI/NPC/NPCBehaviors/AntBehavior";
 import Level0 from "./AALevel0";
 
 /**
@@ -38,27 +34,6 @@ export default class Level3 extends AALevel {
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
-    // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
-    // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
-
-    // public static readonly ATTACK_AUDIO_KEY = "PLAYER_ATTACK";
-    // public static readonly ATTACK_AUDIO_PATH = "hw4_assets/sounds/attack.wav";
-
-    // public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
-    // public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
-
-    // public static readonly EXPLODE_AUDIO_KEY = "EXPLODE";
-    // public static readonly EXPLODE_AUDIO_PATH = "hw4_assets/sounds/explode.wav";
-
-    // public static readonly GRAPPLE_AUDIO_KEY = "GRAPPLE";
-    // public static readonly GRAPPLE_AUDIO_PATH = "hw4_assets/sounds/grapple.wav";
-
-    // public static readonly ENEMY_DEATH_AUDIO_KEY = "ENEMY_DEATH";
-    // public static readonly ENEMY_DEATH_AUDIO_PATH = "hw4_assets/sounds/dying_quieter.wav";
-
-    // public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
-    // public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
-
     public static readonly BACKGROUND_KEY = "BACKGROUND";
     public static readonly BACKGROUND_PATH = "hw4_assets/images/DesertBack.png";
 
@@ -67,8 +42,6 @@ export default class Level3 extends AALevel {
     protected cheatsManager: CheatsManager;
 
     protected enemyPositions: Array<Vec2>;
-
-    // protected prevViewportCenter: Vec2;
 
     public constructor(
         viewport: Viewport,
@@ -104,7 +77,6 @@ export default class Level3 extends AALevel {
         this.backgroundKey = Level3.BACKGROUND_KEY;
 
         // Level end size and position
-        //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
         this.levelEndPosition = new Vec2(1543, 96);
 
         // made bigger for testing
@@ -179,18 +151,6 @@ export default class Level3 extends AALevel {
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level3.LEVEL_MUSIC_PATH);
-        // this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
-        // this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
-        // this.load.audio(this.healAudioKey, Level3.HEAL_AUDIO_PATH);
-        // this.load.audio(this.explodeAudioKey, Level3.EXPLODE_AUDIO_PATH);
-        // this.load.audio(this.grappleAudioKey, Level3.GRAPPLE_AUDIO_PATH);
-        // this.load.audio(this.enemyDeathAudioKey, Level3.ENEMY_DEATH_AUDIO_PATH);
-        // this.load.audio(this.playerDeathAudioKey, Level3.PLAYER_DEATH_AUDIO_PATH);
-
-        // this.load.image("fireIcon", "hw4_assets/sprites/fire-icon.png");
-        // this.load.image("tongueIcon", "hw4_assets/sprites/tongue-icon.png");
-        // this.load.image("iceIcon", "hw4_assets/sprites/ice-icon.png");
-        // this.load.image("lockIcon", "hw4_assets/sprites/lock-icon.png");
     }
 
     /**

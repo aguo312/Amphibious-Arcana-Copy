@@ -9,17 +9,10 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
-import { AAEvents } from "../AAEvents";
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
-import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
-import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
-import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
-import AntBehavior from "../AI/NPC/NPCBehaviors/AntBehavior";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -110,7 +103,6 @@ export default class Level0 extends AALevel {
         this.backgroundKey = Level0.BACKGROUND_KEY;
 
         // Level end size and position
-        //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
         this.levelEndPosition = new Vec2(800, 115).mult(this.tilemapScale);
 
         // made bigger for testing

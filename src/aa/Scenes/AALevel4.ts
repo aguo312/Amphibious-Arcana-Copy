@@ -37,20 +37,10 @@ export default class Level4 extends AALevel {
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
-    // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
-    // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
-
-    // public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
-    // public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
-
-    // public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
-
     protected bossSpawnTriggerPos: Vec2;
     protected bossSpawnTriggerHalfSize: Vec2;
 
     protected cheatsManager: CheatsManager;
-
-    // protected mindFlayerParticleSystem: MindFlayerParticles;
 
     public constructor(
         viewport: Viewport,
@@ -82,17 +72,11 @@ export default class Level4 extends AALevel {
         this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
         this.backgroundKey = Level3.BACKGROUND_KEY;
 
-        // Level end size and position
-        // this.levelEndPosition = new Vec2(32, 216).mult(this.tilemapScale);
-        // this.levelEndHalfSize = new Vec2(32, 32).mult(this.tilemapScale);
-
-        // this.bossSpawnTriggerPos = new Vec2(1321, 672).mult(this.tilemapScale);
         this.bossSpawnTriggerPos = new Vec2(1321, 660);
         this.bossSpawnTriggerHalfSize = new Vec2(10, 160).mult(this.tilemapScale);
 
         this.bossFightCenterPoint = new Vec2(1433, 620);
         this.bossName = "Traveler";
-        // this.bossFightCenterPoint = new Vec2(1433, 672).mult(this.tilemapScale);
 
         this.cheatsManager = new CheatsManager(this.sceneManager, {
             levelMusicKey: this.levelMusicKey,
@@ -113,9 +97,7 @@ export default class Level4 extends AALevel {
         this.load.tilemap(this.tilemapKey, Level4.TILEMAP_PATH);
 
         // Load in the enemy sprites
-        // this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
         this.load.spritesheet("Traveler", "hw4_assets/spritesheets/traveler.json");
-        // this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
         this.load.spritesheet("Xvart", "hw4_assets/spritesheets/xvart.json");
 
         // Load background image
@@ -123,13 +105,6 @@ export default class Level4 extends AALevel {
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level4.LEVEL_MUSIC_PATH);
-        // this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
-        // this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
-        // this.load.audio(this.healAudioKey, Level4.HEAL_AUDIO_PATH);
-        // this.load.audio(this.explodeAudioKey, Level3.EXPLODE_AUDIO_PATH);
-        // this.load.audio(this.grappleAudioKey, Level3.GRAPPLE_AUDIO_PATH);
-        // this.load.audio(this.enemyDeathAudioKey, Level3.ENEMY_DEATH_AUDIO_PATH);
-        // this.load.audio(this.playerDeathAudioKey, Level3.PLAYER_DEATH_AUDIO_PATH);
     }
 
     /**
@@ -256,13 +231,10 @@ export default class Level4 extends AALevel {
     public updateScene(deltaT: number) {
         super.updateScene(deltaT);
         this.cheatsManager.update(deltaT);
-
-        // console.log("player position: " + this.player.position);
     }
 
     protected initializeViewport(): void {
         super.initializeViewport();
         this.viewport.setBounds(16, 16, 1584, 2600);
-        // this.viewport.setZoomLevel(1);
     }
 }

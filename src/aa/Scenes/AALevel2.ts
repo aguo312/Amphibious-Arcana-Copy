@@ -4,14 +4,9 @@ import AALevel, { AALayers } from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
 import SceneManager from "../../Wolfie2D/Scene/SceneManager";
 import Viewport from "../../Wolfie2D/SceneGraph/Viewport";
-import Label from "../../Wolfie2D/Nodes/UIElements/Label";
-import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
-import Timer from "../../Wolfie2D/Timing/Timer";
-import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
@@ -42,27 +37,6 @@ export default class Level2 extends AALevel {
 
     public static readonly BACKGROUND_KEY = "BACKGROUND";
     public static readonly BACKGROUND_PATH = "hw4_assets/images/Cave2.png";
-
-    // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
-    // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
-
-    // public static readonly ATTACK_AUDIO_KEY = "PLAYER_ATTACK";
-    // public static readonly ATTACK_AUDIO_PATH = "hw4_assets/sounds/attack.wav";
-
-    // public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
-    // public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
-
-    // public static readonly EXPLODE_AUDIO_KEY = "EXPLODE";
-    // public static readonly EXPLODE_AUDIO_PATH = "hw4_assets/sounds/explode.wav";
-
-    // public static readonly GRAPPLE_AUDIO_KEY = "GRAPPLE";
-    // public static readonly GRAPPLE_AUDIO_PATH = "hw4_assets/sounds/grapple.wav";
-
-    // public static readonly ENEMY_DEATH_AUDIO_KEY = "ENEMY_DEATH";
-    // public static readonly ENEMY_DEATH_AUDIO_PATH = "hw4_assets/sounds/dying_quieter.wav";
-
-    // public static readonly PLAYER_DEATH_AUDIO_KEY = "PLAYER_DEATH";
-    // public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
 
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
 
@@ -107,10 +81,6 @@ export default class Level2 extends AALevel {
         this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
         this.backgroundKey = Level2.BACKGROUND_KEY;
 
-        // Level end size and position
-        //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
-        //this.levelEndPosition = new Vec2(1600, 1100)
-
         // made bigger for testing
         this.levelEndHalfSize = new Vec2(32, 30).mult(this.tilemapScale);
 
@@ -152,8 +122,6 @@ export default class Level2 extends AALevel {
         super.loadScene();
         // Load in the tilemap
         this.load.tilemap(this.tilemapKey, Level2.TILEMAP_PATH);
-        // Load in the player's sprite
-        // this.load.spritesheet(this.playerSpriteKey, Level2.PLAYER_SPRITE_PATH);
 
         // Load in the enemy sprites
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
@@ -171,18 +139,6 @@ export default class Level2 extends AALevel {
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level2.LEVEL_MUSIC_PATH);
-        // this.load.audio(this.jumpAudioKey, Level2.JUMP_AUDIO_PATH);
-        // this.load.audio(this.attackAudioKey, Level2.ATTACK_AUDIO_PATH);
-        // this.load.audio(this.healAudioKey, Level2.HEAL_AUDIO_PATH);
-        // this.load.audio(this.explodeAudioKey, Level2.EXPLODE_AUDIO_PATH);
-        // this.load.audio(this.grappleAudioKey, Level2.GRAPPLE_AUDIO_PATH);
-        // this.load.audio(this.enemyDeathAudioKey, Level2.ENEMY_DEATH_AUDIO_PATH);
-        // this.load.audio(this.playerDeathAudioKey, Level2.PLAYER_DEATH_AUDIO_PATH);
-
-        // this.load.image("fireIcon", "hw4_assets/sprites/fire-icon.png");
-        // this.load.image("tongueIcon", "hw4_assets/sprites/tongue-icon.png");
-        // this.load.image("iceIcon", "hw4_assets/sprites/ice-icon.png");
-        // this.load.image("lockIcon", "hw4_assets/sprites/lock-icon.png");
     }
 
     /**
