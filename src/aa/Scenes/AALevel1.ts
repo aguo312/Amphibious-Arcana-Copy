@@ -39,6 +39,9 @@ export default class Level1 extends AALevel {
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
 
+    public static readonly BACKGROUND_KEY = "BACKGROUND";
+    public static readonly BACKGROUND_PATH = "hw4_assets/images/level1.png";
+
     // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
 
@@ -61,8 +64,6 @@ export default class Level1 extends AALevel {
     // public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
 
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
-    protected tutorialText: Label;
-    protected tutorialTextTimer: Timer;
 
     protected cheatsManager: CheatsManager;
 
@@ -99,6 +100,7 @@ export default class Level1 extends AALevel {
         this.grappleAudioKey = Level0.GRAPPLE_AUDIO_KEY;
         this.enemyDeathAudioKey = Level0.ENEMY_DEATH_AUDIO_KEY;
         this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
+        this.backgroundKey = Level1.BACKGROUND_KEY;
 
         // Level end size and position
         //this.levelEndPosition = new Vec2(790, 15).mult(this.tilemapScale);
@@ -115,12 +117,18 @@ export default class Level1 extends AALevel {
         });
 
         this.currLevel = Level1;
+
+        // Setup bg stuff
+        this.bgScale = new Vec2(8.0, 12.0);
+        this.bgOffset = new Vec2(100, 220).mult(this.tilemapScale);
+        this.bgMovementScale = 0.7;
+        this.bgMovementScaleY = 0.5;
     }
 
     public initializeUI(): void {
         super.initializeUI();
 
-        let size = this.viewport.getHalfSize();
+        const size = this.viewport.getHalfSize();
 
         // // Guide Textbox
         // this.guideText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, { position: new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50), text: "I HAVE SO MUCH TO SAY TO YOU" });
@@ -133,22 +141,12 @@ export default class Level1 extends AALevel {
         // this.guideText.font = "MyFont";
 
         this.guideText.position = new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50);
-
-        // add random tutorial text
-        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
-            position: new Vec2(size.x, 180),
-            text: "Try shooting fire at your feet to jump!",
-        });
-        this.tutorialText.size = new Vec2(300, 25);
-        // this.tutorialText.backgroundColor = Color.BLACK;
-        // this.tutorialText.backgroundColor.a = 10;
-        this.tutorialTextTimer = new Timer(10000, () => (this.tutorialText.visible = false), false);
     }
 
     public initializeTutorialBox() {
-        let size = this.viewport.getHalfSize();
+        const size = this.viewport.getHalfSize();
 
-        let tutorialBox = <Rect>this.add.graphic(GraphicType.RECT, AALayers.GUIDE, {
+        const tutorialBox = <Rect>this.add.graphic(GraphicType.RECT, AALayers.GUIDE, {
             position: new Vec2(size.x, size.y),
             size: new Vec2(100, 100),
         });
@@ -174,6 +172,8 @@ export default class Level1 extends AALevel {
 
         // Load in ant sprite
         this.load.spritesheet("Ant", "hw4_assets/spritesheets/fire_ant.json");
+
+        this.load.image(this.backgroundKey, Level1.BACKGROUND_PATH);
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
@@ -215,7 +215,6 @@ export default class Level1 extends AALevel {
 
     public startScene(): void {
         super.startScene();
-        this.tutorialTextTimer.start();
         this.guideText.tweens.play("fadeIn");
 
         // Set the next level to be Level2
@@ -223,6 +222,7 @@ export default class Level1 extends AALevel {
         this.nextLevelNum = 2;
 
         this.initializeNPCs();
+        console.log("staring level 1");
     }
 
     protected initializeNPCs(): void {

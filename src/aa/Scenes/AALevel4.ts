@@ -100,8 +100,8 @@ export default class Level4 extends AALevel {
         this.currLevel = Level4;
 
         // Setup bg stuff
-        this.bgScale = new Vec2(8.0, 8.0);
-        this.bgOffset = new Vec2(100, 120).mult(this.tilemapScale);
+        this.bgScale = new Vec2(6.0, 6.2);
+        this.bgOffset = new Vec2(100, 125).mult(this.tilemapScale);
         this.bgMovementScale = 0.7;
         this.bgMovementScaleY = 1.1;
     }
