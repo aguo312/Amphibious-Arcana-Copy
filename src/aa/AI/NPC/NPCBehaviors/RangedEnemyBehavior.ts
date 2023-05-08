@@ -71,7 +71,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 let rotation = diff.angleToCCW(Vec2.RIGHT);
                 this.weaponSystem.rotation = rotation;
                 if (playerDir > 0) {
-                    this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
+                    // this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 } else {
                     this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
@@ -92,7 +92,8 @@ export default class RangedEnemyBehavior extends NPCBehavior {
             ) {
                 if (
                     !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                    !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                    !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                    !this.owner.animation.isPlaying("TAKING_DAMAGE")
                 ) {
                     this.speed = 0;
                     this.owner.animation.playIfNotAlready("IDLE", true);
@@ -112,7 +113,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                     this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 } else {
-                    this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
+                    // this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 }
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
@@ -134,7 +135,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                     this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
                 } else {
                     this.dir = Vec2.RIGHT;
-                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+                    // this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
                 }
                 this.runTimer.start();
             }
@@ -146,7 +147,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 this.speed = 10;
                 if (playerDir > 0) {
                     this.dir = Vec2.RIGHT;
-                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+                    // this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
                 } else {
                     this.dir = Vec2.LEFT;
                     this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
@@ -163,7 +164,7 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                     this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
                 } else {
                     this.dir = Vec2.RIGHT;
-                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+                    // this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
                 }
                 this.moveTimer.start();
             }
@@ -180,7 +181,8 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                     this.speed = 0;
                     if (
                         !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                        !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                        !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                        !this.owner.animation.isPlaying("TAKING_DAMAGE")
                     ) {
                         this.owner.animation.playIfNotAlready("IDLE", true);
                     }
@@ -197,7 +199,8 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                     this.speed = 0;
                     if (
                         !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                        !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                        !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                        !this.owner.animation.isPlaying("TAKING_DAMAGE")
                     ) {
                         this.owner.animation.playIfNotAlready("IDLE", true);
                     }

@@ -48,7 +48,7 @@ export default class RangedEnemyParticles extends ParticleSystem {
         // Rotate the particle's velocity vector
         particle.vel.rotateCCW(this._rotation);
         // particle.vel.rotateCCW(Math.PI - 0.11181977801753654);
-        particle.color = Color.YELLOW;
+        particle.color = Color.ORANGE;
 
         if (!particle.tweens) {
             return;

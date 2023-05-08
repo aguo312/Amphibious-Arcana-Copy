@@ -37,7 +37,7 @@
             ]
         },
         {
-            "name": "WALKING_LEFT",
+            "name": "MOVING_LEFT",
             "repeat": true,
             "frames": [
                 {
@@ -87,7 +87,7 @@
             ]
         },
         {
-            "name": "WALKING_RIGHT",
+            "name": "MOVING_RIGHT",
             "repeat": true,
             "frames": [
                 {
@@ -137,7 +137,7 @@
             ]
         },
         {
-            "name": "FIRE_LEFT",
+            "name": "ATTACKING_LEFT",
             "repeat": true,
             "frames": [
                 {
@@ -179,7 +179,7 @@
             ]
         },
         {
-            "name": "FIRE_RIGHT",
+            "name": "ATTACKING_RIGHT",
             "repeat": true,
             "frames": [
                 {
@@ -221,7 +221,7 @@
             ]
         },
         {
-            "name": "DAMAGE_LEFT",
+            "name": "TAKING_DAMAGE",
             "repeat": false,
             "frames": [
                 {

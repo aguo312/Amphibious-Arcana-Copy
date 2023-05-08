@@ -207,7 +207,7 @@
             ]
         },
         {
-            "name": "TAKING_DAMAGE_LEFT",
+            "name": "TAKING_DAMAGE",
             "repeat": true,
             "frames": [
                 {

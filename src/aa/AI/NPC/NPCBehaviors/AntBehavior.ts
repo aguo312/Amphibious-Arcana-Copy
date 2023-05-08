@@ -8,11 +8,10 @@ import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 import { GameEventType } from "../../../../Wolfie2D/Events/GameEventType";
 
 export const EnemyStates = {
-    IDLE: "IDLE"
+    IDLE: "IDLE",
 } as const;
 
 export default class AntBehavior extends NPCBehavior {
-
     /** The GameNode that owns this NPCGoapAI */
     protected override owner: AAAnimatedSprite;
 
@@ -46,7 +45,11 @@ export default class AntBehavior extends NPCBehavior {
         if (distanceToPlayer < attackRange && this.attackCooldownTimer.isStopped()) {
             this.owner.animation.play("ATTACKING", false, AAEvents.PLAYER_HIT);
 
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, { key: this.owner.getScene().getAttackAudioKey(), loop: false, holdReference: false });
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                key: this.owner.getScene().getAttackAudioKey(),
+                loop: false,
+                holdReference: false,
+            });
             this.attackCooldownTimer.start();
         } else if (distanceToPlayer < followRange) {
             const playerDir = this.player.position.clone().sub(this.owner.position);
@@ -65,20 +68,25 @@ export default class AntBehavior extends NPCBehavior {
             } else {
                 this.owner._velocity.y = 0;
             }
-            if(!this.owner.animation.isPlaying("ATTACKING")){
+            if (
+                !this.owner.animation.isPlaying("ATTACKING") &&
+                !this.owner.animation.isPlaying("TAKING_DAMAGE")
+            ) {
                 this.owner.animation.playIfNotAlready("RUNNING", true);
             }
             this.owner.rotation = -playerDir.angleToCCW(Vec2.UP);
-
         } else if (this.moveTimer.isStopped()) {
-            if(!this.owner.animation.isPlaying("ATTACKING")){
+            if (
+                !this.owner.animation.isPlaying("ATTACKING") &&
+                !this.owner.animation.isPlaying("TAKING_DAMAGE")
+            ) {
                 this.owner.animation.playIfNotAlready("RUNNING", true);
-            }        
+            }
             if (this.dir.equals(Vec2.RIGHT)) {
                 this.dir = Vec2.LEFT;
             } else {
-                this.dir = Vec2.RIGHT;       
-             }
+                this.dir = Vec2.RIGHT;
+            }
             this.moveTimer.start();
         }
 

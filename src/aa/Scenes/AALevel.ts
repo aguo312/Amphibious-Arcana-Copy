@@ -459,10 +459,10 @@ export default abstract class AALevel extends Scene {
                             enemy.health,
                             enemy.maxHealth
                         );
-                        let current = enemy.animation.currentAnimation;
-                        enemy.animation.play("TAKING_DAMAGE");
-                        enemy.animation.queue(current);
                     }
+                    let current = enemy.animation.currentAnimation;
+                    enemy.animation.play("TAKING_DAMAGE");
+                    enemy.animation.queue(current);
 
                     this.handleFireballHit();
                 }
@@ -538,7 +538,7 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.TONGUE_HIT_ENEMY: {
-                const enemy = this.allNPCS.get(event.data.get("other"));
+                const enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                 this.tongueParticleSystem.getPool()[0].freeze();
                 this.tongueParticleSystem.getPool()[0].visible = false;
 
@@ -549,6 +549,9 @@ export default abstract class AALevel extends Scene {
                     enemy: enemy,
                     overlay: overlay,
                 });
+                let current = enemy.animation.currentAnimation;
+                enemy.animation.play("TAKING_DAMAGE");
+                enemy.animation.queue(current);
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {
@@ -606,7 +609,7 @@ export default abstract class AALevel extends Scene {
                 // this.sceneManager.changeToScene(MainMenu);
                 break;
             }
-            case "NPC_BOSS_KILLED":{
+            case "NPC_BOSS_KILLED": {
                 const id: number = event.data.get("node");
                 const enemy = this.allNPCS.get(id);
 
@@ -623,7 +626,7 @@ export default abstract class AALevel extends Scene {
                 }
 
                 this.emitter.fireEvent(AAEvents.BOSS_KILLED);
-                
+
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
                     key: this.enemyDeathAudioKey,
                     loop: false,
@@ -740,7 +743,7 @@ export default abstract class AALevel extends Scene {
                     texts = [
                         "Seems like you'll need to get through this mountain.",
                         "Climb the tree with your tongue spell to reach the top!",
-                        "Use your tongue spell on enemies to damage them and gain health."
+                        "Use your tongue spell on enemies to damage them and gain health.",
                     ];
                 } else if (MainMenu.CURRENT_LEVEL === 2) {
                     texts = [
