@@ -75,7 +75,8 @@ export default class ScabberBehavior extends NPCBehavior {
             } else if (this.owner.position.distanceTo(this.player.position) < 20) {
                 if (
                     !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                    !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                    !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                    !this.owner.animation.isPlaying("TAKING_DAMAGE")
                 ) {
                     this.owner.animation.playIfNotAlready("IDLE", true);
                 }
@@ -112,7 +113,8 @@ export default class ScabberBehavior extends NPCBehavior {
                     this.speed = 0;
                     if (
                         !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                        !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                        !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                        !this.owner.animation.isPlaying("TAKING_DAMAGE")
                     ) {
                         this.owner.animation.playIfNotAlready("IDLE", true);
                     }

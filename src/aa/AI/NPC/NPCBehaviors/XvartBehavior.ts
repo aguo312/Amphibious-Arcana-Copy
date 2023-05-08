@@ -5,6 +5,7 @@ import { AAEvents } from "../../../AAEvents";
 import Vec2 from "../../../../Wolfie2D/DataTypes/Vec2";
 import { GameEventType } from "../../../../Wolfie2D/Events/GameEventType";
 import OrthogonalTilemap from "../../../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
+import MathUtils from "../../../../Wolfie2D/Utils/MathUtils";
 
 export const EnemyStates = {
     IDLE: "IDLE",
@@ -43,9 +44,9 @@ export default class XvartBehavior extends NPCBehavior {
         this.attackCooldownTimer = new Timer(2000);
         this.moveTimer = new Timer(3000);
         this.damageAnimationTimer = new Timer(1000, () => {
-            if (this.owner) {
-                this.owner.animation.play(this.prevAnimation);
-            }
+            // if (this.owner) {
+            //     this.owner.animation.play(this.prevAnimation);
+            // }
         });
         this.dir = Vec2.LEFT;
         this.speed = 40;
@@ -56,12 +57,12 @@ export default class XvartBehavior extends NPCBehavior {
         const faceDir = this.owner._velocity.x > 0 ? 1 : -1;
 
         if (this.owner.health < this.ownerHealth) {
-            this.prevAnimation = this.owner.animation.getCurrent();
-            if (faceDir === 1) {
-                this.owner.animation.playIfNotAlready("TAKING_DAMAGE_RIGHT");
-            } else {
-                this.owner.animation.playIfNotAlready("TAKING_DAMAGE_LEFT");
-            }
+            // this.prevAnimation = this.owner.animation.getCurrent();
+            // if (faceDir === 1) {
+            //     this.owner.animation.playIfNotAlready("TAKING_DAMAGE_RIGHT");
+            // } else {
+            //     this.owner.animation.playIfNotAlready("TAKING_DAMAGE_LEFT");
+            // }
 
             this.ownerHealth = this.owner.health;
             this.damageAnimationTimer.start();
@@ -78,7 +79,7 @@ export default class XvartBehavior extends NPCBehavior {
             ) {
                 if (playerDir > 0) {
                     this.owner.animation.playIfNotAlready(
-                        "ATTACKING_RIGHT",
+                        "ATTACKING_LEFT",
                         false,
                         AAEvents.PLAYER_HIT
                     );
@@ -98,19 +99,21 @@ export default class XvartBehavior extends NPCBehavior {
             } else if (this.owner.position.distanceTo(this.player.position) < 20) {
                 if (
                     !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                    !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                    !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                    !this.owner.animation.isPlaying("TAKING_DAMAGE")
                 ) {
                     this.owner.animation.playIfNotAlready("IDLE", true);
                 }
             } else if (
                 this.owner.position.distanceTo(this.player.position) < 200 &&
                 !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                !this.owner.animation.isPlaying("TAKING_DAMAGE")
             ) {
                 this.speed = 40;
                 if (playerDir > 0) {
                     this.dir = Vec2.RIGHT;
-                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+                    // this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
                 } else {
                     this.dir = Vec2.LEFT;
                     this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
@@ -118,7 +121,8 @@ export default class XvartBehavior extends NPCBehavior {
             } else if (
                 this.moveTimer.isStopped() &&
                 !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                !this.owner.animation.isPlaying("TAKING_DAMAGE")
             ) {
                 this.speed = 40;
                 if (this.dir.equals(Vec2.RIGHT)) {
@@ -126,7 +130,7 @@ export default class XvartBehavior extends NPCBehavior {
                     this.owner.animation.playIfNotAlready("MOVING_LEFT", true);
                 } else {
                     this.dir = Vec2.RIGHT;
-                    this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
+                    // this.owner.animation.playIfNotAlready("MOVING_RIGHT", true);
                 }
                 this.moveTimer.start();
             }
@@ -143,7 +147,8 @@ export default class XvartBehavior extends NPCBehavior {
                     this.speed = 0;
                     if (
                         !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                        !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                        !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                        !this.owner.animation.isPlaying("TAKING_DAMAGE")
                     ) {
                         this.owner.animation.playIfNotAlready("IDLE", true);
                     }
@@ -160,11 +165,15 @@ export default class XvartBehavior extends NPCBehavior {
                     this.speed = 0;
                     if (
                         !this.owner.animation.isPlaying("ATTACKING_LEFT") &&
-                        !this.owner.animation.isPlaying("ATTACKING_RIGHT")
+                        !this.owner.animation.isPlaying("ATTACKING_RIGHT") &&
+                        !this.owner.animation.isPlaying("TAKING_DAMAGE")
                     ) {
                         this.owner.animation.playIfNotAlready("IDLE", true);
                     }
                 }
+            }
+            if (this.dir !== Vec2.ZERO) {
+                this.owner.invertX = MathUtils.sign(this.dir.x) > 0;
             }
         }
 

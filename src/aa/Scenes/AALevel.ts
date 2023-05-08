@@ -465,10 +465,10 @@ export default abstract class AALevel extends Scene {
                             enemy.health,
                             enemy.maxHealth
                         );
-                        let current = enemy.animation.currentAnimation;
-                        enemy.animation.play("TAKING_DAMAGE");
-                        enemy.animation.queue(current);
                     }
+                    let current = enemy.animation.currentAnimation;
+                    enemy.animation.play("TAKING_DAMAGE");
+                    enemy.animation.queue(current);
 
                     this.handleFireballHit();
                 }
@@ -544,7 +544,7 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.TONGUE_HIT_ENEMY: {
-                const enemy = this.allNPCS.get(event.data.get("other"));
+                const enemy = <AAAnimatedSprite>this.allNPCS.get(event.data.get("other"));
                 this.tongueParticleSystem.getPool()[0].freeze();
                 this.tongueParticleSystem.getPool()[0].visible = false;
 
@@ -555,6 +555,9 @@ export default abstract class AALevel extends Scene {
                     enemy: enemy,
                     overlay: overlay,
                 });
+                let current = enemy.animation.currentAnimation;
+                enemy.animation.play("TAKING_DAMAGE");
+                enemy.animation.queue(current);
                 break;
             }
             case AAEvents.PARTICLE_HIT_DESTRUCTIBLE: {

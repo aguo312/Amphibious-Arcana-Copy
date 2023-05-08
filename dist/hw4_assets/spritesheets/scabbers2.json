@@ -228,7 +228,7 @@
             ]
         },
         {
-            "name": "DANCING",
+            "name": "TAKING_DAMAGE",
             "repeat": true,
             "frames": [
                 {
