@@ -1632,13 +1632,10 @@ export default abstract class AALevel extends Scene {
         );
         this.player.setGroup(AAPhysicsGroups.PLAYER);
         this.player.setTrigger(AAPhysicsGroups.BOSS_PARTICLE, AAEvents.PLAYER_HIT, null);
-<<<<<<< HEAD
 
         this.player.setTrigger(AAPhysicsGroups.ANT_PARTICLE, AAEvents.ANT_FIRE_HIT, null);
 
-=======
         this.player.setTrigger(AAPhysicsGroups.ENEMY_PARTICLE, AAEvents.PLAYER_HIT, null);
->>>>>>> 4710bc029466aa69bea503df58a0bfa9253f74f5
         this.player.setTrigger(AAPhysicsGroups.ENEMY, AAEvents.PLAYER_HIT, null);
 
         // Give the player a flip animation
