@@ -229,71 +229,43 @@
         },
         {
             "name": "TAKING_DAMAGE",
-            "repeat": true,
+            "repeat": false,
             "frames": [
                 {
-                    "index": 48,
-                    "duration": 60
+                    "index": 40,
+                    "duration": 8
                 },
                 {
-                    "index": 49,
-                    "duration": 20
+                    "index": 41,
+                    "duration": 8
                 },
                 {
-                    "index": 50,
-                    "duration": 10
+                    "index": 42,
+                    "duration": 8
                 },
                 {
-                    "index": 51,
-                    "duration": 10
+                    "index": 43,
+                    "duration": 8
                 },
                 {
-                    "index": 52,
-                    "duration": 10
+                    "index": 44,
+                    "duration": 8
                 },
                 {
-                    "index": 53,
-                    "duration": 10
+                    "index": 43,
+                    "duration": 8
                 },
                 {
-                    "index": 54,
-                    "duration": 10
+                    "index": 42,
+                    "duration": 8
                 },
                 {
-                    "index": 55,
-                    "duration": 10
+                    "index": 41,
+                    "duration": 8
                 },
                 {
-                    "index": 56,
-                    "duration": 10
-                },
-                {
-                    "index": 57,
-                    "duration": 10
-                },
-                {
-                    "index": 58,
-                    "duration": 10
-                },
-                {
-                    "index": 59,
-                    "duration": 10
-                },
-                {
-                    "index": 60,
-                    "duration": 10
-                },
-                {
-                    "index": 61,
-                    "duration": 10
-                },
-                {
-                    "index": 62,
-                    "duration": 10
-                },
-                {
-                    "index": 63,
-                    "duration": 20
+                    "index": 40,
+                    "duration": 8
                 }
             ]
         }
