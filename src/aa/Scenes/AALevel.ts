@@ -755,6 +755,7 @@ export default abstract class AALevel extends Scene {
                         "You're finally awake! The Mind Flayer really got us all...",
                         "It seems like you lost most of your magic. But you can get it back.",
                         "Use your tongue as a grapple on concrete surfaces to get around.",
+                        "You can also hold the JUMP button to glide with your hat!"
                     ];
                 } else if (MainMenu.CURRENT_LEVEL === 1) {
                     texts = [
