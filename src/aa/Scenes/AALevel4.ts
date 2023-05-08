@@ -34,8 +34,8 @@ export default class Level4 extends AALevel {
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
 
-    // public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
-    // public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
+    public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
+    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
     // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
@@ -71,7 +71,7 @@ export default class Level4 extends AALevel {
         this.playerSpawn = Level4.PLAYER_SPAWN;
 
         // Music and sound
-        this.levelMusicKey = Level3.LEVEL_MUSIC_KEY;
+        this.levelMusicKey = Level4.LEVEL_MUSIC_KEY;
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
@@ -117,7 +117,7 @@ export default class Level4 extends AALevel {
         this.load.image(this.backgroundKey, Level3.BACKGROUND_PATH);
 
         // Audio and music
-        // this.load.audio(this.levelMusicKey, Level4.LEVEL_MUSIC_PATH);
+        this.load.audio(this.levelMusicKey, Level4.LEVEL_MUSIC_PATH);
         // this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
         // this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
         // this.load.audio(this.healAudioKey, Level4.HEAL_AUDIO_PATH);
@@ -145,8 +145,7 @@ export default class Level4 extends AALevel {
         this.load.keepImage("fireIcon");
         this.load.keepImage("tongueIcon");
         this.load.keepImage("iceIcon");
-
-        // this.load.unloadAllResources();
+        this.load.keepImage("lockIcon");
     }
 
     protected initializeNPCs(): void {

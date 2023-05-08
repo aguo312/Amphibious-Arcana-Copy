@@ -148,6 +148,7 @@ export default abstract class AALevel extends Scene {
 
     /** Sound and music */
     protected levelMusicKey: string;
+    protected bossMusicKey: string;
     protected jumpAudioKey: string;
     protected attackAudioKey: string;
     protected healAudioKey: string;
@@ -648,7 +649,18 @@ export default abstract class AALevel extends Scene {
                 this.bossHealthBar.visible = true;
                 this.bossHealthBarBg.visible = true;
                 this.bossNameLabel.visible = true;
-
+                // change music
+                if (this.bossMusicKey) {
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                        key: this.levelMusicKey,
+                        holdReference: true,
+                    });
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                        key: this.bossMusicKey,
+                        loop: true,
+                        holdReference: false,
+                    });
+                }
                 // Destroy the spawn trigger so we don't call this again
                 this.bossSpawnTrigger.destroy();
 

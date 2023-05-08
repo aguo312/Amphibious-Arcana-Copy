@@ -210,7 +210,7 @@ export default class Level3 extends AALevel {
     public unloadScene(): void {
         this.load.keepSpritesheet(this.playerSpriteKey);
 
-        this.load.keepAudio(this.levelMusicKey);
+        // this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.attackAudioKey);
         this.load.keepAudio(this.healAudioKey);

@@ -88,7 +88,7 @@ export default class Level2 extends AALevel {
         // Set the key for the spells sprite
 
         // Music and sound
-        this.levelMusicKey = Level0.LEVEL_MUSIC_KEY;
+        this.levelMusicKey = Level2.LEVEL_MUSIC_KEY;
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
@@ -173,7 +173,7 @@ export default class Level2 extends AALevel {
         this.load.spritesheet("Ant", "hw4_assets/spritesheets/fire_ant.json");
 
         // Audio and music
-        // this.load.audio(this.levelMusicKey, Level2.LEVEL_MUSIC_PATH);
+        this.load.audio(this.levelMusicKey, Level2.LEVEL_MUSIC_PATH);
         // this.load.audio(this.jumpAudioKey, Level2.JUMP_AUDIO_PATH);
         // this.load.audio(this.attackAudioKey, Level2.ATTACK_AUDIO_PATH);
         // this.load.audio(this.healAudioKey, Level2.HEAL_AUDIO_PATH);

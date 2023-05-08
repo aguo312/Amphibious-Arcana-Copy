@@ -1,4 +1,3 @@
-import AABB from "../../Wolfie2D/DataTypes/Shapes/AABB";
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import AALevel, { AALayers } from "./AALevel";
 import RenderingManager from "../../Wolfie2D/Rendering/RenderingManager";
@@ -8,10 +7,8 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import IdleBehavior from "../AI/NPC/NPCBehaviors/IdleBehavior";
 import { AAPhysicsGroups } from "../AAPhysicsGroups";
 import { AAEvents } from "../AAEvents";
-import EnemyBehavior from "../AI/NPC/NPCBehaviors/EnemyBehavior";
 import ScabberBehavior from "../AI/NPC/NPCBehaviors/ScabberBehavior";
 import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import CheatsManager from "../CheatsManager";
@@ -23,8 +20,8 @@ import MindFlayerParticles from "../AI/NPC/MindFlayerParticles";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import MindFlayerBehavior from "../AI/NPC/NPCBehaviors/MindFlayerBehavior";
-import Boss2Behavior from "../AI/NPC/NPCBehaviors/Boss2Behavior";
 import Level0 from "./AALevel0";
+import Level5 from "./AALevel5";
 
 /**
  * The first level for HW4 - should be the one with the grass and the clouds.
@@ -42,7 +39,10 @@ export default class Level6 extends AALevel {
     public static readonly WALLS_LAYER_KEY = "Main";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
-    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
+    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/dark_level_music.wav";
+
+    public static readonly BOSS_MUSIC_KEY = "BOSS_MUSIC";
+    public static readonly BOSS_MUSIC_PATH = "hw4_assets/music/dark_level_music_fast.wav";
 
     // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
@@ -101,6 +101,7 @@ export default class Level6 extends AALevel {
 
         // Music and sound
         this.levelMusicKey = Level6.LEVEL_MUSIC_KEY;
+        this.bossMusicKey = Level6.BOSS_MUSIC_KEY;
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
@@ -163,7 +164,8 @@ export default class Level6 extends AALevel {
         this.load.spritesheet("Mind Flayer", "hw4_assets/spritesheets/mind_flayer.json");
 
         // Audio and music
-        // this.load.audio(this.levelMusicKey, Level6.LEVEL_MUSIC_PATH);
+        this.load.audio(this.levelMusicKey, Level6.LEVEL_MUSIC_PATH);
+        this.load.audio(this.bossMusicKey, Level6.BOSS_MUSIC_PATH);
         // this.load.audio(this.jumpAudioKey, Level6.JUMP_AUDIO_PATH);
         // this.load.audio(this.attackAudioKey, Level6.ATTACK_AUDIO_PATH);
         // this.load.audio(this.healAudioKey, Level6.HEAL_AUDIO_PATH);
@@ -181,21 +183,21 @@ export default class Level6 extends AALevel {
      * Unload resources for level 1 - decide what to keep
      */
     public unloadScene(): void {
-        // this.load.keepSpritesheet(this.playerSpriteKey);
+        this.load.keepSpritesheet(this.playerSpriteKey);
 
         // this.load.keepAudio(this.levelMusicKey);
-        // this.load.keepAudio(this.jumpAudioKey);
-        // this.load.keepAudio(this.attackAudioKey);
-        // this.load.keepAudio(this.healAudioKey);
-        // this.load.keepAudio(this.explodeAudioKey);
-        // this.load.keepAudio(this.grappleAudioKey);
-        // this.load.keepAudio(this.enemyDeathAudioKey);
-        // this.load.keepAudio(this.playerDeathAudioKey);
+        this.load.keepAudio(this.jumpAudioKey);
+        this.load.keepAudio(this.attackAudioKey);
+        this.load.keepAudio(this.healAudioKey);
+        this.load.keepAudio(this.explodeAudioKey);
+        this.load.keepAudio(this.grappleAudioKey);
+        this.load.keepAudio(this.enemyDeathAudioKey);
+        this.load.keepAudio(this.playerDeathAudioKey);
 
-        // this.load.keepImage("fireIcon");
-        // this.load.keepImage("tongueIcon");
-        // this.load.keepImage("iceIcon");
-        this.load.unloadAllResources();
+        this.load.keepImage("fireIcon");
+        this.load.keepImage("tongueIcon");
+        this.load.keepImage("iceIcon");
+        this.load.keepImage("lockIcon");
     }
 
     public startScene(): void {

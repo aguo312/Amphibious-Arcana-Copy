@@ -37,7 +37,7 @@ export default class Level5 extends AALevel {
     public static readonly WALLS_LAYER_KEY = "Main";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
-    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
+    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/dark_level_music.wav";
 
     // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
@@ -163,7 +163,7 @@ export default class Level5 extends AALevel {
     public unloadScene(): void {
         this.load.keepSpritesheet(this.playerSpriteKey);
 
-        this.load.keepAudio(this.levelMusicKey);
+        // this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.attackAudioKey);
         this.load.keepAudio(this.healAudioKey);
@@ -175,6 +175,7 @@ export default class Level5 extends AALevel {
         this.load.keepImage("fireIcon");
         this.load.keepImage("tongueIcon");
         this.load.keepImage("iceIcon");
+        this.load.keepImage("lockIcon");
     }
 
     public startScene(): void {

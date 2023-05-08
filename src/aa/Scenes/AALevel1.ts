@@ -90,7 +90,7 @@ export default class Level1 extends AALevel {
         // Set the key for the spells sprite
 
         // Music and sound
-        this.levelMusicKey = Level0.LEVEL_MUSIC_KEY;
+        this.levelMusicKey = Level1.LEVEL_MUSIC_KEY;
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
@@ -175,7 +175,7 @@ export default class Level1 extends AALevel {
         this.load.spritesheet("Ant", "hw4_assets/spritesheets/fire_ant.json");
 
         // Audio and music
-        // this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
+        this.load.audio(this.levelMusicKey, Level1.LEVEL_MUSIC_PATH);
         // this.load.audio(this.jumpAudioKey, Level1.JUMP_AUDIO_PATH);
         // this.load.audio(this.attackAudioKey, Level1.ATTACK_AUDIO_PATH);
         // this.load.audio(this.healAudioKey, Level1.HEAL_AUDIO_PATH);
@@ -196,7 +196,7 @@ export default class Level1 extends AALevel {
     public unloadScene(): void {
         this.load.keepSpritesheet(this.playerSpriteKey);
 
-        this.load.keepAudio(this.levelMusicKey);
+        // this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.attackAudioKey);
         this.load.keepAudio(this.healAudioKey);
