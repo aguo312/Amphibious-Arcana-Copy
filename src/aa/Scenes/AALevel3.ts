@@ -36,7 +36,7 @@ export default class Level3 extends AALevel {
     public static readonly WALLS_LAYER_KEY = "Main";
 
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
-    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
+    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
     // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump_alt.wav";
@@ -94,7 +94,7 @@ export default class Level3 extends AALevel {
         // Set the key for the spells sprite
 
         // Music and sound
-        this.levelMusicKey = Level0.LEVEL_MUSIC_KEY;
+        this.levelMusicKey = Level3.LEVEL_MUSIC_KEY;
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
@@ -189,7 +189,7 @@ export default class Level3 extends AALevel {
         this.load.image(this.backgroundKey, Level3.BACKGROUND_PATH);
 
         // Audio and music
-        // this.load.audio(this.levelMusicKey, Level3.LEVEL_MUSIC_PATH);
+        this.load.audio(this.levelMusicKey, Level3.LEVEL_MUSIC_PATH);
         // this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
         // this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
         // this.load.audio(this.healAudioKey, Level3.HEAL_AUDIO_PATH);

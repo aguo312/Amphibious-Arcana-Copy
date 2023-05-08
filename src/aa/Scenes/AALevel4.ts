@@ -34,8 +34,8 @@ export default class Level4 extends AALevel {
     public static readonly TILEMAP_SCALE = new Vec2(2, 2);
     public static readonly COLLIDABLE_LAYER_KEY = "Collidable";
 
-    public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
-    public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
+    // public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
+    // public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
     // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
     // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
@@ -71,7 +71,7 @@ export default class Level4 extends AALevel {
         this.playerSpawn = Level4.PLAYER_SPAWN;
 
         // Music and sound
-        this.levelMusicKey = Level4.LEVEL_MUSIC_KEY;
+        this.levelMusicKey = Level3.LEVEL_MUSIC_KEY;
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
@@ -133,7 +133,7 @@ export default class Level4 extends AALevel {
     public unloadScene(): void {
         this.load.keepSpritesheet(this.playerSpriteKey);
 
-        this.load.keepAudio(this.levelMusicKey);
+        // this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.attackAudioKey);
         this.load.keepAudio(this.healAudioKey);

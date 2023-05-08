@@ -143,7 +143,7 @@ export default class Level5 extends AALevel {
         this.load.spritesheet("Scabbers", "hw4_assets/spritesheets/scabbers2.json");
 
         // Audio and music
-        // this.load.audio(this.levelMusicKey, Level5.LEVEL_MUSIC_PATH);
+        this.load.audio(this.levelMusicKey, Level5.LEVEL_MUSIC_PATH);
         // this.load.audio(this.jumpAudioKey, Level5.JUMP_AUDIO_PATH);
         // this.load.audio(this.attackAudioKey, Level5.ATTACK_AUDIO_PATH);
         // this.load.audio(this.healAudioKey, Level5.HEAL_AUDIO_PATH);
