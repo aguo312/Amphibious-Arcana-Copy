@@ -60,11 +60,9 @@ export default class Level3 extends AALevel {
     // public static readonly PLAYER_DEATH_AUDIO_PATH = "hw4_assets/sounds/player_death.wav";
 
     public static readonly BACKGROUND_KEY = "BACKGROUND";
-    public static readonly BACKGROUND_PATH = "hw4_assets/images/test.png";
+    public static readonly BACKGROUND_PATH = "hw4_assets/images/DesertBack.png";
 
     public static readonly LEVEL_END = new AABB(new Vec2(1400, 232), new Vec2(24, 16));
-    protected tutorialText: Label;
-    protected tutorialTextTimer: Timer;
 
     protected cheatsManager: CheatsManager;
 
@@ -122,7 +120,7 @@ export default class Level3 extends AALevel {
         this.currLevel = Level3;
 
         // Setup bg stuff
-        this.bgScale = new Vec2(8.0, 8.0);
+        this.bgScale = new Vec2(6.0, 6.0);
         this.bgOffset = new Vec2(100, 100).mult(this.tilemapScale);
         this.bgMovementScale = 0.7;
         this.bgMovementScaleY = 0.6;
@@ -144,16 +142,6 @@ export default class Level3 extends AALevel {
         // this.guideText.font = "MyFont";
 
         this.guideText.position = new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50);
-
-        // add random tutorial text
-        this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
-            position: new Vec2(size.x, 180),
-            text: "Try shooting fire at your feet to jump!",
-        });
-        this.tutorialText.size = new Vec2(300, 25);
-        // this.tutorialText.backgroundColor = Color.BLACK;
-        // this.tutorialText.backgroundColor.a = 10;
-        this.tutorialTextTimer = new Timer(10000, () => (this.tutorialText.visible = false), false);
     }
 
     public initializeTutorialBox() {
@@ -231,7 +219,6 @@ export default class Level3 extends AALevel {
 
     public startScene(): void {
         super.startScene();
-        this.tutorialTextTimer.start();
         this.guideText.tweens.play("fadeIn");
 
         // Set the next level to be Level4
@@ -336,6 +323,6 @@ export default class Level3 extends AALevel {
      */
     protected initializeViewport(): void {
         super.initializeViewport();
-        this.viewport.setBounds(16, 16, 1600, 700);
+        this.viewport.setBounds(16, 16, 1584, 700);
     }
 }
