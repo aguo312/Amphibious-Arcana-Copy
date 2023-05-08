@@ -236,4 +236,8 @@ export default class AnimationManager {
     getCurrent(): string {
         return this.currentAnimation;
     }
+
+    getPending(): string {
+        return this.pendingAnimation;
+    }
 }
