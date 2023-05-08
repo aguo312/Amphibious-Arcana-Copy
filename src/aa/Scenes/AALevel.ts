@@ -350,6 +350,17 @@ export default abstract class AALevel extends Scene {
                 pos: iceParticle.position,
             });
         }
+
+        // update if cheats unlock spells
+        if (MainMenu.CURRENT_LEVEL >= 0 && this.fireIcon.imageId != "tongueIcon") {
+            this.tongueIcon.setImageId("tongueIcon");
+        }
+        if (MainMenu.CURRENT_LEVEL >= 3 && this.fireIcon.imageId != "fireIcon") {
+            this.fireIcon.setImageId("fireIcon");
+        }
+        if (MainMenu.CURRENT_LEVEL >= 5 && this.iceIcon.imageId != "iceIcon") {
+            this.iceIcon.setImageId("iceIcon");
+        }
         this.healthbars.forEach((healthbar) => healthbar.update(deltaT));
 
         // Player position code to determine monster spawn positions

@@ -21,6 +21,7 @@ import SplashScreen from "./aa/Scenes/SplashScreen";
             { name: AAControls.GOTO_BOSS, keys: ["shift"] },
             { name: AAControls.TOGGLE_INVINCIBILITY, keys: ["i"] },
             { name: AAControls.PLAYER_KILL, keys: ["k"] },
+            { name: AAControls.UNLOCK_SPELLS, keys: ["l"] },
             { name: AAControls.GOTO_LEVEL_0, keys: ["4"] },
             { name: AAControls.GOTO_LEVEL_1, keys: ["5"] },
             { name: AAControls.GOTO_LEVEL_2, keys: ["6"] },

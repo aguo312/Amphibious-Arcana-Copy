@@ -74,13 +74,19 @@ export default class HelpScene extends Scene {
         // Create cheat codes text
         this.createLabel("Cheat Codes", new Vec2(size.x, sizeY + yOffset * i++), 26);
         sizeY += 15;
-        this.createLabel("- 5-0 to go to levels 1-6", new Vec2(size.x, sizeY + yOffset * i++));
-        // this.createLabel("- Ctrl + Shift + Number to go to that boss fight", new Vec2(size.x, sizeY + yOffset*i++));
-        this.createLabel("- I enables invincibility", new Vec2(size.x, sizeY + yOffset * i++));
-        this.createLabel("- K kills the player", new Vec2(size.x, sizeY + yOffset * i++));
+        this.createLabel(
+            "- Numbers 4-0 to go to levels 0-6 respectively",
+            new Vec2(size.x, sizeY + yOffset * i++)
+        );
+        this.createLabel(
+            "- Shift to go to boss fight if there is one",
+            new Vec2(size.x, sizeY + yOffset * i++)
+        );
+        this.createLabel("- I to enable invincibility", new Vec2(size.x, sizeY + yOffset * i++));
+        this.createLabel("- K to kill the player", new Vec2(size.x, sizeY + yOffset * i++));
+        this.createLabel("- L to unlock all spells", new Vec2(size.x, sizeY + yOffset * i++));
         // this.createLabel("- P gives you low health", new Vec2(size.x, sizeY + yOffset*i++));
         // this.createLabel("- O enables always full charged spells", new Vec2(size.x, sizeY + yOffset*i++));
-        // this.createLabel("- L unlocks all spells", new Vec2(size.x, sizeY + yOffset*i++));
 
         // Create a back button
         const backBtn = this.createButton("Back", new Vec2(size.x, 2 * size.y - 60));

@@ -15,7 +15,7 @@ export default class Sprite extends CanvasNode {
     /** Whether or not the y-axis should be inverted on render */
     invertY: boolean;
 
-    constructor(imageId: string){
+    constructor(imageId: string) {
         super();
         this.imageId = imageId;
         let image = ResourceManager.getInstance().getImage(this.imageId);
@@ -31,5 +31,9 @@ export default class Sprite extends CanvasNode {
      */
     setImageOffset(offset: Vec2): void {
         this.imageOffset = offset;
+    }
+
+    setImageId(imageId: string): void {
+        this.imageId = imageId;
     }
 }
