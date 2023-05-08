@@ -127,7 +127,8 @@ export default class Level1 extends AALevel {
         // this.guideText.fontSize = 24;
         // this.guideText.font = "MyFont";
 
-        this.guideText.position = new Vec2(this.playerSpawn.x + 90, this.playerSpawn.y - 50);
+        this.guideText.position = new Vec2(471, 891);
+        //this.guideText.size.set(655, 150);
 
         // add random tutorial text
         this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
@@ -138,16 +139,6 @@ export default class Level1 extends AALevel {
         // this.tutorialText.backgroundColor = Color.BLACK;
         // this.tutorialText.backgroundColor.a = 10;
         this.tutorialTextTimer = new Timer(10000, () => (this.tutorialText.visible = false), false);
-    }
-
-    public initializeTutorialBox() {
-        let size = this.viewport.getHalfSize();
-
-        let tutorialBox = <Rect>this.add.graphic(GraphicType.RECT, AALayers.GUIDE, {
-            position: new Vec2(size.x, size.y),
-            size: new Vec2(100, 100),
-        });
-        tutorialBox.color = new Color(34, 32, 52, 0);
     }
 
     /**
@@ -212,89 +203,80 @@ export default class Level1 extends AALevel {
 
         // Set the next level to be Level4
         this.nextLevel = Level2;
-        this.nextLevelNum = 4;
+        this.nextLevelNum = 2;
 
         this.initializeNPCs();
     }
 
     protected initializeNPCs(): void {
-        // this.enemyPositions = [
-        //     new Vec2(200, 600),
-        //     new Vec2(500, 600),
-        //     new Vec2(800, 600),
-        //     new Vec2(1150, 400),
-        // ];
+        this.enemyPositions = [
+            new Vec2(717, 1088),
+            new Vec2(1051, 1024),
+            new Vec2(942, 928),
+            new Vec2(737, 800),
+            new Vec2(1028, 592),
+            new Vec2(727, 432),
+            new Vec2(737, 80),
+            new Vec2(900, 80),
+            new Vec2(1133, 144),
+            new Vec2(1400, 352),
+            new Vec2(1550, 352),
+            new Vec2(737, 800),
+            new Vec2(1851, 304),
+        ];
 
-        // for (let pos of this.enemyPositions) {
-        //     let scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
-        //     scabbers.scale.scale(0.25);
-        //     scabbers.position.set(pos.x, pos.y);
-        //     scabbers.addPhysics();
-        //     scabbers.setGroup(AAPhysicsGroups.ENEMY);
-        //     scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
-        //     scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
-        //     scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
+        for (const pos of this.enemyPositions) {
+            const scabbers = this.add.animatedSprite("Scabbers", AALayers.PRIMARY);
+            scabbers.scale.scale(0.25);
+            scabbers.position.set(pos.x, pos.y);
+            scabbers.addPhysics();
+            scabbers.setGroup(AAPhysicsGroups.ENEMY);
+            scabbers.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
+            scabbers.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICEBALL_HIT_ENEMY, null);
+            scabbers.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
 
-        //     scabbers.health = 3;
-        //     scabbers.maxHealth = 3;
-        //     let healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
-        //         size: scabbers.size.clone().scaled(1.5, 0.25),
-        //         offset: scabbers.size.clone().scaled(0, -1 / 5),
-        //     });
-        //     this.healthbars.set(scabbers.id, healthbar);
-        //     scabbers.animation.play("IDLE");
-        //     scabbers.addAI(ScabberBehavior, { player: this.player });
-        //     this.allNPCS.set(scabbers.id, scabbers);
+            scabbers.health = 3;
+            scabbers.maxHealth = 3;
+            const healthbar = new HealthbarHUD(this, scabbers, AALayers.PRIMARY, {
+                size: scabbers.size.clone().scaled(1.5, 0.25),
+                offset: scabbers.size.clone().scaled(0, -1 / 5),
+            });
+            this.healthbars.set(scabbers.id, healthbar);
+            scabbers.animation.play("IDLE");
+            scabbers.addAI(ScabberBehavior, { player: this.player, tilemap: "Collidable" });
+            this.allNPCS.set(scabbers.id, scabbers);
 
-        //     scabbers.tweens.add("DEATH", {
-        //         startDelay: 0,
-        //         duration: 500,
-        //         effects: [
-        //             {
-        //                 property: "rotation",
-        //                 start: 0,
-        //                 end: Math.PI,
-        //                 ease: EaseFunctionType.IN_OUT_QUAD,
-        //             },
-        //             {
-        //                 property: "alpha",
-        //                 start: 1,
-        //                 end: 0,
-        //                 ease: EaseFunctionType.IN_OUT_QUAD,
-        //             },
-        //         ],
-        //         onEnd: [AAEvents.NPC_KILLED],
-        //     });
-        // }
+            scabbers.tweens.add("DEATH", {
+                startDelay: 0,
+                duration: 500,
+                effects: [
+                    {
+                        property: "rotation",
+                        start: 0,
+                        end: Math.PI,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                    {
+                        property: "alpha",
+                        start: 1,
+                        end: 0,
+                        ease: EaseFunctionType.IN_OUT_QUAD,
+                    },
+                ],
+                onEnd: [AAEvents.NPC_KILLED],
+            });
+        }
 
-        // let guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
-        // guide.scale.scale(0.3);
-        // guide.position.set(this.playerSpawn.x + 90, this.playerSpawn.y - 3);
-        // guide.addPhysics(null, null, false);
-        // guide.setGroup(AAPhysicsGroups.TUTORIAL);
-        // guide.setTrigger(AAPhysicsGroups.PLAYER, "GUIDE", null);
+        const guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
+        guide.scale.scale(0.3);
+        guide.position.set(471, 941);
+        guide.addPhysics(null, null, false);
+        guide.setGroup(AAPhysicsGroups.TUTORIAL);
+        guide.setTrigger(AAPhysicsGroups.PLAYER, "GUIDE", null);
 
-        // guide.animation.play("IDLE");
-        // this.allNPCS.set(guide.id, guide);
+        guide.animation.play("IDLE");
+        this.allNPCS.set(guide.id, guide);
 
-
-        // let ant = this.add.animatedSprite("Ant", AALayers.GUIDE);
-        // ant.scale.scale(.25)
-        // ant.position.set(this.playerSpawn.x, this.playerSpawn.y - 100)
-        // ant.addPhysics(null, null, false)
-        // ant.setGroup(AAPhysicsGroups.ENEMY)
-        // ant.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
-
-        // ant.animation.play("IDLE");
-        // ant.addAI(AntBehavior, { player: this.player });
-        // ant.health = 3;
-        // ant.maxHealth = 3;
-        // let healthbar = new HealthbarHUD(this, ant, AALayers.PRIMARY, {
-        //     size: ant.size.clone().scaled(1.5, 0.125),
-        //     offset: ant.size.clone().scaled(0, -1 / 5),
-        // });
-        // this.healthbars.set(ant.id, healthbar);
-        // this.allNPCS.set(ant.id, ant);
     }
 
     public updateScene(deltaT: number) {

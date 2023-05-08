@@ -38,6 +38,7 @@ import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
 import ParticleSystemManager from "../../Wolfie2D/Rendering/Animations/ParticleSystemManager";
 import CanvasNode from "../../Wolfie2D/Nodes/CanvasNode";
+import AntParticles from "../AI/NPC/AntParticles";
 
 /**
  * A const object for the layer names
@@ -66,6 +67,8 @@ export default abstract class AALevel extends Scene {
     public add: AAFactoryManager;
 
     // protected cheatsManager: CheatsManager;
+
+    protected antParticleSystem: AntParticles;
 
     /** The particle system used for the fireball's explosion */
     protected fireParticleSystem: FireParticles;
@@ -99,9 +102,9 @@ export default abstract class AALevel extends Scene {
     private healthBar: Label;
     private healthBarBg: Label;
 
-    private bossHealthBar: Label;
-    private bossHealthBarBg: Label;
-    private bossNameLabel: Label;
+    protected bossHealthBar: Label;
+    protected bossHealthBarBg: Label;
+    protected bossNameLabel: Label;
 
     protected bossName: string;
 
@@ -221,10 +224,11 @@ export default abstract class AALevel extends Scene {
                     AAPhysicsGroups.ICE_PLATFORM,
                     AAPhysicsGroups.BOSS_PARTICLE,
                     AAPhysicsGroups.TUTORIAL,
+                    AAPhysicsGroups.ANT_PARTICLE,
                 ],
                 collisions: [
-                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1],
+                    [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1],
                     [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
                     [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0],
                     [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
@@ -235,6 +239,7 @@ export default abstract class AALevel extends Scene {
                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
                     [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 ],
             },
         });
@@ -250,6 +255,7 @@ export default abstract class AALevel extends Scene {
         this.allNPCS = new Map<number, AAAnimatedSprite>();
         this.healthbars = new Map<number, HealthbarHUD>();
         this.freezeOverlays = new Map<number, Graphic>();
+
     }
 
     public loadScene() {
@@ -326,6 +332,7 @@ export default abstract class AALevel extends Scene {
     /* Update method for the scene */
 
     public updateScene(deltaT: number) {
+        console.log(this.player.position.x + " " + this.player.position.y)
         // Handle all game events
         while (this.receiver.hasNextEvent()) {
             this.handleEvent(this.receiver.getNextEvent());
@@ -523,6 +530,13 @@ export default abstract class AALevel extends Scene {
                 }
                 break;
             }
+            case AAEvents.ANT_FIRE_HIT: {
+                this.handleAntFireballHit();
+                if(event.data.get("other") === this.player.id){
+                    this.emitter.fireEvent(AAEvents.PLAYER_HIT)
+                }
+                break;
+            }
             case AAEvents.ICE_COLLISION: {
                 this.iceParticleSystem.getPool()[0].freeze();
                 this.iceParticleSystem.getPool()[0].visible = false;
@@ -637,14 +651,78 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.BOSS_KILLED: {
+
+                const id: number = event.data.get("node");
+                const enemy = this.allNPCS.get(id);
+
+                enemy.animation.playIfNotAlready("DYING");
+
+                if (enemy) {
+                    enemy.destroy();
+                    const healthbar = this.healthbars.get(id);
+                    if (healthbar) {
+                        healthbar.visible = false;
+                    }
+                    const freeze = this.freezeOverlays.get(id);
+                    if (freeze) {
+                        freeze.visible = false;
+                    }
+                }
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.enemyDeathAudioKey,
+                    loop: false,
+                    holdReference: false,
+                });
                 break;
             }
             case "GUIDE": {
-                const texts = [
-                    "You've unlocked your fireball! It deals damage to enemies",
-                    "You can also shoot it by your feet for a boost!",
-                    "It will allow you to make higher jumps and reach platforms.",
-                ];
+                let texts = [""];
+
+                
+                if(MainMenu.CURRENT_LEVEL === 0){
+                    texts = [
+                        "You're finally awake! The Mind Flayer really got us all...",
+                        "It seems like you lost most of your magic. But you can get it back.",
+                        "Use your tongue as a grapple on concrete surfaces to get around.",
+                    ];
+                }else if(MainMenu.CURRENT_LEVEL === 1){
+                    texts = [
+                        "Seems like you'll need to get through this mountain.",
+                        "Climb the tree with your tongue spell to reach the top!",
+                        "You can use your tongue spell on enemies to damage them and gain health."
+                    ];
+                }else if(MainMenu.CURRENT_LEVEL === 2){
+                    texts = [
+                        "Creepy.. This is the cave of the fire ants.",
+                        "The exit is at the bottom right of the cave.",
+                        "Be careful, the Ant-Queen might be guarding it...",
+                    ];
+                }else if(MainMenu.CURRENT_LEVEL === 3){
+                    texts = [
+                        "You've unlocked your fireball! It deals damage to enemies.",
+                        "You can also shoot it by your feet for a boost!",
+                        "It will allow you to make higher jumps and reach platforms.",
+                    ];
+                }else if(MainMenu.CURRENT_LEVEL === 4){
+                    texts = [
+                        "We made it through! We are getting closer to the castle.",
+                        "I'm starting to feel the Mind Flayer's presence.",
+                        "There is a chance that I could be controlled by him. I'm Sorry",
+                    ];
+                }else if(MainMenu.CURRENT_LEVEL === 5){
+                    texts = [
+                        "You were able to get me out of his control. Thank you!",
+                        "I passed down my Ice Spell to you. You can freeze enemies with it",
+                        "You can create an ice platform by clicking again when its in the air.",
+                    ];
+                }else if(MainMenu.CURRENT_LEVEL === 6){
+                    texts = [
+                        "This is it! Use all your spells to reach the Mind Flayer!",
+                        "The future of this world is in your hands.",
+                        "Good Luck!.",
+                    ];
+                }
+
 
                 if (this.guideTextTimer.isStopped()) {
                     let currentIndex = 0;
@@ -725,6 +803,37 @@ export default abstract class AALevel extends Scene {
         const dir = new Vec2(-0.8 * particle.vel.x, -0.8 * particle.vel.y);
 
         this.fireballSystem.stopSystem();
+
+        if (!this.fireParticleSystem.isSystemRunning()) {
+            this.fireParticleSystem.setParticleVector(dir);
+            this.fireParticleSystem.startSystem(1000, 0, particle.position);
+        }
+
+        this.emitter.fireEvent(AAEvents.PLAYER_FIRE_JUMP, {
+            fireJumpVel: dir,
+            particlePos: particle.position,
+            playerPos: this.player.position,
+        });
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+            key: this.explodeAudioKey,
+            loop: false,
+            holdReference: false,
+        });
+    }
+
+    protected handleAntFireballHit(): void {
+        const particle = this.antParticleSystem.getPool()[0]; // fireball is a single particle
+
+        if (!particle) {
+            console.warn("Fireball particle undefined");
+            return;
+        }
+
+        // Rocket jump direction
+        // TODO should be less effective when fireball lands farther away
+        const dir = new Vec2(-.1 * particle.vel.x, -.1* particle.vel.y);
+
+        this.antParticleSystem.stopSystem();
 
         if (!this.fireParticleSystem.isSystemRunning()) {
             this.fireParticleSystem.setParticleVector(dir);
@@ -948,6 +1057,11 @@ export default abstract class AALevel extends Scene {
                 null
             );
             this.collidable.setTrigger(
+                AAPhysicsGroups.ANT_PARTICLE,
+                AAEvents.ANT_FIRE_HIT,
+                null
+            );
+            this.collidable.setTrigger(
                 AAPhysicsGroups.TONGUE,
                 AAEvents.TONGUE_WALL_COLLISION,
                 null
@@ -959,6 +1073,8 @@ export default abstract class AALevel extends Scene {
      * Handles all subscriptions to events
      */
     protected subscribeToEvents(): void {
+        this.receiver.subscribe(AAEvents.BOSS_KILLED);
+        this.receiver.subscribe(AAEvents.ANT_FIRE_HIT);
         this.receiver.subscribe(AAEvents.PLAYER_ENTERED_LEVEL_END);
         this.receiver.subscribe(AAEvents.LEVEL_START);
         this.receiver.subscribe(AAEvents.LEVEL_END);
@@ -1416,6 +1532,9 @@ export default abstract class AALevel extends Scene {
         );
         this.player.setGroup(AAPhysicsGroups.PLAYER);
         this.player.setTrigger(AAPhysicsGroups.BOSS_PARTICLE, AAEvents.PLAYER_HIT, null);
+
+        this.player.setTrigger(AAPhysicsGroups.ANT_PARTICLE, AAEvents.ANT_FIRE_HIT, null);
+
         this.player.setTrigger(AAPhysicsGroups.ENEMY, AAEvents.PLAYER_HIT, null);
 
         // Give the player a flip animation

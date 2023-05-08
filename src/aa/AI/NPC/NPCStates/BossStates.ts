@@ -6,3 +6,9 @@ export const MFStates = {
     ATTACK: "ATTACK",
     IDLE: "IDLE",
 } as const;
+
+export const AQStates = {
+    DEAD: "DEAD",
+    ATTACK: "ATTACK",
+    IDLE: "IDLE",
+} as const;
