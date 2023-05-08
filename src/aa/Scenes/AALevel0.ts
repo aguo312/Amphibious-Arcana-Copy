@@ -137,7 +137,6 @@ export default class Level0 extends AALevel {
 
         const size = this.viewport.getHalfSize();
 
-
         this.guideText.position = new Vec2(290, 347);
         this.guideText.size.set(655, 150);
 
@@ -148,8 +147,7 @@ export default class Level0 extends AALevel {
         });
         this.tutorialText.size = new Vec2(300, 25);
 
-
-        this.tutorialText1= <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, {
+        this.tutorialText1 = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.GUIDE, {
             position: new Vec2(55, 445),
             text: "Left Click - Attack",
         });
@@ -244,7 +242,6 @@ export default class Level0 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-
         const guide = this.add.animatedSprite("Guide", AALayers.GUIDE);
         guide.scale.scale(0.3);
         guide.position.set(290, 397);
@@ -254,7 +251,6 @@ export default class Level0 extends AALevel {
 
         guide.animation.play("IDLE");
         this.allNPCS.set(guide.id, guide);
-
     }
 
     public updateScene(deltaT: number) {

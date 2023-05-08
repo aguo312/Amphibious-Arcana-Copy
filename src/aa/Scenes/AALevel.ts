@@ -152,7 +152,6 @@ export default abstract class AALevel extends Scene {
 
     /** Sound and music */
     protected levelMusicKey: string;
-    protected bossMusicKey: string;
     protected jumpAudioKey: string;
     protected attackAudioKey: string;
     protected healAudioKey: string;
@@ -435,6 +434,13 @@ export default abstract class AALevel extends Scene {
                     MainMenu.LEVEL_COUNTER = this.nextLevelNum;
                 }
                 MainMenu.CURRENT_LEVEL = this.nextLevelNum;
+                if (MainMenu.CURRENT_LEVEL >= 6) {
+                    this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {
+                        key: MainMenu.MUSIC_KEY,
+                        loop: true,
+                        holdReference: true,
+                    });
+                }
                 this.sceneManager.changeToScene(this.nextLevel);
                 break;
             }
@@ -606,7 +612,7 @@ export default abstract class AALevel extends Scene {
                 // this.sceneManager.changeToScene(MainMenu);
                 break;
             }
-            case "NPC_BOSS_KILLED":{
+            case "NPC_BOSS_KILLED": {
                 const id: number = event.data.get("node");
                 const enemy = this.allNPCS.get(id);
 
@@ -623,7 +629,7 @@ export default abstract class AALevel extends Scene {
                 }
 
                 this.emitter.fireEvent(AAEvents.BOSS_KILLED);
-                
+
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
                     key: this.enemyDeathAudioKey,
                     loop: false,
@@ -710,18 +716,6 @@ export default abstract class AALevel extends Scene {
                 this.bossHealthBar.visible = true;
                 this.bossHealthBarBg.visible = true;
                 this.bossNameLabel.visible = true;
-                // change music
-                if (this.bossMusicKey) {
-                    this.emitter.fireEvent(GameEventType.STOP_SOUND, {
-                        key: this.levelMusicKey,
-                        holdReference: true,
-                    });
-                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
-                        key: this.bossMusicKey,
-                        loop: true,
-                        holdReference: false,
-                    });
-                }
                 // Destroy the spawn trigger so we don't call this again
                 this.bossSpawnTrigger.destroy();
 
@@ -740,7 +734,7 @@ export default abstract class AALevel extends Scene {
                     texts = [
                         "Seems like you'll need to get through this mountain.",
                         "Climb the tree with your tongue spell to reach the top!",
-                        "Use your tongue spell on enemies to damage them and gain health."
+                        "Use your tongue spell on enemies to damage them and gain health.",
                     ];
                 } else if (MainMenu.CURRENT_LEVEL === 2) {
                     texts = [

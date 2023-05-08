@@ -286,7 +286,6 @@ export default class Level1 extends AALevel {
 
         guide.animation.play("IDLE");
         this.allNPCS.set(guide.id, guide);
-
     }
 
     public updateScene(deltaT: number) {

@@ -134,7 +134,6 @@ export default class Level5 extends AALevel {
         this.guideText.position = new Vec2(100, 587);
         this.guideText.size.set(655, 150);
 
-        
         // add random tutorial text
         this.tutorialText = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.UI, {
             position: new Vec2(size.x, 180),
@@ -281,11 +280,9 @@ export default class Level5 extends AALevel {
             guide.addPhysics(null, null, false);
             guide.setGroup(AAPhysicsGroups.TUTORIAL);
             guide.setTrigger(AAPhysicsGroups.PLAYER, "GUIDE", null);
-    
+
             guide.animation.play("IDLE");
             this.allNPCS.set(guide.id, guide);
-            
-
         });
         ranged.forEach((l) => {
             this.rangedEnemyParticleSystem = new RangedEnemyParticles(1, Vec2.ZERO, 1000, 3, 10, 1);

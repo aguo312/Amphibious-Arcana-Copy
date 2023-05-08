@@ -73,7 +73,7 @@ export default class Level2 extends AALevel {
 
     protected bossSpawnTriggerPos: Vec2;
     protected bossSpawnTriggerHalfSize: Vec2;
-    
+
     public constructor(
         viewport: Viewport,
         sceneManager: SceneManager,
@@ -114,7 +114,6 @@ export default class Level2 extends AALevel {
         // made bigger for testing
         this.levelEndHalfSize = new Vec2(32, 30).mult(this.tilemapScale);
 
-
         this.bossSpawnTriggerPos = new Vec2(1260, 1104);
         this.bossSpawnTriggerHalfSize = new Vec2(10, 160).mult(this.tilemapScale);
 
@@ -143,9 +142,7 @@ export default class Level2 extends AALevel {
         const size = this.viewport.getHalfSize();
 
         this.guideText.position = new Vec2(233, 981);
-
     }
-
 
     /**
      * Load in our resources for level 1
@@ -223,10 +220,9 @@ export default class Level2 extends AALevel {
     }
 
     protected initializeNPCs(): void {
-
-        this.bossHealthBar.position = new Vec2(150, 195)
-        this.bossHealthBarBg.position = new Vec2(150, 195)
-        this.bossNameLabel.position = new Vec2(95, 187) 
+        this.bossHealthBar.position = new Vec2(150, 195);
+        this.bossHealthBarBg.position = new Vec2(150, 195);
+        this.bossNameLabel.position = new Vec2(95, 187);
         // initialize boss weapon system
         this.antParticleSystem = new AntParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
         this.antParticleSystem.initializePool(this, AALayers.PRIMARY);
@@ -234,7 +230,7 @@ export default class Level2 extends AALevel {
         const antQueen = this.add.animatedSprite("Ant", AALayers.PRIMARY);
         antQueen.scale.scale(1.25);
         antQueen.position.set(1405, 1010);
-        antQueen.addPhysics(null, null, false)
+        antQueen.addPhysics(null, null, false);
         antQueen.setGroup(AAPhysicsGroups.ENEMY);
         antQueen.setTrigger(AAPhysicsGroups.FIREBALL, AAEvents.FIREBALL_HIT_ENEMY, null);
         antQueen.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_HIT_BOSS, null);
@@ -247,7 +243,7 @@ export default class Level2 extends AALevel {
             particles: this.antParticleSystem,
         });
         this.allNPCS.set(antQueen.id, antQueen);
-        
+
         antQueen.tweens.add("DEATH", {
             startDelay: 0,
             duration: 500,
@@ -346,13 +342,12 @@ export default class Level2 extends AALevel {
             new Vec2(1500, 1110),
         ];
 
-        for(const pos of this.antPositions){
-
+        for (const pos of this.antPositions) {
             const ant = this.add.animatedSprite("Ant", AALayers.GUIDE);
-            ant.scale.scale(.25)
-            ant.position.set(pos.x, pos.y)
-            ant.addPhysics(null, null, false)
-            ant.setGroup(AAPhysicsGroups.ENEMY)
+            ant.scale.scale(0.25);
+            ant.position.set(pos.x, pos.y);
+            ant.addPhysics(null, null, false);
+            ant.setGroup(AAPhysicsGroups.ENEMY);
             ant.setTrigger(AAPhysicsGroups.TONGUE, AAEvents.TONGUE_HIT_ENEMY, null);
 
             ant.animation.play("IDLE");
@@ -365,11 +360,8 @@ export default class Level2 extends AALevel {
             });
             this.healthbars.set(ant.id, healthbar);
             this.allNPCS.set(ant.id, ant);
-
         }
-      
     }
-
 
     protected initializeTriggers(): void {
         this.bossSpawnTrigger = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PRIMARY, {
