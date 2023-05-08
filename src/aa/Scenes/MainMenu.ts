@@ -11,8 +11,6 @@ import ControlsScene from "./ControlsScene";
 import HelpScene from "./HelpScene";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import Level0 from "./AALevel0";
-import Level1 from "./AALevel1";
-import Level2 from "./AALevel2";
 
 // Layers for the main menu scene
 export const MenuLayers = {
@@ -22,7 +20,7 @@ export const MenuLayers = {
 export default class MainMenu extends Scene {
     public static readonly MUSIC_KEY = "MAIN_MENU_MUSIC";
     public static readonly MUSIC_PATH = "hw4_assets/music/menu_concept.wav";
-    public static LEVEL_COUNTER = 1;
+    public static LEVEL_COUNTER = 0;
     // if not current level then boss flag
     public static CURRENT_LEVEL = 0;
     public static GAME_PLAYING = false;

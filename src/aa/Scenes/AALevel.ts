@@ -51,6 +51,7 @@ export const AALayers = {
     // The PAUSE layer
     PAUSE: "PAUSE",
     CONTROLS: "CONTROLS",
+    HELP: "HELP",
     TONGUE: "TONGUE",
     BACKGROUND: "BACKGROUND",
 } as const;
@@ -282,6 +283,8 @@ export default abstract class AALevel extends Scene {
         this.getLayer(AALayers.PAUSE).disable();
         this.initializeControls();
         this.getLayer(AALayers.CONTROLS).disable();
+        this.initializeHelp();
+        this.getLayer(AALayers.HELP).disable();
 
         // Initialize the ends of the levels - must be initialized after the primary layer has been added
         this.initializeLevelEnds();
@@ -401,6 +404,10 @@ export default abstract class AALevel extends Scene {
             }
             case AAEvents.CONTROLS: {
                 this.handleShowControls();
+                break;
+            }
+            case AAEvents.HELP: {
+                this.handleShowHelp();
                 break;
             }
             case AAEvents.PLAYER_ENTERED_LEVEL_END: {
@@ -899,6 +906,11 @@ export default abstract class AALevel extends Scene {
         this.getLayer(AALayers.CONTROLS).enable();
     }
 
+    protected handleShowHelp(): void {
+        this.getLayer(AALayers.PAUSE).disable();
+        this.getLayer(AALayers.HELP).enable();
+    }
+
     /* Initialization methods for everything in the scene */
 
     /**
@@ -922,6 +934,7 @@ export default abstract class AALevel extends Scene {
         // Add a layer for Pause Menu
         this.addUILayer(AALayers.PAUSE);
         this.addUILayer(AALayers.CONTROLS);
+        this.addUILayer(AALayers.HELP);
     }
 
     protected initBackground(): void {
@@ -1019,6 +1032,7 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.PAUSE);
         this.receiver.subscribe(AAEvents.RESUME);
         this.receiver.subscribe(AAEvents.CONTROLS);
+        this.receiver.subscribe(AAEvents.HELP);
         this.receiver.subscribe(AAEvents.CREATE_PLATFORM);
         this.receiver.subscribe(AAEvents.FIREBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.ICEBALL_HIT_ENEMY);
@@ -1258,11 +1272,11 @@ export default abstract class AALevel extends Scene {
         const yPos = size.y + 100;
         const pauseMenu = <Rect>this.add.graphic(GraphicType.RECT, AALayers.PAUSE, {
             position: new Vec2(size.x, yPos - 100),
-            size: new Vec2(60, 80),
+            size: new Vec2(60, 100),
         });
         pauseMenu.color = Color.BLACK;
         const resumeBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {
-            position: new Vec2(size.x, yPos - 120),
+            position: new Vec2(size.x, yPos - 130),
             text: "Resume",
         });
         resumeBtn.backgroundColor = Color.TRANSPARENT;
@@ -1273,7 +1287,7 @@ export default abstract class AALevel extends Scene {
         resumeBtn.scale = new Vec2(0.25, 0.25);
 
         const controlsBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {
-            position: new Vec2(size.x, yPos - 100),
+            position: new Vec2(size.x, yPos - 110),
             text: "Controls",
         });
         controlsBtn.backgroundColor = Color.TRANSPARENT;
@@ -1283,8 +1297,19 @@ export default abstract class AALevel extends Scene {
         controlsBtn.font = "PixelSimple";
         controlsBtn.scale = new Vec2(0.25, 0.25);
 
+        const helpBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {
+            position: new Vec2(size.x, yPos - 90),
+            text: "Help",
+        });
+        helpBtn.backgroundColor = Color.TRANSPARENT;
+        helpBtn.borderColor = Color.WHITE;
+        helpBtn.borderRadius = 0;
+        helpBtn.setPadding(new Vec2(50, 10));
+        helpBtn.font = "PixelSimple";
+        helpBtn.scale = new Vec2(0.25, 0.25);
+
         const quitBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.PAUSE, {
-            position: new Vec2(size.x, yPos - 80),
+            position: new Vec2(size.x, yPos - 70),
             text: "Quit",
         });
         quitBtn.backgroundColor = Color.TRANSPARENT;
@@ -1299,6 +1324,9 @@ export default abstract class AALevel extends Scene {
         };
         controlsBtn.onClick = () => {
             this.emitter.fireEvent(AAEvents.CONTROLS);
+        };
+        helpBtn.onClick = () => {
+            this.emitter.fireEvent(AAEvents.HELP);
         };
         quitBtn.onClick = () => {
             MainMenu.GAME_PLAYING = false;
@@ -1359,7 +1387,7 @@ export default abstract class AALevel extends Scene {
         });
         this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
             position: new Vec2(size.x, size.y - 55 + yOffset * i++),
-            text: "Mouse - Aim Spell",
+            text: "Move Mouse - Aim Spell",
             fontSize: 24,
         });
         this.add.uiElement(UIElementType.LABEL, AALayers.CONTROLS, {
@@ -1380,6 +1408,58 @@ export default abstract class AALevel extends Scene {
         backBtn.scale = new Vec2(0.25, 0.25);
         backBtn.onClick = () => {
             this.getLayer(AALayers.CONTROLS).disable();
+            this.getLayer(AALayers.PAUSE).enable();
+        };
+    }
+
+    protected initializeHelp(): void {
+        const size = this.viewport.getHalfSize();
+        const yOffset = 10;
+        const helpMenu = <Rect>this.add.graphic(GraphicType.RECT, AALayers.HELP, {
+            position: new Vec2(size.x, size.y),
+            size: new Vec2(140, 100),
+        });
+        helpMenu.color = Color.BLACK;
+
+        let i = 1;
+        this.add.uiElement(UIElementType.LABEL, AALayers.HELP, {
+            position: new Vec2(size.x, size.y - 35),
+            text: "- Numbers 4-0 to go to levels 0-6 respectively",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.HELP, {
+            position: new Vec2(size.x, size.y - 35 + yOffset * i++),
+            text: "- Shift to go to boss fight if there is one",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.HELP, {
+            position: new Vec2(size.x, size.y - 35 + yOffset * i++),
+            text: "- I to enable invincibility",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.HELP, {
+            position: new Vec2(size.x, size.y - 35 + yOffset * i++),
+            text: "- K to kill the player",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.HELP, {
+            position: new Vec2(size.x, size.y - 35 + yOffset * i++),
+            text: "- L to unlock all spells",
+            fontSize: 24,
+        });
+
+        const backBtn = <Button>this.add.uiElement(UIElementType.BUTTON, AALayers.HELP, {
+            position: new Vec2(size.x, 2 * size.y - 70),
+            text: "Back",
+        });
+        backBtn.backgroundColor = Color.TRANSPARENT;
+        backBtn.borderColor = Color.WHITE;
+        backBtn.borderRadius = 0;
+        backBtn.setPadding(new Vec2(50, 10));
+        backBtn.font = "PixelSimple";
+        backBtn.scale = new Vec2(0.25, 0.25);
+        backBtn.onClick = () => {
+            this.getLayer(AALayers.HELP).disable();
             this.getLayer(AALayers.PAUSE).enable();
         };
     }

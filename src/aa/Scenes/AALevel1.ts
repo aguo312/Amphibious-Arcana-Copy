@@ -218,9 +218,9 @@ export default class Level1 extends AALevel {
         this.tutorialTextTimer.start();
         this.guideText.tweens.play("fadeIn");
 
-        // Set the next level to be Level4
+        // Set the next level to be Level2
         this.nextLevel = Level2;
-        this.nextLevelNum = 4;
+        this.nextLevelNum = 2;
 
         this.initializeNPCs();
     }
