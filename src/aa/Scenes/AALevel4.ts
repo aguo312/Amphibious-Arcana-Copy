@@ -19,6 +19,7 @@ import HealthbarHUD from "../GameSystems/HUD/HealthbarHUD";
 import Color from "../../Wolfie2D/Utils/Color";
 import Level5 from "./AALevel5";
 import Boss2Behavior from "../AI/NPC/NPCBehaviors/Boss2Behavior";
+import Level0 from "./AALevel0";
 
 /**
  * The second level for HW4. It should be the goose dungeon / cave.
@@ -36,8 +37,11 @@ export default class Level4 extends AALevel {
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
-    public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
-    public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
+    // public static readonly JUMP_AUDIO_KEY = "PLAYER_JUMP";
+    // public static readonly JUMP_AUDIO_PATH = "hw4_assets/sounds/jump.wav";
+
+    // public static readonly HEAL_AUDIO_KEY = "PLAYER_REGEN";
+    // public static readonly HEAL_AUDIO_PATH = "hw4_assets/sounds/switch.wav";
 
     public static readonly LEVEL_END = new AABB(new Vec2(224, 232), new Vec2(24, 16));
 
@@ -62,18 +66,19 @@ export default class Level4 extends AALevel {
         this.collidableLayerKey = Level4.COLLIDABLE_LAYER_KEY;
 
         // Set the key for the player's sprite
-        this.playerSpriteKey = Level3.PLAYER_SPRITE_KEY;
+        this.playerSpriteKey = Level0.PLAYER_SPRITE_KEY;
         // Set the player's spawn
         this.playerSpawn = Level4.PLAYER_SPAWN;
 
         // Music and sound
         this.levelMusicKey = Level4.LEVEL_MUSIC_KEY;
-        this.jumpAudioKey = Level3.JUMP_AUDIO_KEY;
-        this.attackAudioKey = Level3.ATTACK_AUDIO_KEY;
-        this.explodeAudioKey = Level3.EXPLODE_AUDIO_KEY;
-        this.grappleAudioKey = Level3.GRAPPLE_AUDIO_KEY;
-        this.enemyDeathAudioKey = Level3.ENEMY_DEATH_AUDIO_KEY;
-        this.playerDeathAudioKey = Level3.PLAYER_DEATH_AUDIO_KEY;
+        this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
+        this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
+        this.healAudioKey = Level0.HEAL_AUDIO_KEY;
+        this.explodeAudioKey = Level0.EXPLODE_AUDIO_KEY;
+        this.grappleAudioKey = Level0.GRAPPLE_AUDIO_KEY;
+        this.enemyDeathAudioKey = Level0.ENEMY_DEATH_AUDIO_KEY;
+        this.playerDeathAudioKey = Level0.PLAYER_DEATH_AUDIO_KEY;
         this.backgroundKey = Level3.BACKGROUND_KEY;
 
         // Level end size and position
@@ -112,13 +117,14 @@ export default class Level4 extends AALevel {
         this.load.image(this.backgroundKey, Level3.BACKGROUND_PATH);
 
         // Audio and music
-        this.load.audio(this.levelMusicKey, Level4.LEVEL_MUSIC_PATH);
-        this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
-        this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
-        this.load.audio(this.explodeAudioKey, Level3.EXPLODE_AUDIO_PATH);
-        this.load.audio(this.grappleAudioKey, Level3.GRAPPLE_AUDIO_PATH);
-        this.load.audio(this.enemyDeathAudioKey, Level3.ENEMY_DEATH_AUDIO_PATH);
-        this.load.audio(this.playerDeathAudioKey, Level3.PLAYER_DEATH_AUDIO_PATH);
+        // this.load.audio(this.levelMusicKey, Level4.LEVEL_MUSIC_PATH);
+        // this.load.audio(this.jumpAudioKey, Level3.JUMP_AUDIO_PATH);
+        // this.load.audio(this.attackAudioKey, Level3.ATTACK_AUDIO_PATH);
+        // this.load.audio(this.healAudioKey, Level4.HEAL_AUDIO_PATH);
+        // this.load.audio(this.explodeAudioKey, Level3.EXPLODE_AUDIO_PATH);
+        // this.load.audio(this.grappleAudioKey, Level3.GRAPPLE_AUDIO_PATH);
+        // this.load.audio(this.enemyDeathAudioKey, Level3.ENEMY_DEATH_AUDIO_PATH);
+        // this.load.audio(this.playerDeathAudioKey, Level3.PLAYER_DEATH_AUDIO_PATH);
     }
 
     /**
@@ -130,6 +136,7 @@ export default class Level4 extends AALevel {
         this.load.keepAudio(this.levelMusicKey);
         this.load.keepAudio(this.jumpAudioKey);
         this.load.keepAudio(this.attackAudioKey);
+        this.load.keepAudio(this.healAudioKey);
         this.load.keepAudio(this.explodeAudioKey);
         this.load.keepAudio(this.grappleAudioKey);
         this.load.keepAudio(this.enemyDeathAudioKey);
@@ -139,7 +146,7 @@ export default class Level4 extends AALevel {
         this.load.keepImage("tongueIcon");
         this.load.keepImage("iceIcon");
 
-        this.load.unloadAllResources();
+        // this.load.unloadAllResources();
     }
 
     protected initializeNPCs(): void {
