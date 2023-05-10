@@ -35,6 +35,9 @@ export default class Level2 extends AALevel {
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
 
+    public static readonly BOSS_MUSIC_KEY = "BOSS_MUSIC";
+    public static readonly BOSS_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
+
     public static readonly BACKGROUND_KEY = "BACKGROUND";
     public static readonly BACKGROUND_PATH = "hw4_assets/images/Cave2.png";
 
@@ -140,6 +143,7 @@ export default class Level2 extends AALevel {
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level2.LEVEL_MUSIC_PATH);
+        this.load.audio(this.bossMusicKey, Level2.BOSS_MUSIC_PATH);
     }
 
     /**

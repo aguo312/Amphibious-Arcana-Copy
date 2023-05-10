@@ -37,6 +37,9 @@ export default class Level4 extends AALevel {
     public static readonly LEVEL_MUSIC_KEY = "LEVEL_MUSIC";
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
 
+    public static readonly BOSS_MUSIC_KEY = "BOSS_MUSIC";
+    public static readonly BOSS_MUSIC_PATH = "hw4_assets/music/lvl2_music.wav";
+
     protected bossSpawnTriggerPos: Vec2;
     protected bossSpawnTriggerHalfSize: Vec2;
 
@@ -106,6 +109,7 @@ export default class Level4 extends AALevel {
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level4.LEVEL_MUSIC_PATH);
+        this.load.audio(this.bossMusicKey, Level4.BOSS_MUSIC_PATH);
     }
 
     /**
