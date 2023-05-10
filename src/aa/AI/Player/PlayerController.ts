@@ -229,11 +229,11 @@ export default class PlayerController extends StateMachineAI {
                     if (enemy) {
                         // Push the player a bit in the direction they were hit
                         const dir = enemy.position.dirTo(this.owner.position);
-                        this.velocity.x = dir.x >= 0 ? this.velocity.x + 100 : this.velocity.x - 100;
+                        this.velocity.x =
+                            dir.x >= 0 ? this.velocity.x + 100 : this.velocity.x - 100;
                         this.velocity.y -= 100;
                     }
 
-                  
                     this.iFramesTimer.start();
                 }
                 break;
@@ -348,8 +348,7 @@ export default class PlayerController extends StateMachineAI {
     }
 
     protected tongueAttack(): void {
-
-        if(this.tongueCooldown.isStopped()){
+        if (this.tongueCooldown.isStopped()) {
             this.tongueCooldown.start();
             if (!this.tongueProjectile.isSystemRunning() && !this.tongueGraphic.visible) {
                 this.tongueProjectile.getPool()[0].unfreeze();
@@ -363,7 +362,7 @@ export default class PlayerController extends StateMachineAI {
                 } else {
                     this.owner.animation.play(PlayerAnimations.JUMP_ATTACK);
                 }
-    
+
                 this.emitter.fireEvent(AAEvents.SHOOT_TONGUE, {
                     pos: this.owner.position,
                     dir: this.faceDir,

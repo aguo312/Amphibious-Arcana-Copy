@@ -90,6 +90,7 @@ export default class LevelSelect extends Scene {
             // TODO
             MainMenu.GAME_PLAYING = true;
             MainMenu.CURRENT_LEVEL = 0;
+            MainMenu.SPELL_UNLOCK = false;
             this.sceneManager.changeToScene(Level0);
         };
 
@@ -98,6 +99,7 @@ export default class LevelSelect extends Scene {
             if (MainMenu.LEVEL_COUNTER >= 1) {
                 MainMenu.GAME_PLAYING = true;
                 MainMenu.CURRENT_LEVEL = 1;
+                MainMenu.SPELL_UNLOCK = false;
                 this.sceneManager.changeToScene(Level1);
             }
         };
@@ -107,6 +109,7 @@ export default class LevelSelect extends Scene {
             if (MainMenu.LEVEL_COUNTER >= 2) {
                 MainMenu.GAME_PLAYING = true;
                 MainMenu.CURRENT_LEVEL = 2;
+                MainMenu.SPELL_UNLOCK = false;
                 this.sceneManager.changeToScene(Level2);
             }
         };
@@ -114,8 +117,9 @@ export default class LevelSelect extends Scene {
         level3Btn.onClick = () => {
             // TODO
             if (MainMenu.LEVEL_COUNTER >= 3) {
-                MainMenu.CURRENT_LEVEL = 3;
                 MainMenu.GAME_PLAYING = true;
+                MainMenu.CURRENT_LEVEL = 3;
+                MainMenu.SPELL_UNLOCK = false;
                 this.sceneManager.changeToScene(Level3);
             }
         };
@@ -123,8 +127,9 @@ export default class LevelSelect extends Scene {
         level4Btn.onClick = () => {
             // TODO
             if (MainMenu.LEVEL_COUNTER >= 4) {
-                MainMenu.CURRENT_LEVEL = 4;
                 MainMenu.GAME_PLAYING = true;
+                MainMenu.CURRENT_LEVEL = 4;
+                MainMenu.SPELL_UNLOCK = false;
                 this.sceneManager.changeToScene(Level4);
             }
         };
@@ -132,8 +137,9 @@ export default class LevelSelect extends Scene {
         level5Btn.onClick = () => {
             // TODO
             if (MainMenu.LEVEL_COUNTER >= 5) {
-                MainMenu.CURRENT_LEVEL = 5;
                 MainMenu.GAME_PLAYING = true;
+                MainMenu.CURRENT_LEVEL = 5;
+                MainMenu.SPELL_UNLOCK = false;
                 this.sceneManager.changeToScene(Level5);
             }
         };
@@ -141,8 +147,9 @@ export default class LevelSelect extends Scene {
         level6Btn.onClick = () => {
             // TODO
             if (MainMenu.LEVEL_COUNTER >= 6) {
-                MainMenu.CURRENT_LEVEL = 6;
                 MainMenu.GAME_PLAYING = true;
+                MainMenu.CURRENT_LEVEL = 6;
+                MainMenu.SPELL_UNLOCK = false;
                 this.sceneManager.changeToScene(Level6);
             }
         };

@@ -115,7 +115,7 @@ export default class CheatsManager {
                 this.emitter.fireEvent(AAEvents.KILL_PLAYER);
             }
             if (Input.isJustPressed(AAControls.UNLOCK_SPELLS)) {
-                MainMenu.CURRENT_LEVEL = 6;
+                MainMenu.SPELL_UNLOCK = true;
             }
         } else {
             if (Input.isJustPressed(AAControls.ENABLE_CHEATS)) {

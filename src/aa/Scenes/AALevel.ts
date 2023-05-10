@@ -54,6 +54,7 @@ export const AALayers = {
     PAUSE: "PAUSE",
     CONTROLS: "CONTROLS",
     HELP: "HELP",
+    BOSSPAUSE: "BOSSPAUSE",
     TONGUE: "TONGUE",
     BACKGROUND: "BACKGROUND",
 } as const;
@@ -107,6 +108,8 @@ export default abstract class AALevel extends Scene {
     protected bossHealthBar: Label;
     protected bossHealthBarBg: Label;
     protected bossNameLabel: Label;
+    protected bossPauseLabel: Label;
+    protected bossPauseTimer: Timer;
 
     protected bossName: string;
 
@@ -303,6 +306,8 @@ export default abstract class AALevel extends Scene {
         this.getLayer(AALayers.CONTROLS).disable();
         this.initializeHelp();
         this.getLayer(AALayers.HELP).disable();
+        this.initializeBossPause();
+        this.getLayer(AALayers.BOSSPAUSE).disable();
 
         // Initialize the ends of the levels - must be initialized after the primary layer has been added
         this.initializeLevelEnds();
@@ -316,6 +321,14 @@ export default abstract class AALevel extends Scene {
         // Init timers
         this.fireballTimer = new Timer(300);
         this.bossIFrameTimer = new Timer(1000);
+
+        this.bossPauseTimer = new Timer(
+            3000,
+            () => {
+                this.getLayer(AALayers.BOSSPAUSE).disable();
+            },
+            false
+        );
 
         this.guideTextTimer = new Timer(30000, () => {
             this.guideText.backgroundColor.a = 0;
@@ -374,14 +387,16 @@ export default abstract class AALevel extends Scene {
         }
 
         // update if cheats unlock spells
-        if (MainMenu.CURRENT_LEVEL >= 0 && this.fireIcon.imageId != "tongueIcon") {
-            this.tongueIcon.setImageId("tongueIcon");
-        }
-        if (MainMenu.CURRENT_LEVEL >= 3 && this.fireIcon.imageId != "fireIcon") {
-            this.fireIcon.setImageId("fireIcon");
-        }
-        if (MainMenu.CURRENT_LEVEL >= 5 && this.iceIcon.imageId != "iceIcon") {
-            this.iceIcon.setImageId("iceIcon");
+        if (MainMenu.SPELL_UNLOCK) {
+            if (this.fireIcon.imageId != "tongueIcon") {
+                this.tongueIcon.setImageId("tongueIcon");
+            }
+            if (this.fireIcon.imageId != "fireIcon") {
+                this.fireIcon.setImageId("fireIcon");
+            }
+            if (this.iceIcon.imageId != "iceIcon") {
+                this.iceIcon.setImageId("iceIcon");
+            }
         }
         this.healthbars.forEach((healthbar) => healthbar.update(deltaT));
 
@@ -1035,25 +1050,30 @@ export default abstract class AALevel extends Scene {
     }
 
     protected handlePauseGame(): void {
-        MainMenu.GAME_PLAYING = false;
-        this.player.setAIActive(false, null);
-        this.player.animation.pause();
-        this.allNPCS.forEach((npc) => {
-            // npc.setAIActive(false, null)
-            npc.freeze();
-            if ((<AAAnimatedSprite>npc).animation) {
-                (<AAAnimatedSprite>npc).animation.pause();
-            }
-        });
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {
-            key: this.levelMusicKey,
-            holdReference: true,
-        });
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {
-            key: this.bossMusicKey,
-            holdReference: true,
-        });
-        this.getLayer(AALayers.PAUSE).enable();
+        if (this.bossFightActive) {
+            this.getLayer(AALayers.BOSSPAUSE).enable();
+            this.bossPauseTimer.start();
+        } else {
+            MainMenu.GAME_PLAYING = false;
+            this.player.setAIActive(false, null);
+            this.player.animation.pause();
+            this.allNPCS.forEach((npc) => {
+                // npc.setAIActive(false, null)
+                npc.freeze();
+                if ((<AAAnimatedSprite>npc).animation) {
+                    (<AAAnimatedSprite>npc).animation.pause();
+                }
+            });
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                key: this.levelMusicKey,
+                holdReference: true,
+            });
+            this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                key: this.bossMusicKey,
+                holdReference: true,
+            });
+            this.getLayer(AALayers.PAUSE).enable();
+        }
     }
 
     protected handleResumeGame(): void {
@@ -1123,6 +1143,7 @@ export default abstract class AALevel extends Scene {
         this.addUILayer(AALayers.PAUSE);
         this.addUILayer(AALayers.CONTROLS);
         this.addUILayer(AALayers.HELP);
+        this.addUILayer(AALayers.BOSSPAUSE);
     }
 
     protected initBackground(): void {
@@ -1666,6 +1687,17 @@ export default abstract class AALevel extends Scene {
             this.getLayer(AALayers.HELP).disable();
             this.getLayer(AALayers.PAUSE).enable();
         };
+    }
+
+    protected initializeBossPause(): void {
+        this.bossPauseLabel = <Label>this.add.uiElement(UIElementType.LABEL, AALayers.BOSSPAUSE, {
+            position: new Vec2(150, 182),
+            text: "You're in danger, no time to stop right now!",
+        });
+        this.bossPauseLabel.size.set(300, 30);
+        this.bossPauseLabel.fontSize = 24;
+        this.bossPauseLabel.font = "Courier";
+        this.bossPauseLabel.textColor = Color.RED;
     }
 
     /**

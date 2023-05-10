@@ -23,6 +23,7 @@ export default class MainMenu extends Scene {
     public static LEVEL_COUNTER = 0;
     // if not current level then boss flag
     public static CURRENT_LEVEL = 0;
+    public static SPELL_UNLOCK = false;
     public static GAME_PLAYING = false;
     public static BOSS_LOCATION: Vec2 = null;
     protected gameLogo: Sprite;
@@ -64,6 +65,7 @@ export default class MainMenu extends Scene {
         playBtn.onClick = () => {
             MainMenu.GAME_PLAYING = true;
             MainMenu.CURRENT_LEVEL = 0;
+            MainMenu.SPELL_UNLOCK = false;
             this.sceneManager.changeToScene(Level0);
         };
 
