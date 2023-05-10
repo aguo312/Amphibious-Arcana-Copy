@@ -72,9 +72,11 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 this.weaponSystem.rotation = rotation;
                 if (playerDir > 0) {
                     // this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
+                    this.weaponSystem.getPool()[0].unfreeze();
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 } else {
                     this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
+                    this.weaponSystem.getPool()[0].unfreeze();
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 }
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
@@ -111,9 +113,11 @@ export default class RangedEnemyBehavior extends NPCBehavior {
                 this.weaponSystem.rotation = rotation;
                 if (playerDir > 0) {
                     this.owner.animation.playIfNotAlready("ATTACKING_RIGHT", false);
+                    this.weaponSystem.getPool()[0].unfreeze();
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 } else {
                     // this.owner.animation.playIfNotAlready("ATTACKING_LEFT", false);
+                    this.weaponSystem.getPool()[0].unfreeze();
                     this.weaponSystem.startSystem(1000, 0, this.owner.position);
                 }
                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {

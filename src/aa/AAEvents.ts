@@ -24,6 +24,7 @@ export const AAEvents = {
 
     PLAYER_SWING: "PLAYER_SWING",
     CREATE_PLATFORM: "CREATE_PLATFORM",
+    DESTROY_PLATFORM: "DESTROY_PLATFORM",
 
     // The event sent when the player dies. Gets sent after the player's death animation
     PLAYER_DEAD: "PLAYER_DEAD",
@@ -34,6 +35,7 @@ export const AAEvents = {
     TONGUE_WALL_COLLISION: "TONGUE_WALL_COLLISION",
 
     ICE_COLLISION: "ICE_COLLISION",
+    ENEMY_PARTICLE_COLLISION: "ENEMY_PARTICLE_COLLISION",
 
     PLAYER_ATTACK: "PLAYER_ATTACK",
 

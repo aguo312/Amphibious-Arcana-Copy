@@ -39,6 +39,7 @@ import AAAnimatedSprite from "../Nodes/AAAnimatedSprite";
 import ParticleSystemManager from "../../Wolfie2D/Rendering/Animations/ParticleSystemManager";
 import CanvasNode from "../../Wolfie2D/Nodes/CanvasNode";
 import AntParticles from "../AI/NPC/AntParticles";
+import Particle from "../../Wolfie2D/Nodes/Graphics/Particle";
 
 /**
  * A const object for the layer names
@@ -244,18 +245,18 @@ export default abstract class AALevel extends Scene {
                 collisions: [
                     [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
                     [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0],
-                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+                    [1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0],
                     [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
-                    [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 ],
             },
         });
@@ -613,6 +614,15 @@ export default abstract class AALevel extends Scene {
                 this.iceParticleSystem.getPool()[0].visible = false;
                 break;
             }
+            case AAEvents.ENEMY_PARTICLE_COLLISION: {
+                // this.iceParticleSystem.getPool()[0].freeze();
+                // this.iceParticleSystem.getPool()[0].visible = false;
+                console.log(event.data.get("node"));
+                let particle = <Particle>this.allNPCS.get(event.data.get("node"));
+                particle.freeze();
+                particle.visible = false;
+                break;
+            }
             case AAEvents.HEALTH_CHANGE: {
                 this.handleHealthChange(
                     this.healthBar,
@@ -673,8 +683,6 @@ export default abstract class AALevel extends Scene {
                     holdReference: false,
                 });
                 break;
-
-                break;
             }
             case AAEvents.NPC_KILLED: {
                 const id: number = event.data.get("node");
@@ -712,7 +720,10 @@ export default abstract class AALevel extends Scene {
                 // console.log(this.tilemap.getColRowAt(Input.getGlobalMousePosition()))
                 // this.tilemap.setTileAtRowCol(this.tilemap.getColRowAt(event.data.get('pos')),5);
                 this.spawnIceBlock(event.data.get("pos"));
-
+                break;
+            }
+            case AAEvents.DESTROY_PLATFORM: {
+                this.despawnIceBlock();
                 break;
             }
             // Handle spell switching
@@ -852,6 +863,14 @@ export default abstract class AALevel extends Scene {
             this.iceParticleSystem.getPool()[0].visible = false;
             this.icePlatform.visible = true;
             this.icePlatform.setAIActive(true, { src: pos });
+        }
+    }
+
+    protected despawnIceBlock(): void {
+        if (this.icePlatform) {
+            this.icePlatform.visible = false;
+            this.icePlatform.position = Vec2.ZERO;
+            this.icePlatform.size = Vec2.ZERO;
         }
     }
 
@@ -1156,6 +1175,11 @@ export default abstract class AALevel extends Scene {
                 null
             );
             this.collidable.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_COLLISION, null);
+            this.collidable.setTrigger(
+                AAPhysicsGroups.ENEMY_PARTICLE,
+                AAEvents.ENEMY_PARTICLE_COLLISION,
+                null
+            );
         }
     }
     /**
@@ -1171,6 +1195,7 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.TONGUE_WALL_COLLISION);
         this.receiver.subscribe(AAEvents.PARTICLE_HIT_DESTRUCTIBLE);
         this.receiver.subscribe(AAEvents.ICE_COLLISION);
+        this.receiver.subscribe(AAEvents.ENEMY_PARTICLE_COLLISION);
         this.receiver.subscribe(AAEvents.HEALTH_CHANGE);
         this.receiver.subscribe(AAEvents.PLAYER_DEAD);
         this.receiver.subscribe(AAEvents.NPC_KILLED);
@@ -1183,6 +1208,7 @@ export default abstract class AALevel extends Scene {
         this.receiver.subscribe(AAEvents.CONTROLS);
         this.receiver.subscribe(AAEvents.HELP);
         this.receiver.subscribe(AAEvents.CREATE_PLATFORM);
+        this.receiver.subscribe(AAEvents.DESTROY_PLATFORM);
         this.receiver.subscribe(AAEvents.FIREBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.ICEBALL_HIT_ENEMY);
         this.receiver.subscribe(AAEvents.TONGUE_HIT_ENEMY);
@@ -1659,7 +1685,12 @@ export default abstract class AALevel extends Scene {
             null
         );
         this.icePlatform.setTrigger(AAPhysicsGroups.ICE_PARTICLE, AAEvents.ICE_COLLISION, null);
-
+        this.icePlatform.setTrigger(AAPhysicsGroups.ENEMY, AAEvents.DESTROY_PLATFORM, null);
+        this.icePlatform.setTrigger(
+            AAPhysicsGroups.ENEMY_PARTICLE,
+            AAEvents.ENEMY_PARTICLE_COLLISION,
+            null
+        );
         // initialize Ice Blast
         this.iceParticleSystem = new IceParticles(1, Vec2.ZERO, 2000, 3, 10, 1);
         this.iceParticleSystem.initializePool(this, AALayers.PRIMARY);
