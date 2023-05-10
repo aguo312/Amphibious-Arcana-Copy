@@ -1573,6 +1573,11 @@ export default abstract class AALevel extends Scene {
         let i = 1;
         this.add.uiElement(UIElementType.LABEL, AALayers.HELP, {
             position: new Vec2(size.x, size.y - 35),
+            text: "- Enter to enable use of cheats on the current level",
+            fontSize: 24,
+        });
+        this.add.uiElement(UIElementType.LABEL, AALayers.HELP, {
+            position: new Vec2(size.x, size.y - 35 + yOffset * i++),
             text: "- Numbers 4-0 to go to levels 0-6 respectively",
             fontSize: 24,
         });

@@ -75,6 +75,10 @@ export default class HelpScene extends Scene {
         this.createLabel("Cheat Codes", new Vec2(size.x, sizeY + yOffset * i++), 26);
         sizeY += 15;
         this.createLabel(
+            "- Enter to enable use of cheats on the current level",
+            new Vec2(size.x, sizeY + yOffset * i++)
+        );
+        this.createLabel(
             "- Numbers 4-0 to go to levels 0-6 respectively",
             new Vec2(size.x, sizeY + yOffset * i++)
         );

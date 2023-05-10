@@ -18,6 +18,7 @@ export default class CheatsManager {
     protected emitter: Emitter;
     protected sceneManager: SceneManager;
     protected options: Record<string, any>;
+    protected cheatsOn: Boolean;
 
     constructor(sceneManager: SceneManager, options: Record<string, any>) {
         this.sceneManager = sceneManager;
@@ -26,59 +27,79 @@ export default class CheatsManager {
     }
 
     public update(deltaT: number): void {
-        if (Input.isJustPressed(AAControls.GOTO_LEVEL_0)) {
-            ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
-            MainMenu.CURRENT_LEVEL = 0;
-            this.sceneManager.changeToScene(Level0);
-        }
-        if (Input.isJustPressed(AAControls.GOTO_LEVEL_1)) {
-            ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
-            MainMenu.CURRENT_LEVEL = 1;
-            this.sceneManager.changeToScene(Level1);
-        }
-        if (Input.isJustPressed(AAControls.GOTO_LEVEL_2)) {
-            ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
-            MainMenu.CURRENT_LEVEL = 2;
-            this.sceneManager.changeToScene(Level2);
-        }
-        if (Input.isJustPressed(AAControls.GOTO_LEVEL_3)) {
-            ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
-            MainMenu.CURRENT_LEVEL = 3;
-            this.sceneManager.changeToScene(Level3);
-        }
-        if (Input.isJustPressed(AAControls.GOTO_LEVEL_4)) {
-            ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
-            MainMenu.CURRENT_LEVEL = 4;
-            this.sceneManager.changeToScene(Level4);
-        }
-        if (Input.isJustPressed(AAControls.GOTO_LEVEL_5)) {
-            ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
-            MainMenu.CURRENT_LEVEL = 5;
-            this.sceneManager.changeToScene(Level5);
-        }
-        if (Input.isJustPressed(AAControls.GOTO_LEVEL_6)) {
-            ParticleSystemManager.getInstance().clearParticleSystems();
-            this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: this.options.levelMusicKey });
-            MainMenu.CURRENT_LEVEL = 6;
-            this.sceneManager.changeToScene(Level6);
-        }
-        if (Input.isJustPressed(AAControls.GOTO_BOSS)) {
-            this.emitter.fireEvent(AAEvents.GOTO_BOSS);
-        }
-        if (Input.isJustPressed(AAControls.TOGGLE_INVINCIBILITY)) {
-            this.emitter.fireEvent(AAEvents.TOGGLE_INVINCIBILITY);
-        }
-        if (Input.isJustPressed(AAControls.PLAYER_KILL)) {
-            this.emitter.fireEvent(AAEvents.KILL_PLAYER);
-        }
-        if (Input.isJustPressed(AAControls.UNLOCK_SPELLS)) {
-            MainMenu.CURRENT_LEVEL = 6;
+        if (this.cheatsOn) {
+            if (Input.isJustPressed(AAControls.GOTO_LEVEL_0)) {
+                ParticleSystemManager.getInstance().clearParticleSystems();
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.levelMusicKey,
+                });
+                MainMenu.CURRENT_LEVEL = 0;
+                this.sceneManager.changeToScene(Level0);
+            }
+            if (Input.isJustPressed(AAControls.GOTO_LEVEL_1)) {
+                ParticleSystemManager.getInstance().clearParticleSystems();
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.levelMusicKey,
+                });
+                MainMenu.CURRENT_LEVEL = 1;
+                this.sceneManager.changeToScene(Level1);
+            }
+            if (Input.isJustPressed(AAControls.GOTO_LEVEL_2)) {
+                ParticleSystemManager.getInstance().clearParticleSystems();
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.levelMusicKey,
+                });
+                MainMenu.CURRENT_LEVEL = 2;
+                this.sceneManager.changeToScene(Level2);
+            }
+            if (Input.isJustPressed(AAControls.GOTO_LEVEL_3)) {
+                ParticleSystemManager.getInstance().clearParticleSystems();
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.levelMusicKey,
+                });
+                MainMenu.CURRENT_LEVEL = 3;
+                this.sceneManager.changeToScene(Level3);
+            }
+            if (Input.isJustPressed(AAControls.GOTO_LEVEL_4)) {
+                ParticleSystemManager.getInstance().clearParticleSystems();
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.levelMusicKey,
+                });
+                MainMenu.CURRENT_LEVEL = 4;
+                this.sceneManager.changeToScene(Level4);
+            }
+            if (Input.isJustPressed(AAControls.GOTO_LEVEL_5)) {
+                ParticleSystemManager.getInstance().clearParticleSystems();
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.levelMusicKey,
+                });
+                MainMenu.CURRENT_LEVEL = 5;
+                this.sceneManager.changeToScene(Level5);
+            }
+            if (Input.isJustPressed(AAControls.GOTO_LEVEL_6)) {
+                ParticleSystemManager.getInstance().clearParticleSystems();
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.levelMusicKey,
+                });
+                MainMenu.CURRENT_LEVEL = 6;
+                this.sceneManager.changeToScene(Level6);
+            }
+            if (Input.isJustPressed(AAControls.GOTO_BOSS)) {
+                this.emitter.fireEvent(AAEvents.GOTO_BOSS);
+            }
+            if (Input.isJustPressed(AAControls.TOGGLE_INVINCIBILITY)) {
+                this.emitter.fireEvent(AAEvents.TOGGLE_INVINCIBILITY);
+            }
+            if (Input.isJustPressed(AAControls.PLAYER_KILL)) {
+                this.emitter.fireEvent(AAEvents.KILL_PLAYER);
+            }
+            if (Input.isJustPressed(AAControls.UNLOCK_SPELLS)) {
+                MainMenu.CURRENT_LEVEL = 6;
+            }
+        } else {
+            if (Input.isJustPressed(AAControls.ENABLE_CHEATS)) {
+                this.cheatsOn = true;
+            }
         }
     }
 }
