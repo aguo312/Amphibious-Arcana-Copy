@@ -73,6 +73,7 @@ export default class Level6 extends AALevel {
 
         // Music and sound
         this.levelMusicKey = Level6.LEVEL_MUSIC_KEY;
+        this.bossMusicKey = Level6.BOSS_MUSIC_KEY;
         this.jumpAudioKey = Level0.JUMP_AUDIO_KEY;
         this.attackAudioKey = Level0.ATTACK_AUDIO_KEY;
         this.healAudioKey = Level0.HEAL_AUDIO_KEY;
@@ -94,6 +95,7 @@ export default class Level6 extends AALevel {
         // to avoid circular dependencies
         this.cheatsManager = new CheatsManager(this.sceneManager, {
             levelMusicKey: this.levelMusicKey,
+            bossMusicKey: this.bossMusicKey,
         });
         this.currLevel = Level6;
         MainMenu.BOSS_LOCATION = this.bossSpawnTriggerPos;
@@ -131,6 +133,7 @@ export default class Level6 extends AALevel {
 
         // Audio and music
         this.load.audio(this.levelMusicKey, Level6.LEVEL_MUSIC_PATH);
+        this.load.audio(this.bossMusicKey, Level6.BOSS_MUSIC_PATH);
         // this.load.audio(this.jumpAudioKey, Level6.JUMP_AUDIO_PATH);
         // this.load.audio(this.attackAudioKey, Level6.ATTACK_AUDIO_PATH);
         // this.load.audio(this.healAudioKey, Level6.HEAL_AUDIO_PATH);

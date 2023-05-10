@@ -33,6 +33,9 @@ export default class CheatsManager {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                     key: this.options.levelMusicKey,
                 });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.bossMusicKey,
+                });
                 MainMenu.CURRENT_LEVEL = 0;
                 this.sceneManager.changeToScene(Level0);
             }
@@ -40,6 +43,9 @@ export default class CheatsManager {
                 ParticleSystemManager.getInstance().clearParticleSystems();
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                     key: this.options.levelMusicKey,
+                });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.bossMusicKey,
                 });
                 MainMenu.CURRENT_LEVEL = 1;
                 this.sceneManager.changeToScene(Level1);
@@ -49,6 +55,9 @@ export default class CheatsManager {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                     key: this.options.levelMusicKey,
                 });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.bossMusicKey,
+                });
                 MainMenu.CURRENT_LEVEL = 2;
                 this.sceneManager.changeToScene(Level2);
             }
@@ -56,6 +65,9 @@ export default class CheatsManager {
                 ParticleSystemManager.getInstance().clearParticleSystems();
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                     key: this.options.levelMusicKey,
+                });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.bossMusicKey,
                 });
                 MainMenu.CURRENT_LEVEL = 3;
                 this.sceneManager.changeToScene(Level3);
@@ -65,6 +77,9 @@ export default class CheatsManager {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                     key: this.options.levelMusicKey,
                 });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.bossMusicKey,
+                });
                 MainMenu.CURRENT_LEVEL = 4;
                 this.sceneManager.changeToScene(Level4);
             }
@@ -73,6 +88,9 @@ export default class CheatsManager {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                     key: this.options.levelMusicKey,
                 });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.bossMusicKey,
+                });
                 MainMenu.CURRENT_LEVEL = 5;
                 this.sceneManager.changeToScene(Level5);
             }
@@ -80,6 +98,9 @@ export default class CheatsManager {
                 ParticleSystemManager.getInstance().clearParticleSystems();
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                     key: this.options.levelMusicKey,
+                });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.options.bossMusicKey,
                 });
                 MainMenu.CURRENT_LEVEL = 6;
                 this.sceneManager.changeToScene(Level6);

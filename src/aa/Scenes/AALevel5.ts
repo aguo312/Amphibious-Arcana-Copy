@@ -86,6 +86,7 @@ export default class Level5 extends AALevel {
         // to avoid circular dependencies
         this.cheatsManager = new CheatsManager(this.sceneManager, {
             levelMusicKey: this.levelMusicKey,
+            bossMusicKey: this.bossMusicKey,
         });
         this.currLevel = Level5;
 

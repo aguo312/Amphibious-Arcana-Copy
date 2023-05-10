@@ -153,6 +153,7 @@ export default abstract class AALevel extends Scene {
 
     /** Sound and music */
     protected levelMusicKey: string;
+    protected bossMusicKey: string;
     protected jumpAudioKey: string;
     protected attackAudioKey: string;
     protected healAudioKey: string;
@@ -443,6 +444,9 @@ export default abstract class AALevel extends Scene {
                 this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                     key: this.levelMusicKey,
                 });
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.bossMusicKey,
+                });
                 if (MainMenu.LEVEL_COUNTER < this.nextLevelNum) {
                     MainMenu.LEVEL_COUNTER = this.nextLevelNum;
                 }
@@ -615,9 +619,6 @@ export default abstract class AALevel extends Scene {
                 break;
             }
             case AAEvents.ENEMY_PARTICLE_COLLISION: {
-                // this.iceParticleSystem.getPool()[0].freeze();
-                // this.iceParticleSystem.getPool()[0].visible = false;
-                console.log(event.data.get("node"));
                 let particle = <Particle>this.allNPCS.get(event.data.get("node"));
                 particle.freeze();
                 particle.visible = false;
@@ -646,6 +647,9 @@ export default abstract class AALevel extends Scene {
                     });
                     this.emitter.fireEvent(GameEventType.STOP_SOUND, {
                         key: this.levelMusicKey,
+                    });
+                    this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                        key: this.bossMusicKey,
                     });
                     this.deathTimer.start();
                 }
@@ -766,7 +770,15 @@ export default abstract class AALevel extends Scene {
                 this.bossNameLabel.visible = true;
                 // Destroy the spawn trigger so we don't call this again
                 this.bossSpawnTrigger.destroy();
-
+                this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+                    key: this.levelMusicKey,
+                    holdReference: true,
+                });
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                    key: this.bossMusicKey,
+                    loop: true,
+                    holdReference: true,
+                });
                 break;
             }
             case "GUIDE": {
@@ -1037,6 +1049,10 @@ export default abstract class AALevel extends Scene {
             key: this.levelMusicKey,
             holdReference: true,
         });
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {
+            key: this.bossMusicKey,
+            holdReference: true,
+        });
         this.getLayer(AALayers.PAUSE).enable();
     }
 
@@ -1057,11 +1073,19 @@ export default abstract class AALevel extends Scene {
                 (<AAAnimatedSprite>npc).animation.resume();
             }
         });
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
-            key: this.levelMusicKey,
-            loop: true,
-            holdReference: true,
-        });
+        if (this.bossFightActive) {
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                key: this.bossMusicKey,
+                loop: true,
+                holdReference: true,
+            });
+        } else {
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {
+                key: this.levelMusicKey,
+                loop: true,
+                holdReference: true,
+            });
+        }
         this.getLayer(AALayers.PAUSE).disable();
     }
 
