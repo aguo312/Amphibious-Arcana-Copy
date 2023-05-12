@@ -39,7 +39,7 @@ export default class Level6 extends AALevel {
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/dark_level_music.wav";
 
     public static readonly BOSS_MUSIC_KEY = "BOSS_MUSIC";
-    public static readonly BOSS_MUSIC_PATH = "hw4_assets/music/dark_level_music_fast.wav";
+    public static readonly BOSS_MUSIC_PATH = "hw4_assets/music/ant_queen_music.wav";
 
     protected bossSpawnTriggerPos: Vec2;
     protected bossSpawnTriggerHalfSize: Vec2;
