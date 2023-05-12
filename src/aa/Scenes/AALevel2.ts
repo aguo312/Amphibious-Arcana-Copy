@@ -36,7 +36,7 @@ export default class Level2 extends AALevel {
     public static readonly LEVEL_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
 
     public static readonly BOSS_MUSIC_KEY = "BOSS_MUSIC";
-    public static readonly BOSS_MUSIC_PATH = "hw4_assets/music/frog_lvl_1.wav";
+    public static readonly BOSS_MUSIC_PATH = "hw4_assets/music/ant_queen_music.wav";
 
     public static readonly BACKGROUND_KEY = "BACKGROUND";
     public static readonly BACKGROUND_PATH = "hw4_assets/images/Cave2.png";
